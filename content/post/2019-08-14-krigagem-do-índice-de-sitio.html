@@ -1,0 +1,227 @@
+---
+title: Krigagem do Índice de Sitio
+author: Sérgio COsta
+date: '2019-08-14'
+slug: krigagem-do-índice-de-sitio
+categories: 
+  - Geoprocessamento
+tags:
+  - geoR
+  - rgdal
+  - sp
+  - raster
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-09-01T20:04:42-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>O índice de sítio é um atributo que representa o potencial de produtividade de determinado local, sendo influenciado por fatores geológicos, topográficos, climáticos, edáficos e bióticos, apresentando de modo geral algum nível de dependência espacial, sendo portanto possível a realização de inferências espaciais sob seu comportamento.<br />
+Neste exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de <a href="http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf">Mello (2004)</a> e <a href="https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf">Pelissari (2015)</a>.</p>
+<p>Iniciaremos com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas.</p>
+<pre class="r"><code>library(readxl)
+library(geoR)</code></pre>
+<pre><code>## --------------------------------------------------------------
+##  Analysis of Geostatistical Data
+##  For an Introduction to geoR go to http://www.leg.ufpr.br/geoR
+##  geoR version 1.7-5.2.1 (built on 2016-05-02) is now loaded
+## --------------------------------------------------------------</code></pre>
+<pre class="r"><code># Importar dados
+dados &lt;- read_excel(&#39;dados_interpolacao.xlsx&#39;)
+dados</code></pre>
+<pre><code>## # A tibble: 101 x 4
+##    PARCELA      X       Y    IS
+##      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1       1 440559 7801189  31.3
+##  2       2 440846 7801282  32.0
+##  3       3 440734 7801475  29.6
+##  4       4 440923 7801657  29.4
+##  5       5 440683 7800566  33.8
+##  6       6 440709 7800769  36.9
+##  7       7 440528 7800929  35.7
+##  8       8 440783 7800975  31.0
+##  9       9 440989 7800264  30.4
+## 10      10 440872 7800395  33.9
+## # ... with 91 more rows</code></pre>
+<pre class="r"><code># Transformar dados em geodata
+dados &lt;- as.geodata(dados,coords.col = 2:3, data.col = 4)</code></pre>
+<p>Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência.</p>
+<pre class="r"><code># Plotar histograma
+hist(dados$data,
+     xlab = &#39;Índice de Sítio (m)&#39;, ylab = &#39;Frequência&#39;,
+     main = &#39;Histograma - Índice de Sítio&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>O gráfico indica que os valores de sítio apresentam uma distribuição próxima da normal, o que significa que não há necessidade de transformação dos dados. Vamos confirmar aplicando o teste de Kolmogorov-Smirnov.</p>
+<pre class="r"><code># Teste de Kolmogorov-Smirnov 
+ks = ks.test(dados$data, &#39;pnorm&#39;, mean = mean(dados$data), sd = sd(dados$data))
+ks</code></pre>
+<pre><code>## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  dados$data
+## D = 0.050885, p-value = 0.9562
+## alternative hypothesis: two-sided</code></pre>
+<p>O elevado <em>p-value</em> aponta que não há diferença estatística entre a distribuição normal e a distribuição dos dados que estamos analisando, corroborando que poderemos proceder à krigagem sem transformação da variável de interesse.<br />
+A próxima etapa será plotar e analisar o semivariograma. Para tal, utilizaremos a função <code>variog</code> do <code>geoR</code>.<br />
+Dois argumentos são importantes neste procedimento. O primeiro <code>max.dist</code> se refere à distância máxima para construção do variograma. É importante que este valor seja grande o suficiente para que o variograma compreenda o alcance (<em>range</em>) que indica a zona de influência ou de dependência espacial entre as amostras.<br />
+O segundo argumento <code>uvec</code> indica o número de pontos de referência (<em>lags</em>) que serão distribuídos proporcionalmente até atingir a distância máxima definida para o variograma.<br />
+O procedimento para obtenção de valores para estes parâmetros é iterativo e será tema de um próximo post. Por hora, definiremos o valor de 1000 para <code>max.dist</code> e 10 para <code>uvec</code> (1000/10 = 100, que é a distância aproximada entre as unidades amostrais alocadas ).</p>
+<pre class="r"><code># Plotar semivariograma
+semivariograma &lt;- variog(dados, max.dist = 1000, uvec = 10,messages=FALSE)
+plot(semivariograma,
+     ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" />
+O semivariograma acima considera que a semivariância possui o mesmo comportamento em todas as direções. No entanto, é fundamental avaliar se esta premissa é verdadeira. Vamos averiguar se o fenômeno da anisotropia ocorre para este conjunto de dados utilizando a função <code>variog4</code>.</p>
+<pre class="r"><code># Investigar anisotropia
+plot(variog4(dados, max.dist = 1000, uvec = 10,messages=FALSE),
+     ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
+Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia.
+Realizadas as devidas análises, procedemos ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.</p>
+<pre class="r"><code># Definir modelos a serem ajustados
+modelos &lt;- c(&#39;spherical&#39;,&#39;exponential&#39;,&#39;gaussian&#39;,&#39;cubic&#39;)
+# Criar lista para armazenar modelos ajustados
+modelos_ajustados &lt;- list()
+# Ajustar modelos de semivariância
+for(i in modelos){
+modelos_ajustados[[i]] &lt;- variofit(semivariograma, cov.model = i, messages = FALSE)
+}
+modelos_ajustados</code></pre>
+<pre><code>## $spherical
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: spherical
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   0.6878   2.4059 334.7681 
+## Practical Range with cor=0.05 for asymptotic range: 334.7681
+## 
+## variofit: minimised weighted sum of squares = 182.0471
+## 
+## $exponential
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: exponential
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   1.8991   1.7099 500.6367 
+## Practical Range with cor=0.05 for asymptotic range: 1499.773
+## 
+## variofit: minimised weighted sum of squares = 130.6787
+## 
+## $gaussian
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: gaussian
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   2.3775   1.0351 557.8393 
+## Practical Range with cor=0.05 for asymptotic range: 965.5186
+## 
+## variofit: minimised weighted sum of squares = 136.2159
+## 
+## $cubic
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: cubic
+## parameter estimates:
+##     tausq   sigmasq       phi 
+##    2.3595    1.0223 1282.4003 
+## Practical Range with cor=0.05 for asymptotic range: 1282.4
+## 
+## variofit: minimised weighted sum of squares = 135.2704</code></pre>
+<p>Os quatro modelos ajustados possuem três parâmetros interpretáveis: <code>tausq</code> se refere ao efeito pepita (<em>nugget</em>), <code>sigmasq</code> é também conhecido como <em>partial sill</em> e consiste no valor do patamar menos o efeito pepita, e <code>phi</code> se refere ao alcance (<em>range</em>). Vamos plotar as curvas de semivariância geradas a partir dos modelos ajustados.</p>
+<pre class="r"><code>par(mfrow = c(2,2))
+for(i in modelos){
+  plot(semivariograma,
+     ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;,
+     main = i)
+  lines.variomodel(modelos_ajustados[[i]])
+}</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+Para avaliar a eficiência dos modelos ajustados na predição do índice de sítio em locais não amostrados, devemos proceder à validação cruzada, conforme o procedimento a seguir.</p>
+<pre class="r"><code># Cria lista para armazenar resultado da validação cruzada
+modelos_xvalid &lt;- list()
+# Validação cruzada para todos os modelos
+for(i in modelos){
+modelos_xvalid[[i]] &lt;- xvalid(dados, model = modelos_ajustados[[i]], messages = FALSE)
+}
+# Formatação dos resultados
+erro_padrao &lt;- unlist(lapply(modelos_xvalid,summary))[c(11,25,39,53)]
+names(erro_padrao) &lt;- modelos
+desvio_do_erro &lt;- unlist(lapply(modelos_xvalid,summary))[c(14,28,42,56)]
+names(desvio_do_erro) &lt;- modelos
+# Plotar
+par(mfrow = c(1,2))
+text(barplot(erro_padrao, ylim =c(-0.01,0.01), main = &#39;Erro padrão da validação cruzada&#39;), y = erro_padrao+sign(erro_padrao)*0.001,labels = round(erro_padrao,5))
+text(barplot(desvio_do_erro, ylim = c(0,2), main = &#39;Desvio padrão do erro&#39;), y = desvio_do_erro+sign(desvio_do_erro)*0.1,labels = round(desvio_do_erro,3))</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-8-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>As estatísticas de validação cruzada são favoráveis ao uso do modelo cúbico, portanto, utilizaremos este para interpolar o índice de sítio para toda a área e interesse. Vamos importar os limites das áreas a serem interpoladas.</p>
+<pre class="r"><code># Definir modelo a ser utilizado
+modelo_selecionado &lt;- modelos_ajustados$cubic
+# Importar shape com os limites da área de interesse
+library(rgdal)</code></pre>
+<pre><code>## Warning: package &#39;rgdal&#39; was built under R version 3.6.1</code></pre>
+<pre><code>## Carregando pacotes exigidos: sp</code></pre>
+<pre><code>## rgdal: version: 1.4-4, (SVN revision 833)
+##  Geospatial Data Abstraction Library extensions to R successfully loaded
+##  Loaded GDAL runtime: GDAL 2.2.3, released 2017/11/20
+##  Path to GDAL shared files: C:/Users/Amanda/Documents/R/win-library/3.6/rgdal/gdal
+##  GDAL binary built with GEOS: TRUE 
+##  Loaded PROJ.4 runtime: Rel. 4.9.3, 15 August 2016, [PJ_VERSION: 493]
+##  Path to PROJ.4 shared files: C:/Users/Amanda/Documents/R/win-library/3.6/rgdal/proj
+##  Linking to sp version: 1.3-1</code></pre>
+<pre class="r"><code>talhoes &lt;- readOGR(&#39;.&#39;, &#39;talhoes&#39;, verbose = FALSE)
+# Plotar talhões e pontos amostrais
+points(plot(talhoes),
+       x = dados[[1]][,1],y = dados[[1]][,2],
+       pch=&#39;+&#39;, col=&#39;red&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Agora devemos gerar um grid de interpolação para toda a área de interesse e, por fim, aplicar o modelo cúbico ajustado.</p>
+<pre class="r"><code># Gerar grid de interpolação
+library(sp)
+grid &lt;- spsample(talhoes, type = &#39;regular&#39;, n = 10000)
+plot(grid)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Realizar a krigagem
+krigagem_is &lt;- krige.conv(dados, locations = as.data.frame(grid), krige = krige.control(obj.model = modelo_selecionado))
+# Armazenar resultado em spatial data frame
+krigagem_is &lt;- coordinates(data.frame(x = data.frame(grid)[,1],
+                                      y = data.frame(grid)[,2],
+                                      IS = krigagem_is$predict))
+# Converter em raster
+library(raster)
+krigagem_is &lt;- rasterFromXYZ(krigagem_is)
+# Definir projeção
+projection(krigagem_is) &lt;- CRS(&quot;+init=epsg:31982&quot;)
+image(krigagem_is, asp=1,xlab=&#39;Longitude&#39;,ylab = &#39;Latitude&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plotar resultado com bordas e pontos amostrais
+image(krigagem_is, asp=1,xlab=&#39;Longitude&#39;,ylab = &#39;Latitude&#39;)
+plot(talhoes, add = TRUE)
+points(x = dados[[1]][,1],y = dados[[1]][,2],
+       pch=&#39;+&#39;, col=&#39;black&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Agora que visualizamos o resultado da krigagem, podemos exportar um arquivo em formato .tif, que permitirá a visualização em qualquer outro software de SIG.</p>
+<pre class="r"><code># Salvar arquivo .tif
+writeRaster(krigagem_is,&#39;krigagem_is.tif&#39;, overwrite = TRUE)</code></pre>
+<style>
+body {
+text-align: justify}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
