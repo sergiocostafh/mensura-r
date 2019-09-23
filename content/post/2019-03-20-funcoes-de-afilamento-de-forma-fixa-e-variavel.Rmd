@@ -12,9 +12,10 @@ summary: ''
 authors: []
 lastmod: '2019-03-25T09:28:18-03:00'
 featured: no
-header:
-  image: "headers/afila1.png"
-  preview: true
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
 projects: []
 ---
 ```{r setup, include=FALSE}
@@ -37,8 +38,7 @@ $d_i$ = diâmetro na seção i do fuste;
 $dap$ = diãmetro à altura do peito;  
 $ht$ = altura total.  
   
-As funções de afilamento de forma variável, introduzidas por Kozak (1988) e Newnham (1988), possuem como principal vantagem a capacidade de modelar diferentes formas de árvore em função de características dendrométricas, tornando possível a utilização de uma única equação de afilamento para árvores em diferentes idades e de diferentes portes. A utilização desta técnica permite a redução do número de funções de afilamento ajustados para povoamentos de uma mesma espécie que se encontram em diferentes idades. 
-Neste exemplo, utilizaremos o modelo de Kozak (2004) e a função trigonométrica de Bi (2000)
+As funções de afilamento de forma variável, introduzidas por Kozak (1988) e Newnham (1988), possuem como principal vantagem a capacidade de modelar diferentes formas de árvore em função de características dendrométricas, tornando possível a utilização de uma única equação de afilamento para árvores em diferentes idades e de diferentes portes. A utilização desta técnica permite a redução do número de funções de afilamento ajustados considerando povoamentos de uma mesma espécie estabelecidos em momentos e condições distintas. Neste exercício testaremos o modelo de Kozak (2004) e a função trigonométrica de Bi (2000) como representantes desta categoria de modelos.
   
 #### Modelo de Kozak (2004)
 $$d_i = \beta_0dap^{\beta_1}\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{\beta_2+\beta_3\left(\frac{1}{e^{dap/ht}}\right)+\beta_4dap^{\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]}+\beta_5\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{dap/ht}}$$
