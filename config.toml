@@ -23,7 +23,7 @@ codefolding_nobutton = false
 copyright = "&copy; Mensura-R, {year}"
 
 # Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = ""
+googleAnalytics = "UA-148593204-1"
 
 ############################
 ## Advanced options below ##
