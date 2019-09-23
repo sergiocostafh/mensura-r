@@ -43,7 +43,7 @@ As funções de afilamento de forma variável, introduzidas por Kozak (1988) e N
 #### Modelo de Kozak (2004)
 $$d_i = \beta_0dap^{\beta_1}\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{\beta_2+\beta_3\left(\frac{1}{e^{dap/ht}}\right)+\beta_4dap^{\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]}+\beta_5\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{dap/ht}}$$
 em que:  
-$p$ = primeiro ponto de inflexão calculado no modelo segmentado de Max e Burkhart (1976). Obs: neste exercício, será tratado como mais uma parâmetro a ser ajustado;  
+$p$ = primeiro ponto de inflexão calculado no modelo segmentado de Max e Burkhart (1976). Obs: neste exercício, será tratado como mais uma parâmetro a ser ajustado.
 
 #### Modelo de Bi (2000)
 $$d_i=dap\left[ \left( \frac{log\;sin \left( \frac{\pi}{2} \frac{h_i}{ht} \right)}
@@ -109,7 +109,7 @@ start=c(b0=1.8,b1=-0.2,b2=-0.04,b3=-0.9,b4=-0.0006,b5=0.07,b6=-.14))
 summary(bi)
 ````
 Agora que temos as funções de forma fixa e variável ajustadas, vamos comparar os métodos. Para tal, precisamos armazenar os resíduos em vetores e calcular o erro quadrático médio em relação ao $d_i$.
-```{r fig.width=8, results='hide',fig.keep='all',fig.align='center'}
+```{r fig.width=8, results='hide',fig.keep='all',fig.align='center',fig.height=4}
 # Criar conjuntos que armazenarão os resultados das funções de Schoepfer
 di_schoepfer <- c()
 residuos_schoepfer <- c()
