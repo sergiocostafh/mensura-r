@@ -1,5 +1,5 @@
 ---
-title: Desmatamento na Amazônia - Análise de dados do Imazon
+title: Análise de dados de desmatamento do Imazon
 author: Sérgio Costa
 date: '2019-09-14'
 slug: desmatamento-na-amazonia-analise-de-dados-do-imazon
@@ -139,20 +139,22 @@ A partir das análises realizadas, podemos conluir que:
 **3.** Há uma tendência de aumento nas taxas de desmatamento iniciada após o ano de 2012.  
 **4.** As análises sugerem que o acumulado anual de 2019 pode alcançar o mesmo patamar de 2018, ou até mesmo atingir uma nova máxima histórica.  
 
+<center>
 ## Referências
-[1] http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/
+[1]http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/
 
-[2] https://aosfatos.org/noticias/o-que-realmente-se-sabe-sobre-queimadas-no-brasil/
+[2]https://aosfatos.org/noticias/o-que-realmente-se-sabe-sobre-queimadas-no-brasil/
 
-[3] https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439
+[3]https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439
 
-[4] https://www.terra.com.br/noticias/ciencia/sustentabilidade/bolsonaro-acusa-inpe-de-divulgar-dados-mentirosos-sobre-desmatamento,41bf3feb7bab7d742c3bbb4f84c62bb74nes2dyy.html
+[4]https://www.terra.com.br/noticias/ciencia/sustentabilidade/bolsonaro-acusa-inpe-de-divulgar-dados-mentirosos-sobre-desmatamento,41bf3feb7bab7d742c3bbb4f84c62bb74nes2dyy.html
 
-[5] https://oglobo.globo.com/sociedade/ricardo-salles-atribui-aumento-de-queimadas-seca-mas-ipam-diz-que-estiagem-este-ano-foi-menor-23891622
+[5]https://oglobo.globo.com/sociedade/ricardo-salles-atribui-aumento-de-queimadas-seca-mas-ipam-diz-que-estiagem-este-ano-foi-menor-23891622
 
-[6] http://www.inmet.gov.br/projetos/rede/pesquisa/
+[6]http://www.inmet.gov.br/projetos/rede/pesquisa/
 
-[7] http://www.obt.inpe.br/prodes/metodologia.pdf
+[7]http://www.obt.inpe.br/prodes/metodologia.pdf
+
 <style>
 body {
 text-align: justify}
