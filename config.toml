@@ -12,11 +12,11 @@ title = "Mensura-R - Ciência Florestal em linguagem R"
 baseurl = "https://mensura-r.netlify.com/"
 
 # Set to true to disable code folding
-#disable_codefolding = true
+disable_codefolding = false
 # Set to "hide" or "show" all codes by default
-#codefolding_show = "show"
+codefolding_show = "show"
 # Set to true to exclude the "Show/hide all" button
-#codefolding_nobutton = true
+codefolding_nobutton = false
 
 # Enter a copyright notice to display in the site footer.
 # To display a copyright symbol, type `&copy;`. For current year, type `{year}`.
@@ -24,6 +24,7 @@ copyright = "&copy; Mensura-R, {year}"
 
 # Enable analytics by entering your Google Analytics tracking ID
 googleAnalytics = "UA-148593204-1"
+
 ############################
 ## Advanced options below ##
 ############################
@@ -72,6 +73,6 @@ ignoreFiles = ["\\.ipynb$", ".ipynb_checkpoints$", "\\.Rmd$", "\\.Rmarkdown$", "
 # Taxonomies.
 [taxonomies]
   tag = "tags"
-  category = "categories"
+  category = "categorias"
   publication_type = "publication_types"
   author = "autores"
