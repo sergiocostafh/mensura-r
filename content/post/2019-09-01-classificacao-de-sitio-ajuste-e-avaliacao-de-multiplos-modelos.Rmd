@@ -1,8 +1,8 @@
 ---
-title: Ajuste e avaliação de múltiplos modelos de crescimento em altura dominante
+title: Ajuste e avaliação de modelos de crescimento em altura dominante
 author: Sérgio Costa
 date: '2019-09-01'
-slug: ajuste-e-avaliacao-de-multiplos-modelos-de-crescimento-em-altura-dominante
+slug: ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante
 categories:
   - Biometria
 tags: []
