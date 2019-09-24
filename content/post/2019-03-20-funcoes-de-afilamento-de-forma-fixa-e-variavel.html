@@ -8,13 +8,14 @@ categories:
 tags:
   - minpack.lm
 subtitle: ''
-summary: ''
+summary: 'Este post exemplifica o procedimento de ajuste e avaliação de funções de afilamento de forma fixa e de forma variável no R.'
 authors: []
 lastmod: '2019-03-25T09:28:18-03:00'
 featured: no
-header:
-  image: "headers/afila1.png"
-  preview: true
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
 projects: []
 ---
 
@@ -35,14 +36,13 @@ projects: []
 <span class="math inline">\(d_i\)</span> = diâmetro na seção i do fuste;<br />
 <span class="math inline">\(dap\)</span> = diãmetro à altura do peito;<br />
 <span class="math inline">\(ht\)</span> = altura total.</p>
-<p>As funções de afilamento de forma variável, introduzidas por Kozak (1988) e Newnham (1988), possuem como principal vantagem a capacidade de modelar diferentes formas de árvore em função de características dendrométricas, tornando possível a utilização de uma única equação de afilamento para árvores em diferentes idades e de diferentes portes. A utilização desta técnica permite a redução do número de funções de afilamento ajustados para povoamentos de uma mesma espécie que se encontram em diferentes idades.
-Neste exemplo, utilizaremos o modelo de Kozak (2004) e a função trigonométrica de Bi (2000)</p>
+<p>As funções de afilamento de forma variável, introduzidas por Kozak (1988) e Newnham (1988), possuem como principal vantagem a capacidade de modelar diferentes formas de árvore em função de características dendrométricas, tornando possível a utilização de uma única equação de afilamento para árvores em diferentes idades e de diferentes portes. A utilização desta técnica permite a redução do número de funções de afilamento ajustados considerando povoamentos de uma mesma espécie estabelecidos em momentos e condições distintas. Neste exercício testaremos o modelo de Kozak (2004) e a função trigonométrica de Bi (2000) como representantes desta categoria de modelos.</p>
 </div>
 <div id="modelo-de-kozak-2004" class="section level4">
 <h4>Modelo de Kozak (2004)</h4>
 <p><span class="math display">\[d_i = \beta_0dap^{\beta_1}\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{\beta_2+\beta_3\left(\frac{1}{e^{dap/ht}}\right)+\beta_4dap^{\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]}+\beta_5\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{dap/ht}}\]</span>
 em que:<br />
-<span class="math inline">\(p\)</span> = primeiro ponto de inflexão calculado no modelo segmentado de Max e Burkhart (1976). Obs: neste exercício, será tratado como mais uma parâmetro a ser ajustado;</p>
+<span class="math inline">\(p\)</span> = primeiro ponto de inflexão calculado no modelo segmentado de Max e Burkhart (1976). Obs: neste exercício, será tratado como mais uma parâmetro a ser ajustado.</p>
 </div>
 <div id="modelo-de-bi-2000" class="section level4">
 <h4>Modelo de Bi (2000)</h4>
@@ -51,8 +51,9 @@ em que:<br />
 \right]\]</span></p>
 <p>Agora vamos importar um conjunto de dados de cubagens.</p>
 <pre class="r"><code># Importar dados
-library(readxl)
-dados &lt;- read_excel(&#39;dados_cubagens.xlsx&#39;)
+library(readxl)</code></pre>
+<pre><code>## Warning: package &#39;readxl&#39; was built under R version 3.6.1</code></pre>
+<pre class="r"><code>dados &lt;- read_excel(&#39;dados_cubagens.xlsx&#39;)
 dados</code></pre>
 <pre><code>## # A tibble: 54,415 x 7
 ##    ARVORE   DAP    DI     HI    HT `HI/HT` `DI/DAP`
@@ -389,6 +390,8 @@ for (i in unique(arvores_simuladas$DAP)[-1]) {
 <style>
 body {
 text-align: justify}
+h1 {
+text-align: center}
 </style>
 <style type="text/css">
 
@@ -400,6 +403,8 @@ code.r{
 }
 pre {
   font-size: 14px
+}
+
 }
 </style>
 </div>
