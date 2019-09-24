@@ -1,15 +1,15 @@
 ---
-title: Classificação de sítios florestais
+title: Classificação de Sítios Florestais
 author: Sérgio Costa
-date: '2019-03-20'
+date: '2019-04-17'
 slug: classificacão-de-sitios-florestais
 categories:
   - Biometria
 tags: []
 subtitle: ''
-summary: 'Ajuste do modelo de Chapman-Richards para obtenção de índices de sítio e a geração de classes pelo método da curva guia.'
+summary: ''
 authors: []
-lastmod: '2019-03-21T12:09:05-03:00'
+lastmod: '2019-05-02T12:09:05-03:00'
 featured: no
 image:
   caption: ''
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 O índice de sítio é a medida que representa a capacidade produtiva de um  local. Geralmente este atributo é representado pela altura dominante em uma idade de referência, que costuma ser a idade de rotação do povoamento (*e.g.* 7 anos para eucaliptos). Por sua vez, a altura dominante geralmente é representada pela média da altura das 100 árvores de maior diâmetro por hectare, mas outros conceitos também podem ser utilizados (*e.g.* altura média das 100 árvores de maior altura).
 
-Nesse post iremos praticar a modelagem da altura dominante e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.
+Neste post, iremos praticar o ajuste de modelos e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.
 
 ```{r warning= FALSE}
 # Importar dados
@@ -162,7 +162,7 @@ dados$classe_sitio <- cut(dados$sitio,
 # Resumo das classes
 table(dados$classe_sitio)
 ```
-A função `table` conta o número de casos para cada classe. Podemos também visualizar a distribuição de parcelas nas classes de sítio por meio de um histograma.
+A função `table` conta o número de casos para cada classe. Podemos também visualizar a distribuição de parcelas nas classes por meio de um histograma.
 ```{r, results='hide',fig.keep='all',fig.align='center'}
 text(barplot(table(dados$classe_sitio),
              xlab = 'Classe de sítio', ylab = 'Número de parcelas',
@@ -172,8 +172,6 @@ text(barplot(table(dados$classe_sitio),
 <style>
 body {
 text-align: justify}
-h1 {
-text-align: center}
 </style>
 <style type="text/css">
 
@@ -185,7 +183,5 @@ code.r{
 }
 pre {
   font-size: 14px
-}
-
 }
 </style>
