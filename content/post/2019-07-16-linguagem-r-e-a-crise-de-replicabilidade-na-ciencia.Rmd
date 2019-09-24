@@ -7,7 +7,7 @@ categories:
   - Generalidades
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Essa postagem visa explicar a razão pela qual devemos disponibilizar dados e scripts de análise em estudos científicos.'
 authors: []
 lastmod: '2019-09-01T20:15:48-03:00'
 featured: no
@@ -23,7 +23,7 @@ Garantir a replicabilidade de análises e experimentos é uma premissa básica a
 -Facilita o processo de compreensão de noções básicas de análise de dados por parte de pesquisadores iniciantes.  
 -Protege a comunidade científica contra erros honestos e contra fraudes deliberadas.  
   
-Esta postagem visa explicar a razão pela qual devemos disponibilizar dados e scripts de análise em estudos científicos e análises técnicas, especialmente aquelas que, quando publicadas, possam orientar a opinião pública ou de determinados setores da sociedade, e/ou subsidiar decisões governamentais.
+Essa postagem visa explicar a razão pela qual devemos disponibilizar dados e scripts de análise em estudos científicos e análises técnicas, especialmente aquelas que, quando publicadas, possam orientar a opinião pública ou de determinados setores da sociedade, e/ou subsidiar decisões governamentais.
 
 ## A Crise de Replicabilidade
   
@@ -31,7 +31,7 @@ O assunto pode parecer novo para muitas pessoas, mas discussões em torno da Cri
 
 Um estudo publicado em 2018 na Plos One indicou que entre as principais razões para baixas taxas de replicabilidade em estudos científicos estão erros e omissões no relatório de resultados estatísticos [3]. Hoje a crise de replicabilidade é um problema conhecido na comunidade científica, e há consenso em torno da afirmação de que a seletividade na publicação dos dados é uma das principais razões para este fenômeno. Abordagens duvidosas - como a seleção de dados de forma a direcioná-los a uma hipótese específica - geram publicações com informações seletivas e, portanto, de difícil reprodutibilidade [4].
 
-Esta crise é especialmente problemática quando temos a compreensão de que ciência acabou se tornando uma ferramenta dada como "certa" pelas pessoas (ou pela maior parte destas), já que seus resultados muitas vezes são aceitos sem nenhum questionamento. Esse é um problema recorrente na divulgação científica para o público em geral e vai diretamente contra a essência da ciência: sem questionamento, não há progresso [3]. Por outro lado, **sempre é preciso cuidado para que este fenômeno não se torne mero discurso alarmista e resulte, em vez do avanço, em ataques à ciência e ao conhecimento especializado** [5].
+Esta crise é especialmente problemática quando temos a compreensão de que ciência se tornou uma ferramenta dada como "certa" pelas pessoas (ou pela maior parte destas), já que seus resultados muitas vezes são aceitos sem nenhum questionamento. Esse é um problema recorrente na divulgação científica para o público em geral e vai diretamente contra a essência da ciência: sem questionamento, não há progresso [3]. Por outro lado, **sempre é preciso cuidado para que este fenômeno não se torne mero discurso alarmista e resulte, em vez do avanço, em ataques à ciência e ao conhecimento especializado** [5].
 
 ## Linguagem R e a análise replicável
   
@@ -57,9 +57,12 @@ Mãos à obra!
 
 [6] https://academic.oup.com/biostatistics/article/10/3/405/293660
 
+
 <style>
 body {
 text-align: justify}
+h1 {
+text-align: center}
 </style>
 <style type="text/css">
 

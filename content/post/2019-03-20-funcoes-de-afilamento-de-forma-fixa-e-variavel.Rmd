@@ -8,7 +8,7 @@ categories:
 tags:
   - minpack.lm
 subtitle: ''
-summary: ''
+summary: 'Ajuste e avaliação de funções de afilamento de forma fixa e de forma variável.'
 authors: []
 lastmod: '2019-03-25T09:28:18-03:00'
 featured: no
@@ -22,7 +22,7 @@ projects: []
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Na mensuração florestal, funções de afilamento de forma fixa são as mais difundidas devido à facilidade em seu ajuste, uso e aplicação. O procedimento de integração exigido para obtenção dos volumes  a diferentes alturas também é facilitado pelo uso desse tipo de função. Tradicionalmente, são mais utilizadas as funções polinomiais, como o modelo de Schöepfer (1966) e de Hradetzky (1976), descritos matematicamente pelas seguintes expressões.
+Na mensuração florestal, funções de afilamento de forma fixa são as mais difundidas devido à facilidade em seu ajuste e aplicação. O procedimento de integração exigido para obtenção dos volumes  a diferentes alturas também é facilitado pelo uso desse tipo de função. Tradicionalmente, são mais utilizadas as funções polinomiais, como o modelo de Schöepfer (1966) e de Hradetzky (1976), descritos matematicamente pelas seguintes expressões.
   
 #### Modelo de Schöepfer (1966)
 $$\frac{d_i}{dap}=\beta_0\frac{h_i}{ht}+\beta_1\frac{h_i}{ht}^2+\beta_2\frac{h_i}{ht}^3+\beta_3\frac{h_i}{ht}^4+\beta_4\frac{h_i}{ht}^5$$
@@ -50,7 +50,7 @@ $$d_i=dap\left[ \left( \frac{log\;sin \left( \frac{\pi}{2} \frac{h_i}{ht} \right
 {log\;sin \left( \frac{\pi}{2} \frac{1,3}{ht} \right)} \right) ^{\beta_0+\beta_1sin\left(\frac{\pi}{2}\frac{h_i}{ht}\right)+\beta_2sin\left(\frac{3\pi}{2}\frac{h_i}{ht}\right)+\beta_3sin\left(\frac{\pi}{2}\frac{h_i}{ht}\right)/\frac{h_i}{ht}+\beta_4dap+\beta_5\frac{h_i}{ht}\sqrt{dap}+\beta_6\frac{h_i}{ht}\sqrt{ht}}
 \right]$$
   
-Agora vamos importar um conjunto de dados de cubagens.
+Para praticar o ajuste dos modelos, vamos importar um conjunto de dados de cubagens.
 
 ```{r}
 # Importar dados
@@ -109,7 +109,7 @@ start=c(b0=1.8,b1=-0.2,b2=-0.04,b3=-0.9,b4=-0.0006,b5=0.07,b6=-.14))
 summary(bi)
 ````
 Agora que temos as funções de forma fixa e variável ajustadas, vamos comparar os métodos. Para tal, precisamos armazenar os resíduos em vetores e calcular o erro quadrático médio em relação ao $d_i$.
-```{r fig.width=8, results='hide',fig.keep='all',fig.align='center',fig.height=4}
+```{r fig.width=8, results='hide',fig.keep='all',fig.align='center',fig.height=3}
 # Criar conjuntos que armazenarão os resultados das funções de Schoepfer
 di_schoepfer <- c()
 residuos_schoepfer <- c()
@@ -165,7 +165,7 @@ for (i in unique(arvores_simuladas$DAP)[-1]) {
   lines(I(DI/DAP)~I(HI/HT),
         subset(arvores_simuladas,arvores_simuladas$DAP==i), lty = lt)
 }
-    legend('topright', legend= c('DAP = 5', 'DAP = 20', 'DAP = 50'),
+    legend('topright', legend= c('DAP = 5cm e HT = 5m', 'DAP = 20cm e HT = 20m', 'DAP = 50cm e HT = 35m'),
            lty = 1:3)
 ````
 <style>

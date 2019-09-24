@@ -11,7 +11,7 @@ tags:
   - sp
   - raster
 subtitle: ''
-summary: ''
+summary: 'Nesse exemplo são apresentados os procedimentos para interpolação do índice de sítio por meio de krigagem ordinária.'
 authors: []
 lastmod: '2019-09-01T20:04:42-03:00'
 featured: no
@@ -54,13 +54,13 @@ dados</code></pre>
 ## # ... with 91 more rows</code></pre>
 <pre class="r"><code># Transformar dados em geodata
 dados &lt;- as.geodata(dados,coords.col = 2:3, data.col = 4)</code></pre>
-<p>Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência.</p>
+<p>Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência. Esta avaliação é importante para averiguarmos a necessidade de transformação nos dados, caso estes possuam uma distribuição não normal.</p>
 <pre class="r"><code># Plotar histograma
 hist(dados$data,
      xlab = &#39;Índice de Sítio (m)&#39;, ylab = &#39;Frequência&#39;,
      main = &#39;Histograma - Índice de Sítio&#39;)</code></pre>
 <p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>O gráfico indica que os valores de sítio apresentam uma distribuição próxima da normal, o que significa que não há necessidade de transformação dos dados. Vamos confirmar aplicando o teste de Kolmogorov-Smirnov.</p>
+<p>Por meio de uma análise visual, os valores de sítio parecem apresentar uma distribuição próxima da normal. Vamos confirmar se há aderência aplicando o teste de Kolmogorov-Smirnov.</p>
 <pre class="r"><code># Teste de Kolmogorov-Smirnov 
 ks = ks.test(dados$data, &#39;pnorm&#39;, mean = mean(dados$data), sd = sd(dados$data))
 ks</code></pre>
@@ -85,8 +85,8 @@ O semivariograma acima considera que a semivariância possui o mesmo comportamen
 plot(variog4(dados, max.dist = 1000, uvec = 10,messages=FALSE),
      ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;)</code></pre>
 <p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
-Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia.
-Realizadas as devidas análises, procedemos ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.</p>
+Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia. Do contrário, seria necessária uma transformação das coordenadas, de modo a estabelecer a isotropia.
+Agora podemos proceder ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.</p>
 <pre class="r"><code># Definir modelos a serem ajustados
 modelos &lt;- c(&#39;spherical&#39;,&#39;exponential&#39;,&#39;gaussian&#39;,&#39;cubic&#39;)
 # Criar lista para armazenar modelos ajustados
@@ -213,6 +213,8 @@ writeRaster(krigagem_is,&#39;krigagem_is.tif&#39;, overwrite = TRUE)</code></pre
 <style>
 body {
 text-align: justify}
+h1 {
+text-align: center}
 </style>
 <style type="text/css">
 

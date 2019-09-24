@@ -1,17 +1,16 @@
 ---
 title: Análise de dados de desmatamento na Amazônia
 author: Sérgio Costa
-date: '2019-09-14'
+date: '2019-09-19'
 slug: desmatamento-na-amazonia-analise-de-dados-do-imazon
 categories:
   - Generalidades
 tags:
   - ggplot2
-  - plotly
 subtitle: ''
 summary: 'Nesta postagem analiso a série mensal de dados de desmatamento do Sistema de Alerta de Desmatamento do Imazon para o perído de 10 anos.'
 authors: []
-lastmod: '2019-09-18T18:58:01-03:00'
+lastmod: '2019-09-23T22:58:01-03:00'
 featured: no
 image:
   caption: ''
@@ -65,7 +64,6 @@ dados_precipitacao$date &lt;- as.Date(dados_precipitacao$date)
 dados_desmatamento$`MES ANO`=as.Date(paste(dados_desmatamento$ANO,&#39;-&#39;,dados_desmatamento$MES,&#39;-01&#39;, sep=&#39;&#39;))
 # Carregar pacotes necessário para geração dos gráficos
 library(ggplot2)
-library(plotly)
 # Plotar série histórica de desmatamento mensal
 ggplot()+
   geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = &#39;Desmatamento&#39;))+
@@ -153,6 +151,8 @@ ggplot()+
 <style>
 body {
 text-align: justify}
+h1 {
+text-align: center}
 </style>
 <style type="text/css">
 
