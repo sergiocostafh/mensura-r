@@ -1,0 +1,178 @@
+---
+title: Krigagem do Índice de Sitio
+author: Sérgio COsta
+date: '2019-08-14'
+slug: krigagem-do-índice-de-sitio
+categories: 
+  - Geoprocessamento
+tags:
+  - geoR
+  - rgdal
+  - sp
+  - raster
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-09-01T20:04:42-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+O índice de sítio é um atributo que representa o potencial de produtividade de determinado local, sendo influenciado por fatores geológicos, topográficos, climáticos, edáficos e bióticos, apresentando de modo geral algum nível de dependência espacial, sendo portanto possível a realização de inferências espaciais sob seu comportamento.  
+Neste exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de [Mello (2004)](http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf) e [Pelissari (2015)](https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf).
+
+Iniciaremos com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas. 
+```{r}
+library(readxl)
+library(geoR)
+# Importar dados
+dados <- read_excel('dados_interpolacao.xlsx')
+dados
+# Transformar dados em geodata
+dados <- as.geodata(dados,coords.col = 2:3, data.col = 4)
+```
+Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência.
+```{r, fig.align='center'}
+# Plotar histograma
+hist(dados$data,
+     xlab = 'Índice de Sítio (m)', ylab = 'Frequência',
+     main = 'Histograma - Índice de Sítio')
+```
+  
+O gráfico indica que os valores de sítio apresentam uma distribuição próxima da normal, o que significa que não há necessidade de transformação dos dados. Vamos confirmar aplicando o teste de Kolmogorov-Smirnov.
+```{r, warning= FALSE}
+# Teste de Kolmogorov-Smirnov 
+ks = ks.test(dados$data, 'pnorm', mean = mean(dados$data), sd = sd(dados$data))
+ks
+```
+O elevado *p-value* aponta que não há diferença estatística entre a distribuição normal e a distribuição dos dados que estamos analisando, corroborando que poderemos proceder à krigagem sem transformação da variável de interesse.  
+A próxima etapa será plotar e analisar o semivariograma. Para tal, utilizaremos a função `variog` do `geoR`.  
+Dois argumentos são importantes neste procedimento. O primeiro `max.dist` se refere à distância máxima para construção do variograma. É importante que este valor seja grande o suficiente para que o variograma compreenda o alcance (*range*) que indica a zona de influência ou de dependência espacial entre as amostras.  
+O segundo argumento `uvec` indica o número de pontos de referência (*lags*) que serão distribuídos proporcionalmente até atingir a distância máxima definida para o variograma.  
+O procedimento para obtenção de valores para estes parâmetros é iterativo e será tema de um próximo post. Por hora, definiremos o valor de 1000 para `max.dist` e 10 para `uvec` (1000/10 = 100, que é a distância aproximada entre as unidades amostrais alocadas ).
+```{r, fig.align='center'}
+# Plotar semivariograma
+semivariograma <- variog(dados, max.dist = 1000, uvec = 10,messages=FALSE)
+plot(semivariograma,
+     ylab = 'Semivariância', xlab = 'Distância')
+```
+O semivariograma acima considera que a semivariância possui o mesmo comportamento em todas as direções. No entanto, é fundamental avaliar se esta premissa é verdadeira. Vamos averiguar se o fenômeno da anisotropia ocorre para este conjunto de dados utilizando a função `variog4`.
+```{r, fig.align='center'}
+# Investigar anisotropia
+plot(variog4(dados, max.dist = 1000, uvec = 10,messages=FALSE),
+     ylab = 'Semivariância', xlab = 'Distância')
+```
+Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia.
+Realizadas as devidas análises, procedemos ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.
+```{r}
+# Definir modelos a serem ajustados
+modelos <- c('spherical','exponential','gaussian','cubic')
+# Criar lista para armazenar modelos ajustados
+modelos_ajustados <- list()
+# Ajustar modelos de semivariância
+for(i in modelos){
+modelos_ajustados[[i]] <- variofit(semivariograma, cov.model = i, messages = FALSE)
+}
+modelos_ajustados
+```
+Os quatro modelos ajustados possuem três parâmetros interpretáveis: `tausq` se refere ao efeito pepita (*nugget*), `sigmasq` é também conhecido como *partial sill* e consiste no valor do patamar menos o efeito pepita, e `phi` se refere ao alcance (*range*). Vamos plotar as curvas de semivariância geradas a partir dos modelos ajustados.
+```{r, fig.align='center'}
+par(mfrow = c(2,2))
+for(i in modelos){
+  plot(semivariograma,
+     ylab = 'Semivariância', xlab = 'Distância',
+     main = i)
+  lines.variomodel(modelos_ajustados[[i]])
+}
+```
+Para avaliar a eficiência dos modelos ajustados na predição do índice de sítio em locais não amostrados, devemos proceder à validação cruzada, conforme o procedimento a seguir.
+```{r, fig.align='center', fig.width=14}
+# Cria lista para armazenar resultado da validação cruzada
+modelos_xvalid <- list()
+# Validação cruzada para todos os modelos
+for(i in modelos){
+modelos_xvalid[[i]] <- xvalid(dados, model = modelos_ajustados[[i]], messages = FALSE)
+}
+# Formatação dos resultados
+erro_padrao <- unlist(lapply(modelos_xvalid,summary))[c(11,25,39,53)]
+names(erro_padrao) <- modelos
+desvio_do_erro <- unlist(lapply(modelos_xvalid,summary))[c(14,28,42,56)]
+names(desvio_do_erro) <- modelos
+# Plotar
+par(mfrow = c(1,2))
+text(barplot(erro_padrao, ylim =c(-0.01,0.01), main = 'Erro padrão da validação cruzada'), y = erro_padrao+sign(erro_padrao)*0.001,labels = round(erro_padrao,5))
+text(barplot(desvio_do_erro, ylim = c(0,2), main = 'Desvio padrão do erro'), y = desvio_do_erro+sign(desvio_do_erro)*0.1,labels = round(desvio_do_erro,3))
+```
+  
+As estatísticas de validação cruzada são favoráveis ao uso do modelo cúbico, portanto, utilizaremos este para interpolar o índice de sítio para toda a área e interesse. Vamos importar os limites das áreas a serem interpoladas.
+
+```{r, results=FALSE}
+# Definir modelo a ser utilizado
+modelo_selecionado <- modelos_ajustados$cubic
+# Importar shape com os limites da área de interesse
+library(rgdal)
+talhoes <- readOGR('.', 'talhoes', verbose = FALSE)
+# Plotar talhões e pontos amostrais
+points(plot(talhoes),
+       x = dados[[1]][,1],y = dados[[1]][,2],
+       pch='+', col='red')
+```
+  
+Agora devemos gerar um grid de interpolação para toda a área de interesse e, por fim, aplicar o modelo cúbico ajustado. 
+```{r, fig.align='center', warning=FALSE, results=FALSE}
+# Gerar grid de interpolação
+library(sp)
+grid <- spsample(talhoes, type = 'regular', n = 10000)
+plot(grid)
+
+# Realizar a krigagem
+krigagem_is <- krige.conv(dados, locations = as.data.frame(grid), krige = krige.control(obj.model = modelo_selecionado))
+# Armazenar resultado em spatial data frame
+krigagem_is <- coordinates(data.frame(x = data.frame(grid)[,1],
+                                      y = data.frame(grid)[,2],
+                                      IS = krigagem_is$predict))
+# Converter em raster
+library(raster)
+krigagem_is <- rasterFromXYZ(krigagem_is)
+# Definir projeção
+projection(krigagem_is) <- CRS("+init=epsg:31982")
+image(krigagem_is, asp=1,xlab='Longitude',ylab = 'Latitude')
+
+```
+```{r, fig.align = 'center'}
+# Plotar resultado com bordas e pontos amostrais
+image(krigagem_is, asp=1,xlab='Longitude',ylab = 'Latitude')
+plot(talhoes, add = TRUE)
+points(x = dados[[1]][,1],y = dados[[1]][,2],
+       pch='+', col='black')
+```
+  
+Agora que visualizamos o resultado da krigagem, podemos exportar um arquivo em formato .tif, que permitirá a visualização em qualquer outro software de SIG.
+```{r}
+# Salvar arquivo .tif
+writeRaster(krigagem_is,'krigagem_is.tif', overwrite = TRUE)
+```
+<style>
+body {
+text-align: justify}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
