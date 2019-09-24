@@ -7,7 +7,7 @@ categories:
   - Biometria
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Ajuste do modelo de Chapman-Richards para obtenção de índices de sítio e a geração de classes pelo método da curva guia.'
 authors: []
 lastmod: '2019-03-21T12:09:05-03:00'
 featured: no
@@ -21,7 +21,7 @@ projects: []
 
 
 <p>O índice de sítio é a medida que representa a capacidade produtiva de um local. Geralmente este atributo é representado pela altura dominante em uma idade de referência, que costuma ser a idade de rotação do povoamento (<em>e.g.</em> 7 anos para eucaliptos). Por sua vez, a altura dominante geralmente é representada pela média da altura das 100 árvores de maior diâmetro por hectare, mas outros conceitos também podem ser utilizados (<em>e.g.</em> altura média das 100 árvores de maior altura).</p>
-<p>Neste post, iremos praticar o ajuste de modelos e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.</p>
+<p>Nesse post iremos praticar a modelagem da altura dominante e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.</p>
 <pre class="r"><code># Importar dados
 library(readxl)
 dados &lt;- read_excel(&#39;dados_processados.xlsx&#39;)

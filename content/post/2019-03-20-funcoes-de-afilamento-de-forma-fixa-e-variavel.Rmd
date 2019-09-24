@@ -8,7 +8,7 @@ categories:
 tags:
   - minpack.lm
 subtitle: ''
-summary: ''
+summary: 'Este post exemplifica o procedimento de ajuste e avaliação de funções de afilamento de forma fixa e de forma variável no R.'
 authors: []
 lastmod: '2019-04-18T09:28:18-03:00'
 featured: no

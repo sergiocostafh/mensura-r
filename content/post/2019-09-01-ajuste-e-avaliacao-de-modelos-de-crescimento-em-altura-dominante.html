@@ -7,7 +7,7 @@ categories:
   - Biometria
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Ajuste e avaliação de diversos modelos de crescimento em altura dominante.'
 authors: []
 lastmod: '2019-09-01T21:16:26-03:00'
 featured: no
@@ -44,7 +44,7 @@ dados</code></pre>
 plot(HDOM~IDADE, data = dados,
      xlim = c(0,30), ylim = c(0,35),
      xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)</code></pre>
-<p><img src="/post/2019-09-01-classificacao-de-sitio-ajuste-e-avaliacao-de-multiplos-modelos_files/figure-html/unnamed-chunk-1-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="/post/2019-09-01-ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante_files/figure-html/unnamed-chunk-1-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Nosso trabalho agora será ajustar diversos modelos e avaliar qual deles melhor representa os dados em questão. Testaremos os seguintes modelos.</p>
 <table>
 <colgroup>
@@ -162,7 +162,7 @@ graficos = syms(names(modelos)) %&gt;% set_names() %&gt;%
 # Plotar todos os gráficos em uma única imagem
 map(graficos, ~ggarrange(plots=.x, ncol=3, draw=FALSE)) %&gt;% 
   grid.arrange(grobs=., ncol=1)</code></pre>
-<img src="/post/2019-09-01-classificacao-de-sitio-ajuste-e-avaliacao-de-multiplos-modelos_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" />
+<img src="/post/2019-09-01-ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" />
 Os quatro modelos tiveram desempenho bastante similar para os gráficos de resíduos e para o erro padrão das estimativas. No entanto, há uma diferença considerável nas assíntotas (coeficiente b0) e nas predições de altura dominante para idades inferiores a 3 anos. Os modelos de Lundqvist-Korf e Clutter-Jones sugerem que no futuro as árvores dominantes alcançarão em média os 40 metros de altura, enquanto os modelos de Chapman-Richards e Bailey-3p indicam que a assíntota se dá em torno de 30 metros. Esta é uma questão pouco relevante se considerarmos que neste caso os povoamentos serão submetidos a corte raso entre os 14 e os 16 anos, e que nesta faixa de idade temos uma quantidade suficiente de amostras.<br />
 Por outro lado, as curvas geradas por esses pares de modelos também apresentam comportamento divergente para idades inferiores a 4 anos, em que não há observações. Neste caso os modelos de Lundqvist-Korf e Clutter-Jones sugerem que povoamentos com 1 ano de idade possuem altura dominante igual a zero, o que é bastante equivocado do ponto de vista biológico. O problema na utilização destes modelos se daria se, por alguma razão, houvesse a necessidade de predizer o sítio em povoamentos cuja idade no momento do inventário é inferior a 3 anos. Em todos os casos não temos observações para representar o crescimento em idades inferiores a 4 anos, mas o bom senso, a experiência e a lógica são suficientes para nos garantir que povoamentos com um ano de idade já possuem algum crescimento em altura.<br />
 Então, para concluir, já que os modelos apresentaram grande similiaridade entre si para as análises de resíduos, eu escolheria o modelo de Chapman-Richards ou Bailey-3p para representar o crescimento em altura dominante deste povoamento, tomando por base o comportamento biológico esperado.

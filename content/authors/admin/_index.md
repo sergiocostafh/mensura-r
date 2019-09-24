@@ -23,9 +23,10 @@ bio: Mestre em Engenharia Florestal pela Universidade Federal do Paraná, atualm
 interests:
 - Ciências de Dados
 - Biometria
-- Inteligência Artificial
+- Ecologia
+- Estatística
+- Aprendizagem de Máquina
 - Pesquisa Operacional
-- Geoprocessamento
 
 education:
   courses:

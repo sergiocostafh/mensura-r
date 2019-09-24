@@ -11,7 +11,7 @@ tags:
   - sp
   - raster
 subtitle: ''
-summary: ''
+summary: 'Nesse exemplo são apresentados os procedimentos para interpolação do índice de sítio por meio de krigagem ordinária.'
 authors: []
 lastmod: '2019-08-15T20:04:42-03:00'
 featured: no
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 O índice de sítio é um atributo que representa o potencial de produtividade de determinado local, sendo influenciado por fatores geológicos, topográficos, climáticos, edáficos e bióticos, apresentando de modo geral algum nível de dependência espacial, sendo portanto possível a realização de inferências espaciais sob seu comportamento.  
-Neste exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de [Mello (2004)](http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf) e [Pelissari (2015)](https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf).
+Nesse exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de [Mello (2004)](http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf) e [Pelissari (2015)](https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf).
 
 Iniciaremos este exemplo com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas. 
 ```{r}

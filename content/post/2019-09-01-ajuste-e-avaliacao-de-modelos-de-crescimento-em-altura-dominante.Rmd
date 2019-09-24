@@ -7,7 +7,7 @@ categories:
   - Biometria
 tags: []
 subtitle: ''
-summary: ''
+summary: 'Ajuste e avaliação de diversos modelos de crescimento em altura dominante.'
 authors: []
 lastmod: '2019-09-01T21:16:26-03:00'
 featured: no
