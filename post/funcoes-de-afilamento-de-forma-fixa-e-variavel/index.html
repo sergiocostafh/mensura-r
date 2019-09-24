@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Sérgio Costa">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Este post exemplifica o procedimento de ajuste e avaliação de funções de afilamento de forma fixa e de forma variável no R.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#4caf50">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.f4abb599bb56654c53d64efd32461c0d.css">
+
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-148593204-1', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon-32.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/">
+
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Mensura-R - Ciência Florestal em linguagem R">
+  <meta property="og:url" content="/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/">
+  <meta property="og:title" content="Funções de afilamento de forma fixa e variável | Mensura-R - Ciência Florestal em linguagem R">
+  <meta property="og:description" content="Este post exemplifica o procedimento de ajuste e avaliação de funções de afilamento de forma fixa e de forma variável no R."><meta property="og:image" content="/img/share.png">
+  <meta property="twitter:image" content="/img/share.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2019-04-18T09:28:18-03:00">
+    
+    <meta property="article:modified_time" content="2019-04-18T09:28:18-03:00">
+  
+
+  
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/"
+    },
+    "headline": "Funções de afilamento de forma fixa e variável",
+    
+    "datePublished": "0001-01-01T00:00:00Z",
+    "dateModified": "2019-04-18T09:28:18-03:00",
+    
+    "author": {
+      "@type": "Person",
+      "name": "Sérgio Costa"
+    },
+    
+    "description": "Este post exemplifica o procedimento de ajuste e avaliação de funções de afilamento de forma fixa e de forma variável no R."
+  }
+</script>
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Funções de afilamento de forma fixa e variável | Mensura-R - Ciência Florestal em linguagem R</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Pesquisar</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/"><img src="/img/logo.png" alt="Mensura-R - Ciência Florestal em linguagem R"></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Alterar navegação">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Postagens</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Sobre</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Funções de afilamento de forma fixa e variável</h1>
+
+  
+
+  
+    
+
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Apr 18, 2019
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/#disqus_thread"></a>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/categories/biometria/">Biometria</a></span>
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/&amp;text=Fun%c3%a7%c3%b5es%20de%20afilamento%20de%20forma%20fixa%20e%20vari%c3%a1vel" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/&amp;t=Fun%c3%a7%c3%b5es%20de%20afilamento%20de%20forma%20fixa%20e%20vari%c3%a1vel" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Fun%c3%a7%c3%b5es%20de%20afilamento%20de%20forma%20fixa%20e%20vari%c3%a1vel&amp;body=/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/&amp;title=Fun%c3%a7%c3%b5es%20de%20afilamento%20de%20forma%20fixa%20e%20vari%c3%a1vel" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Fun%c3%a7%c3%b5es%20de%20afilamento%20de%20forma%20fixa%20e%20vari%c3%a1vel%20/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/&amp;title=Fun%c3%a7%c3%b5es%20de%20afilamento%20de%20forma%20fixa%20e%20vari%c3%a1vel" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+
+
+<p>Na mensuração florestal, funções de afilamento de forma fixa são as mais difundidas devido à facilidade em seu ajuste, uso e aplicação. O procedimento de integração exigido para obtenção dos volumes a diferentes alturas também é facilitado pelo uso desse tipo de função. Tradicionalmente, são mais utilizadas as funções polinomiais, como o modelo de Schöepfer (1966) e de Hradetzky (1976), descritos matematicamente pelas seguintes expressões.</p>
+<div id="modelo-de-schoepfer-1966" class="section level4">
+<h4>Modelo de Schöepfer (1966)</h4>
+<p><span class="math display">\[\frac{d_i}{dap}=\beta_0\frac{h_i}{ht}+\beta_1\frac{h_i}{ht}^2+\beta_2\frac{h_i}{ht}^3+\beta_3\frac{h_i}{ht}^4+\beta_4\frac{h_i}{ht}^5\]</span></p>
+</div>
+<div id="modelo-de-hradetzky-1976" class="section level4">
+<h4>Modelo de Hradetzky (1976)</h4>
+<p><span class="math display">\[\frac{d_i}{dap}=\beta_0\frac{h_i}{ht}+\beta_1\frac{h_i}{ht}^{p_1}+\beta_2\frac{h_i}{ht}^{p_2}+...+\beta_n\frac{h_i}{ht}^{p_n}\]</span></p>
+<p>em que:<br />
+<span class="math inline">\(\beta_1,\beta_2,...,\beta_n\)</span> = parâmetros do modelo;<br />
+<span class="math inline">\(p_1,p_2,...,p_n\)</span> = parâmetros selecionados pelo procedimento <em>stepwise</em>;
+<span class="math inline">\(h_i\)</span> = altura até a seção i do fuste;<br />
+<span class="math inline">\(d_i\)</span> = diâmetro na seção i do fuste;<br />
+<span class="math inline">\(dap\)</span> = diãmetro à altura do peito;<br />
+<span class="math inline">\(ht\)</span> = altura total.</p>
+<p>As funções de afilamento de forma variável, introduzidas por Kozak (1988) e Newnham (1988), possuem como principal vantagem a capacidade de modelar diferentes formas de árvore em função de características dendrométricas, tornando possível a utilização de uma única equação de afilamento para árvores em diferentes idades e de diferentes portes. A utilização desta técnica permite a redução do número de funções de afilamento ajustados considerando povoamentos de uma mesma espécie estabelecidos em momentos e condições distintas. Neste exercício testaremos o modelo de Kozak (2004) e a função trigonométrica de Bi (2000) como representantes desta categoria de modelos.</p>
+</div>
+<div id="modelo-de-kozak-2004" class="section level4">
+<h4>Modelo de Kozak (2004)</h4>
+<p><span class="math display">\[d_i = \beta_0dap^{\beta_1}\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{\beta_2+\beta_3\left(\frac{1}{e^{dap/ht}}\right)+\beta_4dap^{\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]}+\beta_5\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{dap/ht}}\]</span>
+em que:<br />
+<span class="math inline">\(p\)</span> = primeiro ponto de inflexão calculado no modelo segmentado de Max e Burkhart (1976). Obs: neste exercício, será tratado como mais uma parâmetro a ser ajustado.</p>
+</div>
+<div id="modelo-de-bi-2000" class="section level4">
+<h4>Modelo de Bi (2000)</h4>
+<p><span class="math display">\[d_i=dap\left[ \left( \frac{log\;sin \left( \frac{\pi}{2} \frac{h_i}{ht} \right)}
+{log\;sin \left( \frac{\pi}{2} \frac{1,3}{ht} \right)} \right) ^{\beta_0+\beta_1sin\left(\frac{\pi}{2}\frac{h_i}{ht}\right)+\beta_2sin\left(\frac{3\pi}{2}\frac{h_i}{ht}\right)+\beta_3sin\left(\frac{\pi}{2}\frac{h_i}{ht}\right)/\frac{h_i}{ht}+\beta_4dap+\beta_5\frac{h_i}{ht}\sqrt{dap}+\beta_6\frac{h_i}{ht}\sqrt{ht}}
+\right]\]</span></p>
+<p>Agora vamos importar um conjunto de dados de cubagens.</p>
+<pre class="r"><code># Importar dados
+library(readxl)</code></pre>
+<pre><code>## Warning: package &#39;readxl&#39; was built under R version 3.6.1</code></pre>
+<pre class="r"><code>dados &lt;- read_excel(&#39;dados_cubagens.xlsx&#39;)
+dados</code></pre>
+<pre><code>## # A tibble: 54,415 x 7
+##    ARVORE   DAP    DI     HI    HT `HI/HT` `DI/DAP`
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+##  1      1 0.600 1.91  0.0735  1.47  0.05       3.18
+##  2      1 0.600 1.59  0.1     1.47  0.0680     2.65
+##  3      1 0.600 1.59  0.147   1.47  0.1        2.65
+##  4      1 0.600 1.27  0.221   1.47  0.15       2.12
+##  5      1 0.600 1.27  0.3     1.47  0.204      2.12
+##  6      1 0.600 1.27  0.368   1.47  0.25       2.12
+##  7      1 0.600 1.27  0.515   1.47  0.35       2.12
+##  8      1 0.600 0.955 0.662   1.47  0.45       1.59
+##  9      1 0.600 0.955 0.7     1.47  0.476      1.59
+## 10      1 0.600 0.955 0.809   1.47  0.55       1.59
+## # ... with 54,405 more rows</code></pre>
+<pre class="r"><code>summary(dados)</code></pre>
+<pre><code>##      ARVORE          DAP              DI               HI         
+##  Min.   :   1   Min.   : 0.60   Min.   : 0.000   Min.   : 0.0735  
+##  1st Qu.: 840   1st Qu.:11.80   1st Qu.: 5.411   1st Qu.: 0.8315  
+##  Median :1688   Median :18.10   Median :12.096   Median : 3.0600  
+##  Mean   :1688   Mean   :18.39   Mean   :13.455   Mean   : 5.5745  
+##  3rd Qu.:2534   3rd Qu.:23.90   3rd Qu.:19.735   3rd Qu.: 8.8200  
+##  Max.   :3369   Max.   :56.70   Max.   :72.256   Max.   :33.1300  
+##        HT            HI/HT              DI/DAP      
+##  Min.   : 1.47   Min.   :0.003018   Min.   :0.0000  
+##  1st Qu.: 8.79   1st Qu.:0.074244   1st Qu.:0.4310  
+##  Median :14.26   Median :0.350000   Median :0.8402  
+##  Mean   :14.23   Mean   :0.396116   Mean   :0.7572  
+##  3rd Qu.:19.40   3rd Qu.:0.750000   3rd Qu.:1.0459  
+##  Max.   :33.13   Max.   :1.000000   Max.   :3.8197</code></pre>
+<pre class="r"><code># Plotar dispersão da relação hi/ht x di/dap
+plot(`DI/DAP`~`HI/HT`, data = dados,
+     xlab = &#39;hi/ht&#39;, ylab = &#39;di/dap&#39;)</code></pre>
+<p><img src="/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code># Plotar dispersão da relação dap x ht
+plot(HT~DAP, data = dados,
+     xlab = &#39;DAP (cm)&#39;, ylab = &#39;Ht (m)&#39;)</code></pre>
+<p><img src="/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<p>A base carregada consiste em dados de cubagens de 3.369 árvores, que tiveram diâmetros medidos a alturas relativas (5%, 10%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85% e 95%), e também a alturas fixas (0,1, 0,3, 0,7 e 1,30 m).</p>
+<p>Foram cubadas árvores de 0,6 a 56,7 cm de DAP, com alturas variando entre 1,47 e 33,13 m, indicando uma elevada variabilidade de portes de árvores.</p>
+<p>Para utilização de funções polinomiais ou outras de forma fixa, é necessária a estratificação dos dados visando a redução da variabilidade existente. Neste caso, deverá ser gerada uma função de afilamento para cada estrato.
+Neste exemplo vamos estratificar o conjunto de dados a partir do DAP, sendo que o primeiro grupo compreenderá as árvores com menos de 5cm de dap e os demais serão formados com intervalos de 10 cm.</p>
+<pre class="r"><code># Gerar as classes
+dados$classe_dap &lt;- cut(dados$DAP,
+                          breaks = c(0,c(5,15,25,35,45,Inf)))
+# Resumir as classes
+summary(dados$classe_dap)</code></pre>
+<pre><code>##    (0,5]   (5,15]  (15,25]  (25,35]  (35,45] (45,Inf] 
+##     2992    17072    22495     9744     1808      304</code></pre>
+<p>Agora iremos ajustar o modelo de Schöepfer para cada um dos grupos.</p>
+<pre class="r"><code># Criar uma lista para armazenar os modelos
+funcoes_schoepfer &lt;- list()
+# Ajustar um modelo para cada grupo
+for(i in levels(dados$classe_dap)){
+funcoes_schoepfer[[i]] &lt;- lm(`DI/DAP`~`HI/HT`+I(`HI/HT`^2)+I(`HI/HT`^3)+I(`HI/HT`^4)+I(`HI/HT`^5), data = subset(dados,dados$classe_dap==i))
+}
+# Resumo dos resultados dos modelos
+lapply(funcoes_schoepfer, summary)</code></pre>
+<pre><code>## $`(0,5]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.66404 -0.13447 -0.03705  0.07904  2.09370 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.92582    0.02667  72.209  &lt; 2e-16 ***
+## `HI/HT`       -4.70643    0.55981  -8.407  &lt; 2e-16 ***
+## I(`HI/HT`^2)  16.05552    3.46957   4.628 3.86e-06 ***
+## I(`HI/HT`^3) -39.11067    8.78035  -4.454 8.72e-06 ***
+## I(`HI/HT`^4)  43.79063    9.62348   4.550 5.57e-06 ***
+## I(`HI/HT`^5) -17.91781    3.79077  -4.727 2.39e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2528 on 2986 degrees of freedom
+## Multiple R-squared:  0.8186, Adjusted R-squared:  0.8183 
+## F-statistic:  2694 on 5 and 2986 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## $`(5,15]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.36353 -0.06147 -0.01085  0.04006  0.87430 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.379487   0.003302  417.77   &lt;2e-16 ***
+## `HI/HT`       -3.688856   0.077362  -47.68   &lt;2e-16 ***
+## I(`HI/HT`^2)  14.704332   0.517705   28.40   &lt;2e-16 ***
+## I(`HI/HT`^3) -36.228895   1.369753  -26.45   &lt;2e-16 ***
+## I(`HI/HT`^4)  39.094052   1.541516   25.36   &lt;2e-16 ***
+## I(`HI/HT`^5) -15.249265   0.617510  -24.70   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1055 on 17066 degrees of freedom
+## Multiple R-squared:  0.9396, Adjusted R-squared:  0.9396 
+## F-statistic: 5.313e+04 on 5 and 17066 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## $`(15,25]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.23163 -0.03199 -0.00084  0.02766  0.48511 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.246046   0.001145 1087.90   &lt;2e-16 ***
+## `HI/HT`       -4.071009   0.030005 -135.68   &lt;2e-16 ***
+## I(`HI/HT`^2)  17.476210   0.208070   83.99   &lt;2e-16 ***
+## I(`HI/HT`^3) -38.933380   0.561174  -69.38   &lt;2e-16 ***
+## I(`HI/HT`^4)  37.991111   0.639011   59.45   &lt;2e-16 ***
+## I(`HI/HT`^5) -13.708137   0.257950  -53.14   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.05219 on 22489 degrees of freedom
+## Multiple R-squared:  0.981,  Adjusted R-squared:  0.9809 
+## F-statistic: 2.316e+05 on 5 and 22489 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## $`(25,35]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.20115 -0.03189  0.00065  0.02693  0.35102 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.216174   0.001565  776.87   &lt;2e-16 ***
+## `HI/HT`       -4.202002   0.043583  -96.41   &lt;2e-16 ***
+## I(`HI/HT`^2)  18.609030   0.305483   60.92   &lt;2e-16 ***
+## I(`HI/HT`^3) -40.530337   0.825602  -49.09   &lt;2e-16 ***
+## I(`HI/HT`^4)  38.157955   0.940584   40.57   &lt;2e-16 ***
+## I(`HI/HT`^5) -13.252322   0.379751  -34.90   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.05069 on 9738 degrees of freedom
+## Multiple R-squared:  0.9816, Adjusted R-squared:  0.9815 
+## F-statistic: 1.036e+05 on 5 and 9738 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## $`(35,45]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.142770 -0.027460 -0.002403  0.022018  0.257885 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.200521   0.003163  379.56   &lt;2e-16 ***
+## `HI/HT`       -4.266131   0.091633  -46.56   &lt;2e-16 ***
+## I(`HI/HT`^2)  18.779570   0.647795   28.99   &lt;2e-16 ***
+## I(`HI/HT`^3) -39.872610   1.753872  -22.73   &lt;2e-16 ***
+## I(`HI/HT`^4)  36.363012   1.998715   18.19   &lt;2e-16 ***
+## I(`HI/HT`^5) -12.208106   0.806897  -15.13   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.0463 on 1802 degrees of freedom
+## Multiple R-squared:  0.9846, Adjusted R-squared:  0.9845 
+## F-statistic: 2.303e+04 on 5 and 1802 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## $`(45,Inf]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.122237 -0.031020  0.003504  0.025404  0.166978 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.191807   0.007745 153.874  &lt; 2e-16 ***
+## `HI/HT`       -4.527408   0.231443 -19.562  &lt; 2e-16 ***
+## I(`HI/HT`^2)  20.094868   1.650086  12.178  &lt; 2e-16 ***
+## I(`HI/HT`^3) -42.661480   4.478459  -9.526  &lt; 2e-16 ***
+## I(`HI/HT`^4)  38.969213   5.107729   7.629 3.20e-13 ***
+## I(`HI/HT`^5) -13.070928   2.062564  -6.337 8.63e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.04846 on 298 degrees of freedom
+## Multiple R-squared:  0.9834, Adjusted R-squared:  0.9832 
+## F-statistic:  3539 on 5 and 298 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Para ajustar o modelo de Kozak, vamos utilizar a função <code>nlsLM</code> do pacote <code>minpack.LM</code>. Esta função busca parâmetros de modelos não lineares empregando o algoritmo Levenberg-Marquadt e costuma ser mais eficiente que a função <code>nls</code>, especialmente quando buscamos ajustar modelos mais complexos.</p>
+<pre class="r"><code>library(minpack.lm)
+# Ajuste do modelo de Kozak
+kozak &lt;- nlsLM(DI~b0*(DAP^b1)*((1-(HI/HT)^(1/4))/(1-p^(1/4)))^(b2+b3*(1/exp(DAP/HT))+b4*DAP^((1-(HI/HT)^(1/4))/(1-p^(1/4)))+b5*((1-(HI/HT)^(1/4))/(1-p^(1/4)))^(DAP/HT)),
+data = dados,
+start=list(b0=1,b1=1,b2=1,b3=-1,b4=0.00001,b5=-0.01, p = 0.3))
+summary(kozak)</code></pre>
+<pre><code>## 
+## Formula: DI ~ b0 * (DAP^b1) * ((1 - (HI/HT)^(1/4))/(1 - p^(1/4)))^(b2 + 
+##     b3 * (1/exp(DAP/HT)) + b4 * DAP^((1 - (HI/HT)^(1/4))/(1 - 
+##     p^(1/4))) + b5 * ((1 - (HI/HT)^(1/4))/(1 - p^(1/4)))^(DAP/HT))
+## 
+## Parameters:
+##      Estimate Std. Error t value Pr(&gt;|t|)    
+## b0  1.129e+00  6.062e-03  186.26   &lt;2e-16 ***
+## b1  8.896e-01  9.135e-04  973.88   &lt;2e-16 ***
+## b2  6.994e-01  2.313e-03  302.40   &lt;2e-16 ***
+## b3 -6.180e-01  6.870e-03  -89.95   &lt;2e-16 ***
+## b4  2.752e-06  3.284e-07    8.38   &lt;2e-16 ***
+## b5 -3.390e-02  9.240e-04  -36.69   &lt;2e-16 ***
+## p   2.868e-01  4.167e-03   68.83   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.248 on 54408 degrees of freedom
+## 
+## Number of iterations to convergence: 10 
+## Achieved convergence tolerance: 1.49e-08</code></pre>
+<pre class="r"><code>#Ajuste do modelo de Bi
+bi = nlsLM(DI ~ DAP*(log(sin((pi/2)*(HI/HT)))/(log(sin((pi/2)*(1.3/HT)))))**
+  (b0+b1*sin((pi/2)*(HI/HT))+b2*cos((3*pi/2)*(HI/HT))+b3*(sin((pi/2)*(HI/HT))/(HI/HT))+
+     b4*DAP+b5*(HI/HT)*DAP**0.5+b6*(HI/HT)*HT**0.5),
+data=dados,
+start=c(b0=1.8,b1=-0.2,b2=-0.04,b3=-0.9,b4=-0.0006,b5=0.07,b6=-.14))
+summary(bi)</code></pre>
+<pre><code>## 
+## Formula: DI ~ DAP * (log(sin((pi/2) * (HI/HT)))/(log(sin((pi/2) * (1.3/HT)))))^(b0 + 
+##     b1 * sin((pi/2) * (HI/HT)) + b2 * cos((3 * pi/2) * (HI/HT)) + 
+##     b3 * (sin((pi/2) * (HI/HT))/(HI/HT)) + b4 * DAP + b5 * (HI/HT) * 
+##     DAP^0.5 + b6 * (HI/HT) * HT^0.5)
+## 
+## Parameters:
+##      Estimate Std. Error t value Pr(&gt;|t|)    
+## b0  1.801e+00  1.212e-02  148.65   &lt;2e-16 ***
+## b1 -2.803e-01  6.123e-03  -45.78   &lt;2e-16 ***
+## b2 -5.107e-02  1.565e-03  -32.62   &lt;2e-16 ***
+## b3 -9.142e-01  7.134e-03 -128.14   &lt;2e-16 ***
+## b4 -8.873e-04  5.188e-05  -17.10   &lt;2e-16 ***
+## b5  7.406e-02  1.161e-03   63.79   &lt;2e-16 ***
+## b6 -1.277e-01  9.892e-04 -129.13   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9302 on 54408 degrees of freedom
+## 
+## Number of iterations to convergence: 4 
+## Achieved convergence tolerance: 1.49e-08</code></pre>
+<p>Agora que temos as funções de forma fixa e variável ajustadas, vamos comparar os métodos. Para tal, precisamos armazenar os resíduos em vetores e calcular o erro quadrático médio em relação ao <span class="math inline">\(d_i\)</span>.</p>
+<pre class="r"><code># Criar conjuntos que armazenarão os resultados das funções de Schoepfer
+di_schoepfer &lt;- c()
+residuos_schoepfer &lt;- c()
+# Calcular os resíduos a partir das funções de Schoepfer
+for(i in unique(dados$classe_dap)){
+di_schoepfer &lt;- append(di_schoepfer,predict(funcoes_schoepfer[[i]])*subset(dados$DAP,dados$classe_dap==i))
+residuos_schoepfer &lt;- append(residuos_schoepfer,subset(dados$DI,dados$classe_dap==i)-predict(funcoes_schoepfer[[i]])*subset(dados$DAP,dados$classe_dap==i))}
+# Resíduos da função de Kozak e Bi
+residuos_kozak &lt;- residuals(kozak)
+residuos_bi &lt;- residuals(bi)
+# Calcular o erro quadrático médio
+eqm_schoepfer &lt;- sqrt(sum(residuos_schoepfer^2)/nrow(dados))
+eqm_kozak &lt;- sqrt(sum(residuos_kozak^2)/nrow(dados))
+eqm_bi &lt;- sqrt(sum(residuos_bi^2)/nrow(dados))
+# Calcular o erro quadrático médio percentual
+eqm_perc_schoepfer &lt;- eqm_schoepfer/mean(dados$DI)*100
+eqm_perc_kozak &lt;- eqm_kozak/mean(dados$DI)*100
+eqm_perc_bi &lt;- eqm_bi/mean(dados$DI)*100
+# Plotar resultados
+par(mfrow=c(1,3))
+plot(residuos_schoepfer~di_schoepfer,
+     main = paste(&#39;Schoepfer - EQM% = &#39;, round(eqm_perc_schoepfer,2)),
+     xlab = &#39;Di estimado&#39;, ylab = &#39;Resíduos&#39;,
+     ylim = c(-15,15))+
+  lines(x=c(0,70),y=c(0,0))
+plot(residuos_kozak~dados$DI,
+     main = paste(&#39;Kozak - EQM% = &#39;, round(eqm_perc_kozak,2)),
+     xlab = &#39;Di estimado&#39;, ylab = &#39;Resíduos&#39;,
+     ylim = c(-15,15))+
+  lines(x=c(0,70),y=c(0,0))
+plot(residuos_bi~dados$DI,
+     main = paste(&#39;Bi - EQM% = &#39;, round(eqm_perc_bi,2)),
+     xlab = &#39;Di estimado&#39;, ylab = &#39;Resíduos&#39;,
+     ylim = c(-15,15))+
+  lines(x=c(0,70),y=c(0,0))</code></pre>
+<p><img src="/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" />
+O modelo trigonométrico de Bi superou os demais tanto pelo menor erro quadrático médio, quanto pela dispersão de resíduos mais homogeneamente distribuída ao longo da linha de ajuste.<br />
+Por fim, vamos visualizar a capacidade da equação gerada a partir do modelo de Bi em descrever diferentes formas de fuste.</p>
+<pre class="r"><code># Simular dados de árvores de diferentes portes
+arvores_simuladas &lt;- data.frame(DAP = rep(c(5,20,50),each = 100),
+                                HT = rep(c(5,25,35),each = 100),
+                                `HI/HT` = seq(0.01,1,0.01))
+arvores_simuladas$HI &lt;- arvores_simuladas$HI.HT*arvores_simuladas$HT
+# Aplicar a equação ajustada de Bi aos dados simulados
+arvores_simuladas$DI &lt;- predict(bi,arvores_simuladas)
+# Plotar curvas de afilamento
+lt &lt;- 1
+plot(I(DI/DAP)~I(HI/HT),subset(arvores_simuladas, arvores_simuladas$DAP==unique(arvores_simuladas$DAP)[1]), type = &#39;l&#39;, lty = lt,
+             xlab =&#39;DI/DAP&#39;, ylab = &#39;HI/HT&#39;)+
+for (i in unique(arvores_simuladas$DAP)[-1]) {
+  lt &lt;- lt+1
+  lines(I(DI/DAP)~I(HI/HT),
+        subset(arvores_simuladas,arvores_simuladas$DAP==i), lty = lt)
+}
+    legend(&#39;topright&#39;, legend= c(&#39;DAP = 5&#39;, &#39;DAP = 20&#39;, &#39;DAP = 50&#39;),
+           lty = 1:3)</code></pre>
+<img src="/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" />
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+</style>
+</div>
+
+    </div>
+
+    
+
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/minpack.lm/">minpack.lm</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      
+      <img class="portrait mr-3" src="/authors/admin/avatar_hud331b0fa8fcc1f2536696b8503e9bd94_274393_250x250_fill_lanczos_center_2.png" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Sérgio Costa</a></h5>
+      <h6 class="card-subtitle">MSc. Engenheiro Florestal</h6>
+      <p class="card-text" itemprop="description">Mestre em Engenharia Florestal pela Universidade Federal do Paraná, atualmente trabalha como Especialista em Modelagem de Dados na Arauco Forest Brasil.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+          <li>
+            <a itemprop="sameAs" href="mailto:sergio.vscf@gmail.com" >
+              <i class="fas fa-envelope"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://www.linkedin.com/in/sergio-costafh/" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/sergiocostafh" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+    
+
+    
+
+    
+<section id="comments">
+  
+    
+<div id="disqus_thread"></div>
+<script>
+  let disqus_config = function () {
+    
+    
+    
+  };
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+      return;
+    }
+    var d = document, s = d.createElement('script'); s.async = true;
+    s.src = 'https://' + "mensura-r" + '.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    <script id="dsq-count-scr" src="https://mensura-r.disqus.com/count.js" async></script>
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.dc856155b640fa1cd8bd8b7b068fe79c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    
+      <a href="/privacy/">Privacy Policy</a>
+    
+    
+       &middot; 
+      <a href="/terms/">Terms</a>
+        
+  </p>
+  
+
+  <p class="powered-by">
+    &copy; Mensura-R, 2019 &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

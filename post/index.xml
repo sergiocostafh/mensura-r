@@ -1,0 +1,1215 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts | Mensura-R - Ciência Florestal em linguagem R</title>
+    <link>/post/</link>
+      <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <description>Posts</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Mensura-R, 2019</copyright><lastBuildDate>Sat, 14 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/share.png</url>
+      <title>Posts</title>
+      <link>/post/</link>
+    </image>
+    
+    <item>
+      <title>Análise de dados de desmatamento do Imazon</title>
+      <link>/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/</link>
+      <pubDate>Sat, 14 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/</guid>
+      <description>
+
+
+&lt;div id=&#34;introducao&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Introdução&lt;/h2&gt;
+&lt;p&gt;Recentemente os principais jornais do Brasil e do mundo noticiaram um possível aumento nas taxas de desmatamento na Amazônia, a partir de dados divulgados pelo INPE (Instituto Nacional de Pesquisas Espaciais). O tema gerou polêmicas envolvendo o atual presidente Jair Bolsonaro, o Ministro do Meio Ambiente Ricardo Salles e o agora ex-diretor do órgão, Ricardo Galvão - os governistas questionaram a veracidade das informações, incendiando a discussão que culminou na demissão de Galvão.&lt;br /&gt;
+Não somente o INPE, mas outras insituições que monitoram a perda de cobertura vegetal na Amazônia brasileira dispararam alertas para a elevação nas taxas de desmatamento, como a Imazon e a Nasa, e a discussão em torno do assunto prosseguiu para além do território brasileiro.&lt;/p&gt;
+&lt;div id=&#34;o-embate-entre-o-inpe-e-o-governo-federal&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;O embate entre o INPE e o Governo Federal&lt;/h3&gt;
+&lt;p&gt;Os dados divulgados no início de agosto pelo INPE a partir do sistema DETER indicou que a área desmatada na Amazônia brasileira teve um aumento de 278% em relação a julho de 2018, somando 2.254 km² [1]. Considerando o acumulado no período de agosto de 2018 a julho de 2019 os alertas indicaram um aumento de 50% em relação ao mesmo período do ano anterior (agosto de 2017 a julho de 2018).
+Além da alta no desmatamento o INPE também apontou um aumento expressivo nos focos de incêndio na região e como desmatamento e queimada estão fortemente relacionados [2], o aumento no número de focos de incêndio têm acompanhado o aumento dos alertas de desmatamento [3].
+Após a fivulgação dos dados, o presidente Jair Bolsonaro acusou o Inpe de divulgar dados que não condiziam com a realidade [4] e Ricardo Salles atribuiu o aumento dos incêndios à ocorrência de tempo seco, vento e calor na região [5].&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;a-busca-pelos-dados&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;A busca pelos dados&lt;/h3&gt;
+&lt;p&gt;Como aqui busco defender o conceito de análise replicável, fui em busca dos dados originais disponibilizados pelo INPE para gerar minhas próprias análises e interpretações sobre o tema, já que assunto tomou as redes sociais, que ficaram repletas de informações distorcidas [2]. Apesar do &lt;em&gt;dashboard&lt;/em&gt; disponível na plataforma &lt;a href=&#34;http://terrabrasilis.dpi.inpe.br/&#34;&gt;TerraBrasilis&lt;/a&gt; permitir visualização e análise dos dados do Deter, estes são disponibilizados apenas para o período de 1 ano, o que impede que possamos comparar os dados recentes com os obtidos em anos anteriores.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;o-sistema-de-alerta-de-desmatamento-do-imazon&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;O Sistema de Alerta de Desmatamento do Imazon&lt;/h3&gt;
+&lt;p&gt;O Imazon é uma instituição de pesquisas sem fins lucrativos, qualificada pelo Ministério da Justiça, e que realiza o monitoramento da Amazônia Legal pelo uso de imagens de satélites que reportam mensalmente o ritmo do desmatamento e da degradação florestal na região por meio do Sistema de Alerta de Desmatamento (SAD).
+No site &lt;a href=&#34;https://imazongeo.org.br/#/&#34;&gt;ImazonGeo&lt;/a&gt; estão disponíveis os dados mensais de desmatamento e degradação florestal desde janeiro de 2008. É importante salientar que o sistema do Imazon somente detecta áreas de desmatamento superiores a 1 hectare e que apesar de ambos monitorarem o desmatamento na Amazônia, os dados do SAD não são comparáveis aos do DETER, devido a diferenças metodológicas. As detecções do SAD são realizadas somente para áreas de floresta primária, ou seja, florestas que nunca sofreram perturbações significativas, enquanto o Deter é um sistema de alertas que avalia alterações na cobertura florestal, servindo de suporte para órgãos de fiscalização ambiental. Maiores informações sobre o método empregado pelo SAD pode ser obtidos &lt;a href=&#34;https://imazon.org.br/publicacoes/faq-sad/&#34;&gt;aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;obtendo-dados-climaticos-da-amazonia-legal&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Obtendo dados climáticos da Amazônia Legal&lt;/h3&gt;
+&lt;p&gt;Já que desmatamento e focos de incêndio estão correlacionados e foi apontado que o aumento das queimadas na Amazônia pode ser um efeito do clima mais seco, resolvi complementar a análise consolidando dados de estações meteorológicas do Banco de Dados Meteorológicos para Ensino e Pesquisa (BDMEP) do Instituto Nacional de Meteorologia (INMET). O banco abriga dados meteorológicos diários em forma digital, coletados por meio das várias estações meteorológicas convencionais da rede de estações do INMET, de acordo com as normas técnicas internacionais da Organização Meteorológica Mundial [6].
+O procedimento de consolidação foi simples: a partir dos dados diários das estações meteorológicas instaladas nos Estados do Acre, Amazonas, Amapá, Pará, Roraima e Rondônia (47 estações) foi obtida a precipitação mensal média para cada mês-ano, considerando os dados de todas as estações. O procedimento de obtenção dos dados pode ser acessado &lt;a href=&#34;https://github.com/sergiocostafh/desmatamento_sad_imazon&#34;&gt;aqui&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;analisando-os-dados-do-sad&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Analisando os dados do SAD&lt;/h2&gt;
+&lt;p&gt;Os dados de desmatamento disponibilizados pelo SAD estão em formato &lt;em&gt;shapefile&lt;/em&gt; e foi necessário algum trabalho computacional para compilá-los em uma tabela, já que os arquivos são separados mês a mês. Fiz o download de todos os meses compreendidos entre agosto de 2009 e julho de 2019, totalizando 10 anos de análise ou 120 meses. Isso foi possível graças ao programa R, e todo o procedimento desenvolvido para compilação dos dados em uma única tabela está disponível em meu repositório pessoal no GitHub (clique &lt;a href=&#34;https://github.com/sergiocostafh/desmatamento_sad_imazon/blob/master/tratamento%20de%20dados_imazon.R&#34;&gt;aqui&lt;/a&gt; para acessar). Observação: Não há dados para o mês de fevereiro de 2016, pois, segundo a equipe de suporte do Imazon, neste período o satélite MODIS que era utilizado para o mapeamento das áreas se encontrava em manutenção.&lt;/p&gt;
+&lt;p&gt;Nesta postagem foi possível reproduzir resultados que têm sido publicados na &lt;a href=&#34;https://imazon.org.br/categorias/transparencia-florestal/&#34;&gt;seção de transparência florestal&lt;/a&gt; no site do Imazon. Todos os códigos de programação em R utilizados para as análises acessadas clicando no botão &lt;strong&gt;código&lt;/strong&gt; localizado logo acima dos gráficos, no canto direito.&lt;/p&gt;
+&lt;p&gt;Vamos então às análises. Mas não sem antes recomendar que você clique &lt;a href=&#34;http://127.0.0.1:4321/post/linguagem-r-e-a-crise-de-replicabilidade-na-ciencia/&#34;&gt;aqui&lt;/a&gt; e entenda por que apresento os scripts de análises ao longo das postagens e a importância das análises replicáveis.&lt;/p&gt;
+&lt;p&gt;Ao visualizar a série histórica dos dados mensais de desmatamento mapeado pelo SAD, alguns padrões já nos saltam aos olhos. O primeiro que podemos elencar é que o mês de julho de 2019 registrou o maior acúmulo de área desmatada em um mês para toda a série histórica, e isso já explica boa parte da discussão levantada nas últimas semanas. Outro ponto importante é que há uma clara tendência na formação de picos ascendentes na taxa de desmatamento desde 2012.&lt;br /&gt;
+Os picos ocorrem geralmente entre os meses de junho e julho, que coincide com o período do ano de menor pluviosidade na região. No entanto, não há alterações visíveis no padrão de chuvas na região ao longo dos 10 anos de análise, indicando inexistência de períodos mais secos na região, e que portanto, não há relação climática com o aumento na quantidade de focos de incêndio detectados pelo INPE.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Importar a base de dados do SAD
+dados_desmatamento &amp;lt;- read.table(&amp;#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_sad.txt&amp;#39;)
+dados_precipitacao &amp;lt;- read.table(&amp;#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/serie_precipitacao_amazonia_inmet.txt&amp;#39;)
+dados_precipitacao$date &amp;lt;- as.Date(dados_precipitacao$date)
+# Criar coluna Mês - Ano
+dados_desmatamento$`MES ANO`=as.Date(paste(dados_desmatamento$ANO,&amp;#39;-&amp;#39;,dados_desmatamento$MES,&amp;#39;-01&amp;#39;, sep=&amp;#39;&amp;#39;))
+# Carregar pacotes necessário para geração dos gráficos
+library(ggplot2)
+library(plotly)
+# Plotar série histórica de desmatamento mensal
+ggplot()+
+  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = &amp;#39;Desmatamento&amp;#39;))+
+  geom_bar(aes(x=dados_precipitacao$date, y=dados_precipitacao$prec*2,
+            fill = &amp;#39;Precipitação&amp;#39;),stat = &amp;#39;identity&amp;#39;, alpha = .3, color = NA)+
+    scale_x_date(expand = c(0,0), limits = c(as.Date(&amp;#39;2009/01/01&amp;#39;),as.Date(&amp;#39;2019/12/31&amp;#39;)) ,breaks = &amp;#39;year&amp;#39;,
+                 date_labels = &amp;#39;%Y&amp;#39;, minor_breaks = NULL)+
+    scale_y_continuous(expand = c(0,0), limits = c(0,1500),
+                     breaks = seq(0,1500,250),
+                     sec.axis = sec_axis(~./2, name = &amp;#39;Precipitação acumulada (mm/mês)&amp;#39;))+
+  scale_color_manual(name = NULL ,values = c(&amp;#39;black&amp;#39;))+
+  scale_fill_manual(name = NULL ,values = c(&amp;#39;blue&amp;#39;))+
+  xlab(NULL)+
+  ylab(&amp;#39;Desmatamento detectado (km²)&amp;#39;)+
+  labs(title = &amp;#39;Área desmatada na Amazônia Legal&amp;#39;,
+       subtitle = &amp;#39;Acumulado mensal&amp;#39;,
+       caption = &amp;#39;Fonte de dados: SAD - Imazon (2019) e BDMEP - Inmet (2019)&amp;#39;)+
+  theme_light(base_size = 14)+
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        axis.text.x = element_text(hjust = -0.5),
+        legend.position = &amp;#39;bottom&amp;#39;)+
+  annotate(geom=&amp;#39;text&amp;#39;, size = 3.5,
+           x=dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],
+           y=dados_desmatamento$AREA[c(1,13,21,39,49,59,72,82,95,106,119)]+50,
+           label=format.Date(dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],&amp;#39;%b %Y&amp;#39;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-14-desmatamento-na-amazônia-análise-de-dados-do-imazon_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Comparação julho 2019/julho 2018
+# round(1-dados_desmatamento$AREA[119]/dados_desmatamento$AREA[107], 3)*-1
+# Comparação junho 2019/julho 2018
+# round(1-dados_desmatamento$AREA[118]/dados_desmatamento$AREA[106], 3)*-1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Se tomarmos por base a área desmatada no mês de julho de 2018 (758 km²) e compararmos ao mesmo mês de 2019 (1.287 km²), constataremos que houve um aumento de 70%. A interpretação deste resultado exige cuidado pois pode gerar interpretações tendenciosas quando avaliado isoladamente. Um exemplo disso, é que se aplicarmos a mesma análise ao mês de junho, em que a área desmatada somou 1167 km² e 801 km² para 2018 e 2019 respectivamente, o resultado será uma redução de 31,4%.
+O fato é que para podermos interpretar os dados de desmatamento de maneira mais consistente, precisamos avaliar o acúmulo de área desmatada em períodos maiores.
+O gráfico seguinte apresenta a área total desmatada detectada pelo SAD nos meses de janeiro a julho e a série histórica anual do PRODES e do SAD, desde 2010. Assim como o DETER, os dados do PRODES não devem ser comparados diretamente com os dados do SAD por diferenças metodológicas - o PRODES calcula o desmatamento entre 1º de agosto de um ano 31 de julho do ano seguinte, e considera não somente áreas primárias de vegetação, mas também secundárias [7]. Ainda assim, é possível observar a mesma tendência de elevação no desmatamento a partir de 2012/2013.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Calcular área desmatada acumulada até julho
+acumulado_julho &amp;lt;- subset(dados_desmatamento,dados_desmatamento$MES&amp;lt;=7)
+acumulado_julho &amp;lt;- aggregate(acumulado_julho$AREA, by = list(ANO = as.integer(acumulado_julho$ANO)), sum)
+acumulado_ano &amp;lt;- aggregate(dados_desmatamento$AREA, by = list(ANO = as.integer(dados_desmatamento$ANO)), sum)[-c(1,11),]
+# Dados do PRODES
+dados_prodes &amp;lt;- read.delim(&amp;#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_prodes.txt&amp;#39;)
+dados_prodes &amp;lt;- subset(dados_prodes,dados_prodes$Ano.Estados&amp;gt;=2010)
+# Plotar gráfico
+ggplot()+
+  geom_line(aes(x=acumulado_ano$ANO,y=acumulado_ano$x, linetype = &amp;#39;Acumulado anual (SAD)&amp;#39;, color = &amp;#39;Acumulado anual (SAD)&amp;#39;))+
+  geom_line(aes(x=acumulado_julho$ANO,y=acumulado_julho$x, linetype = &amp;#39;Acumulado até julho (SAD)&amp;#39;, color = &amp;#39;Acumulado até julho (SAD)&amp;#39;))+
+  geom_line(aes(x=dados_prodes$Ano.Estados,y=dados_prodes$AMZ.LEGAL, linetype = &amp;#39;Acumulado anual (PRODES)&amp;#39;, color = &amp;#39;Acumulado anual (PRODES)&amp;#39;))+
+    geom_point(aes(x=acumulado_ano$ANO,y=acumulado_ano$x, shape = &amp;#39;Acumulado anual (SAD)&amp;#39;, color = &amp;#39;Acumulado anual (SAD)&amp;#39;))+
+  geom_point(aes(x=acumulado_julho$ANO,y=acumulado_julho$x, shape = &amp;#39;Acumulado até julho (SAD)&amp;#39;, color = &amp;#39;Acumulado até julho (SAD)&amp;#39;))+
+  geom_point(aes(x=dados_prodes$Ano.Estados,y=dados_prodes$AMZ.LEGAL, shape = &amp;#39;Acumulado anual (PRODES)&amp;#39;, color = &amp;#39;Acumulado anual (PRODES)&amp;#39;))+
+  scale_x_continuous(breaks=seq(2009,2019,1), minor_breaks = NULL)+
+  scale_y_continuous(expand=c(0,0),limits = c(0,8000), breaks = seq(0,8000,1000))+
+  scale_linetype_manual(name = NULL, values = c(&amp;#39;dashed&amp;#39;,&amp;#39;dotted&amp;#39;,&amp;#39;solid&amp;#39;))+
+  scale_shape_manual(name = NULL, values = c(1,2,3))+
+  scale_color_manual(name = NULL, values = c(&amp;#39;darkgray&amp;#39;,&amp;#39;black&amp;#39;,&amp;#39;black&amp;#39;))+
+  xlab(NULL)+
+  ylab(&amp;#39;Desmatamento detectado (km²)&amp;#39;)+
+  labs(title = &amp;#39;Área desmatada na Amazônia Legal&amp;#39;,
+       subtitle = &amp;#39;Acumulado anual e de janeiro a julho&amp;#39;,
+       caption = &amp;#39;Fonte de dados: SAD - Imazon (2019) e PRODES - Inpe (2019)&amp;#39;)+
+  theme_light()+
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position = &amp;#39;bottom&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-14-desmatamento-na-amazônia-análise-de-dados-do-imazon_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual, e que em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. A partir disso pode-se inferir que em 2019 teremos uma taxa similar a 2018, ou mesmo maior, considerando o expressivo aumento detectado no mês de julho, citado anteriormente.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusoes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusões&lt;/h2&gt;
+&lt;p&gt;A partir das análises realizadas, podemos conluir que:&lt;br /&gt;
+&lt;strong&gt;1.&lt;/strong&gt; Em julho de 2019 a série de desmatamento detectado pelo Sistema de Alerta de Desmatamento do Imazon alcançou sua máxima histórica no período de 10 anos de análise, considerando a cobertura vegetal primária perdida no período de um mês.&lt;br /&gt;
+&lt;strong&gt;2.&lt;/strong&gt; Não há ocorrência de períodos mais secos na Amazônia Legal que justifiquem aumento nos focos de incêndio apontados pelo INPE.&lt;br /&gt;
+&lt;strong&gt;3.&lt;/strong&gt; Há uma tendência de aumento nas taxas de desmatamento iniciada após o ano de 2012.&lt;br /&gt;
+&lt;strong&gt;4.&lt;/strong&gt; As análises sugerem que o acumulado anual de 2019 pode alcançar o mesmo patamar de 2018, ou mesmo atingir uma nova máxima histórica.&lt;/p&gt;
+&lt;center&gt;
+&lt;/div&gt;
+&lt;div id=&#34;referencias&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Referências&lt;/h2&gt;
+&lt;p&gt;[1]&lt;a href=&#34;http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/&#34; class=&#34;uri&#34;&gt;http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2]&lt;a href=&#34;https://aosfatos.org/noticias/o-que-realmente-se-sabe-sobre-queimadas-no-brasil/&#34; class=&#34;uri&#34;&gt;https://aosfatos.org/noticias/o-que-realmente-se-sabe-sobre-queimadas-no-brasil/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[3]&lt;a href=&#34;https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439&#34; class=&#34;uri&#34;&gt;https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[4]&lt;a href=&#34;https://www.terra.com.br/noticias/ciencia/sustentabilidade/bolsonaro-acusa-inpe-de-divulgar-dados-mentirosos-sobre-desmatamento,41bf3feb7bab7d742c3bbb4f84c62bb74nes2dyy.html&#34; class=&#34;uri&#34;&gt;https://www.terra.com.br/noticias/ciencia/sustentabilidade/bolsonaro-acusa-inpe-de-divulgar-dados-mentirosos-sobre-desmatamento,41bf3feb7bab7d742c3bbb4f84c62bb74nes2dyy.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[5]&lt;a href=&#34;https://oglobo.globo.com/sociedade/ricardo-salles-atribui-aumento-de-queimadas-seca-mas-ipam-diz-que-estiagem-este-ano-foi-menor-23891622&#34; class=&#34;uri&#34;&gt;https://oglobo.globo.com/sociedade/ricardo-salles-atribui-aumento-de-queimadas-seca-mas-ipam-diz-que-estiagem-este-ano-foi-menor-23891622&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[6]&lt;a href=&#34;http://www.inmet.gov.br/projetos/rede/pesquisa/&#34; class=&#34;uri&#34;&gt;http://www.inmet.gov.br/projetos/rede/pesquisa/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[7]&lt;a href=&#34;http://www.obt.inpe.br/prodes/metodologia.pdf&#34; class=&#34;uri&#34;&gt;http://www.obt.inpe.br/prodes/metodologia.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;style&gt;
+body {
+text-align: justify}
+h1 {
+text-align: center}
+&lt;/style&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+&lt;/style&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ajuste e avaliação de modelos de crescimento em altura dominante</title>
+      <link>/post/ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante/</link>
+      <pubDate>Sun, 01 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>/post/ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante/</guid>
+      <description>
+
+
+&lt;p&gt;Na mensuração florestal a utilização de modelos de regressão para representação de comportamentos biológicos é uma tarefa comum. Para dada variável a ser modelada o teste de diferentes modelos é necessário para aplicação daquele que melhor representa o comportamento sob análise. O método tradicionalmente aplicado para classificação de sítios florestais exige o emprego de modelos de crescimento em altura dominante, e o ajuste e análise destes será objeto desta postagem.&lt;/p&gt;
+&lt;p&gt;Começaremos importando uma base de dados de povoamentos de &lt;em&gt;Pinus taeda&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Importar dados
+library(readxl)
+dados &amp;lt;- read_excel(&amp;quot;dados_processados.xlsx&amp;quot;)
+dados&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 813 x 9
+##    PARCELA ESPÉCIE     IDADE   DAP ALTURA     N  HDOM     G VOLTOT
+##      &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1       1 PINUS TAEDA  19.8  24.1   23.6  927.  25.5  44.5   509.
+##  2       2 PINUS TAEDA  19.8  25.1   24.0  748.  25.6  38.1   436.
+##  3       3 PINUS TAEDA  24.2  28.0   26.6  700   26.3  44.6   563.
+##  4       4 PINUS TAEDA  24.2  30.3   25.9  600.  29.9  44.9   551.
+##  5       5 PINUS TAEDA  24.2  32.0   27.9  600   31.3  49.4   655.
+##  6       6 PINUS TAEDA  24.2  30.7   27.4  650   29.5  50.1   657.
+##  7       7 PINUS TAEDA  24.2  30.8   25.3  583.  27.2  44.5   532.
+##  8       8 PINUS TAEDA  24.2  30.0   26.2  640.  30.3  46.7   579.
+##  9       9 PINUS TAEDA  24.2  30.4   26.4  633.  31.1  47.2   594.
+## 10      10 PINUS TAEDA  24.2  28.2   26.4  620.  29.2  40.1   507.
+## # ... with 803 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Visualizar a relação Idade x Altura dominante
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &amp;#39;Idade (anos)&amp;#39;, ylab = &amp;#39;Hdom (m)&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-09-01-ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Nosso trabalho agora será ajustar diversos modelos e avaliar qual deles melhor representa os dados em questão. Testaremos os seguintes modelos.&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;27%&#34; /&gt;
+&lt;col width=&#34;72%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;center&#34;&gt;Modelo&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Expressão matemática&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;Chapman-Richards&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Hdom = \beta_0\left(1-exp^{\beta_1*Idade}\right)^{\beta_2}\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;Lundvist-Korf&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Hdom = \beta_0exp^{-\beta_1\left(\frac{1}{Idade^{\beta_2}}\right)}\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;Bailey-3 parâmetros&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Hdom = \beta_0\left(1-exp^{\beta_1*Idade^{\beta_2}}\right)\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;Clutter-Jones&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Hdom = \beta_0\left(1+\beta_1Idade^{\beta_2}\right)^{\beta_3}\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Para o ajuste dos modelos utilizaremos a função &lt;code&gt;nlsLM&lt;/code&gt; do pacote &lt;code&gt;minpack.lm&lt;/code&gt;. A diferença entre esta e a função &lt;code&gt;nls&lt;/code&gt; é o algoritmo de busca dos parâmetros. A função &lt;code&gt;nlsLM&lt;/code&gt; utiliza o algoritmo Levenberg-Marquardt que é mais eficiente que o Gauss-Newton utilizado pela &lt;code&gt;nls&lt;/code&gt;, especialmente quando não temos referências iniciais para declarar ao argumento &lt;code&gt;start&lt;/code&gt;, e/ou quando buscamos ajustar modelos com maior quantidade de parâmetros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Ajustar modelos de crescimento em altura dominante
+library(minpack.lm)
+chapman_richards &amp;lt;- nlsLM(HDOM ~ b0*(1-exp(-b1*IDADE))^b2,
+                          start=list(b0=30,b1=0.5,b2=1), control = nls.control(maxiter = 1024),
+                          data = dados)
+lundqvist_korf &amp;lt;- nlsLM(HDOM ~ b0*exp(-b1*(1/(IDADE^b2))),
+                        start = list(b0=40,b1=5,b2=0.5), control = nls.control(maxiter = 1024),
+                        data = dados)
+bailey_3p &amp;lt;- nlsLM(HDOM ~ b0*(1-exp(-b1*IDADE^b2)),
+                   start = list(b0=24,b1=0.05, b2=1.5), control = nls.control(maxiter = 1024),
+                   data = dados)
+clutter_jones = nlsLM(HDOM ~ b0*(1+b1*IDADE^b2)^b3,
+                      start=list(b0=25,b1=-0.2, b2=-0.1, b3=20), control = nls.control(maxiter = 1024),
+                      data = dados)
+# Armazenar modelos em uma lista
+modelos &amp;lt;- mget(c(&amp;#39;chapman_richards&amp;#39;, &amp;#39;lundqvist_korf&amp;#39;, &amp;#39;bailey_3p&amp;#39;, &amp;#39;clutter_jones&amp;#39;),
+                envir = globalenv())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A vantagem de armazenar modelos em listas é que podemos analisá-los por meio de scripts mais compactos. Por exemplo, com uma única linha de código podemos acessar os coeficientes de todos os modelos empregando a função &lt;code&gt;lapply&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lapply(modelos, coefficients)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $chapman_richards
+##         b0         b1         b2 
+## 29.4572596  0.1096941  1.1937825 
+## 
+## $lundqvist_korf
+##        b0        b1        b2 
+## 39.211720  5.203893  0.832053 
+## 
+## $bailey_3p
+##          b0          b1          b2 
+## 29.40328604  0.07718152  1.09415279 
+## 
+## $clutter_jones
+##         b0         b1         b2         b3 
+## 40.2647981 -0.4400840 -0.7712678 10.2314371&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A seguir vamos gerar os gráficos da curva de ajuste, de dispersão e de distribuição de resíduos em classes de erro. Em vez de criarmos todos os gráficos um a um, apresentaremos a lista de modelos a uma função que gera os três gráficos para cada elemento da lista.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(egg)
+library(tibble)
+library(dplyr)
+library(purrr)
+library(stringr)
+# Idade máxima de predição
+idmax = 25
+# Função para gerar análise gráfica de modelos
+graficos = syms(names(modelos)) %&amp;gt;% set_names() %&amp;gt;% 
+  imap(function(modelo, nome_modelo) {
+    # Obter o modelo
+    modelo = eval(modelo)
+    # Formatar nome do modelo
+    nome_modelo = str_to_title(gsub(&amp;quot;_&amp;quot;, &amp;quot;-&amp;quot;, nome_modelo))
+    # Criar os dados para predição
+    dados_ajuste = eval(modelo$data)
+    dados_predicao = tibble(IDADE = seq(0, idmax, 0.1))
+    dados_predicao$HDOM = predict(modelo, newdata=dados_predicao)
+    # Listar gráficos
+    list(curva_ajuste = ggplot(dados_predicao, aes(IDADE, HDOM)) +
+           geom_line() +
+           geom_point(data=dados_ajuste, alpha=0.2) +
+           scale_x_continuous(expand=expand_scale(mult=c(0,0.01)), breaks = seq(0,idmax,2)) +
+           scale_y_continuous(expand=c(0,0)) +
+           labs(x=&amp;#39;Idade (anos)&amp;#39;, y=&amp;#39;Hdom (m)&amp;#39;,
+                title = paste0(nome_modelo,&amp;#39; - Syx = &amp;#39;, round(summary(modelo)$sigma, 2)))+
+           theme_light(),
+         
+         dispersao_residuos = ggplot(tibble(x=dados_ajuste$IDADE, y=residuals(modelo)/mean(x)*100)) +
+           geom_point(alpha=0.2, aes(x, y)) +
+           geom_hline(yintercept=0) +
+           scale_x_continuous(expand=expand_scale(mult=c(0,0.01))) +
+           scale_y_continuous(expand=c(0,0), limits = c(-50,50)) +
+           labs(x=&amp;#39;Hdom estimada (m)&amp;#39;, y=&amp;#39;Desvio (%)&amp;#39;)+
+           geom_line(stat = &amp;#39;smooth&amp;#39;, method = &amp;#39;loess&amp;#39;, aes(x, y), color = &amp;#39;red&amp;#39;, alpha = .8,
+                     size = 1, linetype =&amp;quot;dashed&amp;quot;,)+
+           theme_light(),
+         
+         distribuicao_residuos = ggplot(tibble(x=residuals(modelo)/mean(dados_ajuste$HDOM)*100)) +
+           geom_histogram(aes(x, y=..count../nrow(dados_ajuste)*100), breaks=seq(-27.5,27.5,by=5),
+                          colour=&amp;#39;black&amp;#39;) +
+           labs(x=&amp;#39;Classe&amp;#39;, y=&amp;#39;Frequência (%)&amp;#39;) +
+           scale_y_continuous(limits=c(0,30))+
+           theme_light()
+    )
+  })
+# Plotar todos os gráficos em uma única imagem
+map(graficos, ~ggarrange(plots=.x, ncol=3, draw=FALSE)) %&amp;gt;% 
+  grid.arrange(grobs=., ncol=1)&lt;/code&gt;&lt;/pre&gt;
+&lt;img src=&#34;/post/2019-09-01-ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Os quatro modelos tiveram desempenho bastante similar para os gráficos de resíduos e para o erro padrão das estimativas. No entanto, há uma diferença considerável nas assíntotas (coeficiente b0) e nas predições de altura dominante para idades inferiores a 3 anos. Os modelos de Lundqvist-Korf e Clutter-Jones sugerem que no futuro as árvores dominantes alcançarão em média os 40 metros de altura, enquanto os modelos de Chapman-Richards e Bailey-3p indicam que a assíntota se dá em torno de 30 metros. Esta é uma questão pouco relevante se considerarmos que neste caso os povoamentos serão submetidos a corte raso entre os 14 e os 16 anos, e que nesta faixa de idade temos uma quantidade suficiente de amostras.&lt;br /&gt;
+Por outro lado, as curvas geradas por esses pares de modelos também apresentam comportamento divergente para idades inferiores a 4 anos, em que não há observações. Neste caso os modelos de Lundqvist-Korf e Clutter-Jones sugerem que povoamentos com 1 ano de idade possuem altura dominante igual a zero, o que é bastante equivocado do ponto de vista biológico. O problema na utilização destes modelos se daria se, por alguma razão, houvesse a necessidade de predizer o sítio em povoamentos cuja idade no momento do inventário é inferior a 3 anos. Em todos os casos não temos observações para representar o crescimento em idades inferiores a 4 anos, mas o bom senso, a experiência e a lógica são suficientes para nos garantir que povoamentos com um ano de idade já possuem algum crescimento em altura.&lt;br /&gt;
+Então, para concluir, já que os modelos apresentaram grande similiaridade entre si para as análises de resíduos, eu escolheria o modelo de Chapman-Richards ou Bailey-3p para representar o crescimento em altura dominante deste povoamento, tomando por base o comportamento biológico esperado.
+&lt;style&gt;
+body {
+text-align: justify}
+h1 {
+text-align: center}
+&lt;/style&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+&lt;/style&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Krigagem do índice de sitio</title>
+      <link>/post/krigagem-do-indice-de-sitio/</link>
+      <pubDate>Wed, 14 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>/post/krigagem-do-indice-de-sitio/</guid>
+      <description>
+
+
+&lt;p&gt;O índice de sítio é um atributo que representa o potencial de produtividade de determinado local, sendo influenciado por fatores geológicos, topográficos, climáticos, edáficos e bióticos, apresentando de modo geral algum nível de dependência espacial, sendo portanto possível a realização de inferências espaciais sob seu comportamento.&lt;br /&gt;
+Nesse exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de &lt;a href=&#34;http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf&#34;&gt;Mello (2004)&lt;/a&gt; e &lt;a href=&#34;https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf&#34;&gt;Pelissari (2015)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Iniciaremos este exemplo com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readxl)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;readxl&amp;#39; was built under R version 3.6.1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(geoR)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## --------------------------------------------------------------
+##  Analysis of Geostatistical Data
+##  For an Introduction to geoR go to http://www.leg.ufpr.br/geoR
+##  geoR version 1.7-5.2.1 (built on 2016-05-02) is now loaded
+## --------------------------------------------------------------&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Importar dados
+dados &amp;lt;- read_excel(&amp;#39;dados_interpolacao.xlsx&amp;#39;)
+dados&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 101 x 4
+##    PARCELA      X       Y    IS
+##      &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1       1 440559 7801189  31.3
+##  2       2 440846 7801282  32.0
+##  3       3 440734 7801475  29.6
+##  4       4 440923 7801657  29.4
+##  5       5 440683 7800566  33.8
+##  6       6 440709 7800769  36.9
+##  7       7 440528 7800929  35.7
+##  8       8 440783 7800975  31.0
+##  9       9 440989 7800264  30.4
+## 10      10 440872 7800395  33.9
+## # ... with 91 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Transformar dados em geodata
+dados &amp;lt;- as.geodata(dados,coords.col = 2:3, data.col = 4)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência. Esta avaliação é importante para averiguarmos a necessidade de transformação nos dados, caso estes possuam uma distribuição não normal.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Plotar histograma
+hist(dados$data,
+     xlab = &amp;#39;Índice de Sítio (m)&amp;#39;, ylab = &amp;#39;Frequência&amp;#39;,
+     main = &amp;#39;Histograma - Índice de Sítio&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Por meio de uma análise visual, os valores de sítio parecem apresentar uma distribuição próxima da normal. Vamos confirmar se há aderência aplicando o teste de Kolmogorov-Smirnov.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Teste de Kolmogorov-Smirnov 
+ks = ks.test(dados$data, &amp;#39;pnorm&amp;#39;, mean = mean(dados$data), sd = sd(dados$data))
+ks&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  dados$data
+## D = 0.050885, p-value = 0.9562
+## alternative hypothesis: two-sided&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;O elevado &lt;em&gt;p-value&lt;/em&gt; aponta que não há diferença estatística entre a distribuição normal e a distribuição dos dados que estamos analisando, corroborando que poderemos proceder à krigagem sem transformação da variável de interesse.&lt;br /&gt;
+A próxima etapa será plotar e analisar o semivariograma. Para tal, utilizaremos a função &lt;code&gt;variog&lt;/code&gt; do &lt;code&gt;geoR&lt;/code&gt;.&lt;br /&gt;
+Dois argumentos são importantes neste procedimento. O primeiro &lt;code&gt;max.dist&lt;/code&gt; se refere à distância máxima para construção do variograma. É importante que este valor seja grande o suficiente para que o variograma compreenda o alcance (&lt;em&gt;range&lt;/em&gt;) que indica a zona de influência ou de dependência espacial entre as amostras.&lt;br /&gt;
+O segundo argumento &lt;code&gt;uvec&lt;/code&gt; indica o número de pontos de referência (&lt;em&gt;lags&lt;/em&gt;) que serão distribuídos proporcionalmente até atingir a distância máxima definida para o variograma.&lt;br /&gt;
+O procedimento para obtenção de valores para estes parâmetros é iterativo e será tema de uma próxima postagem. Por hora, definiremos o valor de 1000 para &lt;code&gt;max.dist&lt;/code&gt; e 10 para &lt;code&gt;uvec&lt;/code&gt; (1000/10 = 100, que é a distância aproximada entre as unidades amostrais alocadas ).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Plotar semivariograma
+semivariograma &amp;lt;- variog(dados, max.dist = 1000, uvec = 10,messages=FALSE)
+plot(semivariograma,
+     ylab = &amp;#39;Semivariância&amp;#39;, xlab = &amp;#39;Distância&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+O semivariograma acima considera que a semivariância possui o mesmo comportamento em todas as direções. No entanto, é fundamental avaliar se esta premissa é verdadeira. Vamos averiguar se o fenômeno da anisotropia ocorre para este conjunto de dados utilizando a função &lt;code&gt;variog4&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Investigar anisotropia
+plot(variog4(dados, max.dist = 1000, uvec = 10,messages=FALSE),
+     ylab = &amp;#39;Semivariância&amp;#39;, xlab = &amp;#39;Distância&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia. Do contrário, seria necessária uma transformação das coordenadas, de modo a estabelecer a isotropia.
+Realizadas as devidas análises, procedemos ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Definir modelos a serem ajustados
+modelos &amp;lt;- c(&amp;#39;spherical&amp;#39;,&amp;#39;exponential&amp;#39;,&amp;#39;gaussian&amp;#39;,&amp;#39;cubic&amp;#39;)
+# Criar lista para armazenar modelos ajustados
+modelos_ajustados &amp;lt;- list()
+# Ajustar modelos de semivariância
+for(i in modelos){
+modelos_ajustados[[i]] &amp;lt;- variofit(semivariograma, cov.model = i, messages = FALSE)
+}
+modelos_ajustados&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $spherical
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: spherical
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   0.6878   2.4059 334.7681 
+## Practical Range with cor=0.05 for asymptotic range: 334.7681
+## 
+## variofit: minimised weighted sum of squares = 182.0471
+## 
+## $exponential
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: exponential
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   1.8991   1.7099 500.6367 
+## Practical Range with cor=0.05 for asymptotic range: 1499.773
+## 
+## variofit: minimised weighted sum of squares = 130.6787
+## 
+## $gaussian
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: gaussian
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   2.3775   1.0351 557.8393 
+## Practical Range with cor=0.05 for asymptotic range: 965.5186
+## 
+## variofit: minimised weighted sum of squares = 136.2159
+## 
+## $cubic
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: cubic
+## parameter estimates:
+##     tausq   sigmasq       phi 
+##    2.3595    1.0223 1282.4003 
+## Practical Range with cor=0.05 for asymptotic range: 1282.4
+## 
+## variofit: minimised weighted sum of squares = 135.2704&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Os quatro modelos ajustados possuem três parâmetros interpretáveis: &lt;code&gt;tausq&lt;/code&gt; se refere ao efeito pepita (&lt;em&gt;nugget&lt;/em&gt;), &lt;code&gt;sigmasq&lt;/code&gt; é também conhecido como &lt;em&gt;partial sill&lt;/em&gt; e consiste no valor do patamar menos o efeito pepita, e &lt;code&gt;phi&lt;/code&gt; se refere ao alcance (&lt;em&gt;range&lt;/em&gt;). Vamos plotar as curvas de semivariância geradas a partir dos modelos ajustados.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;par(mfrow = c(2,2))
+for(i in modelos){
+  plot(semivariograma,
+     ylab = &amp;#39;Semivariância&amp;#39;, xlab = &amp;#39;Distância&amp;#39;,
+     main = i)
+  lines.variomodel(modelos_ajustados[[i]])
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Para avaliar a eficiência dos modelos ajustados na predição do índice de sítio em locais não amostrados, devemos proceder à validação cruzada, conforme o procedimento a seguir.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Cria lista para armazenar resultado da validação cruzada
+modelos_xvalid &amp;lt;- list()
+# Validação cruzada para todos os modelos
+for(i in modelos){
+modelos_xvalid[[i]] &amp;lt;- xvalid(dados, model = modelos_ajustados[[i]], messages = FALSE)
+}
+# Formatação dos resultados
+erro_padrao &amp;lt;- unlist(lapply(modelos_xvalid,summary))[c(11,25,39,53)]
+names(erro_padrao) &amp;lt;- modelos
+desvio_do_erro &amp;lt;- unlist(lapply(modelos_xvalid,summary))[c(14,28,42,56)]
+names(desvio_do_erro) &amp;lt;- modelos
+# Plotar
+par(mfrow = c(1,2))
+text(barplot(erro_padrao, ylim =c(-0.01,0.01), main = &amp;#39;Erro padrão da validação cruzada&amp;#39;), y = erro_padrao+sign(erro_padrao)*0.001,labels = round(erro_padrao,5))
+text(barplot(desvio_do_erro, ylim = c(0,2), main = &amp;#39;Desvio padrão do erro&amp;#39;), y = desvio_do_erro+sign(desvio_do_erro)*0.1,labels = round(desvio_do_erro,3))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1344&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;As estatísticas de validação cruzada são favoráveis ao uso do modelo cúbico, portanto, utilizaremos este para interpolar o índice de sítio para toda a área de interesse. Vamos importar os limites das áreas a serem interpoladas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Definir modelo a ser utilizado
+modelo_selecionado &amp;lt;- modelos_ajustados$cubic
+# Importar shape com os limites da área de interesse
+library(rgdal)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Carregando pacotes exigidos: sp&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;sp&amp;#39; was built under R version 3.6.1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## rgdal: version: 1.4-4, (SVN revision 833)
+##  Geospatial Data Abstraction Library extensions to R successfully loaded
+##  Loaded GDAL runtime: GDAL 2.2.3, released 2017/11/20
+##  Path to GDAL shared files: C:/Users/sergio.costa/Documents/R/win-library/3.6/rgdal/gdal
+##  GDAL binary built with GEOS: TRUE 
+##  Loaded PROJ.4 runtime: Rel. 4.9.3, 15 August 2016, [PJ_VERSION: 493]
+##  Path to PROJ.4 shared files: C:/Users/sergio.costa/Documents/R/win-library/3.6/rgdal/proj
+##  Linking to sp version: 1.3-1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;talhoes &amp;lt;- readOGR(&amp;#39;.&amp;#39;, &amp;#39;talhoes&amp;#39;, verbose = FALSE)
+# Plotar talhões e pontos amostrais
+points(plot(talhoes),
+       x = dados[[1]][,1],y = dados[[1]][,2],
+       pch=&amp;#39;+&amp;#39;, col=&amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Agora devemos gerar um grid de interpolação para toda a área de interesse e, por fim, aplicar o modelo cúbico ajustado.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Gerar grid de interpolação
+library(sp)
+grid &amp;lt;- spsample(talhoes, type = &amp;#39;regular&amp;#39;, n = 10000)
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Realizar a krigagem
+krigagem_is &amp;lt;- krige.conv(dados, locations = as.data.frame(grid), krige = krige.control(obj.model = modelo_selecionado))
+# Armazenar resultado em spatial data frame
+krigagem_is &amp;lt;- coordinates(data.frame(x = data.frame(grid)[,1],
+                                      y = data.frame(grid)[,2],
+                                      IS = krigagem_is$predict))
+# Converter em raster
+library(raster)
+krigagem_is &amp;lt;- rasterFromXYZ(krigagem_is)
+# Definir projeção
+projection(krigagem_is) &amp;lt;- CRS(&amp;quot;+init=epsg:31982&amp;quot;)
+image(krigagem_is, asp=1,xlab=&amp;#39;Longitude&amp;#39;,ylab = &amp;#39;Latitude&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-10-2.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Plotar resultado com bordas e pontos amostrais
+image(krigagem_is, asp=1,xlab=&amp;#39;Longitude&amp;#39;,ylab = &amp;#39;Latitude&amp;#39;)
+plot(talhoes, add = TRUE)
+points(x = dados[[1]][,1],y = dados[[1]][,2],
+       pch=&amp;#39;+&amp;#39;, col=&amp;#39;black&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Agora que visualizamos o resultado da krigagem, podemos exportar um arquivo em formato .tif, que permitirá a visualização em qualquer outro software de SIG.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Salvar arquivo .tif
+writeRaster(krigagem_is,&amp;#39;krigagem_is.tif&amp;#39;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;style&gt;
+body {
+text-align: justify}
+h1 {
+text-align: center}
+&lt;/style&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+&lt;/style&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Linguagem R e a crise de replicabilidade na ciência</title>
+      <link>/post/linguagem-r-e-a-crise-de-replicabilidade-na-ciencia/</link>
+      <pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>/post/linguagem-r-e-a-crise-de-replicabilidade-na-ciencia/</guid>
+      <description>
+
+
+&lt;p&gt;Garantir a replicabilidade de análises e experimentos é uma premissa básica a ser adotada por qualquer pesquisador. Podemos elencar três razões que tornam esta uma premissa fundamental na ciência [1]:&lt;/p&gt;
+&lt;p&gt;-Contribui para o aprimoramento da qualidade dos resultados de pesquisa e acúmulo do conhecimento científico.&lt;br /&gt;
+-Facilita o processo de compreensão de noções básicas de análise de dados por parte de pesquisadores iniciantes.&lt;br /&gt;
+-Protege a comunidade científica contra erros honestos e contra fraudes deliberadas.&lt;/p&gt;
+&lt;p&gt;Esta postagem visa explicar a razão pela qual devemos disponibilizar dados e scripts de análise em estudos científicos e análises técnicas, especialmente aquelas que, quando publicadas, possam orientar a opinião pública ou de determinados setores da sociedade, e/ou subsidiar decisões governamentais.&lt;/p&gt;
+&lt;div id=&#34;a-crise-de-replicabilidade&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;A Crise de Replicabilidade&lt;/h2&gt;
+&lt;p&gt;O assunto pode parecer novo para muitas pessoas, mas discussões em torno da Crise de Replicabilidade já ocorrem na comunidade científica internacional há algumas décadas, e pode estar em seu auge. Em 2016 a Revista Nature publicou um estudo que revelou que, em um universo de 1.576 pesquisadores de diversas universidades ao redor do mundo, 70% afirmam que tentaram e não conseguiram reproduzir os estudos de outros cientistas e mais da metade não conseguiu reproduzir seus próprios experimentos. Ao todo, 52% dos estudiosos revelou acreditar em uma crise significativa de replicabilidade na ciência [2].&lt;/p&gt;
+&lt;p&gt;Um estudo publicado em 2018 na Plos One indicou que entre as principais razões para baixas taxas de replicabilidade em estudos científicos estão erros e omissões no relatório de resultados estatísticos [3]. Hoje a crise de replicabilidade é um problema conhecido na comunidade científica, e há consenso em torno da afirmação de que a seletividade na publicação dos dados é uma das principais razões para este fenômeno. Abordagens duvidosas - como a seleção de dados de forma a direcioná-los a uma hipótese específica - geram publicações com informações seletivas e, portanto, de difícil reprodutibilidade [4].&lt;/p&gt;
+&lt;p&gt;Esta crise é especialmente problemática quando temos a compreensão de que ciência acabou se tornando uma ferramenta dada como “certa” pelas pessoas (ou pela maior parte destas), já que seus resultados muitas vezes são aceitos sem nenhum questionamento. Esse é um problema recorrente na divulgação científica para o público em geral e vai diretamente contra a essência da ciência: sem questionamento, não há progresso [3]. Por outro lado, &lt;strong&gt;sempre é preciso cuidado para que este fenômeno não se torne mero discurso alarmista e resulte, em vez do avanço, em ataques à ciência e ao conhecimento especializado&lt;/strong&gt; [5].&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;linguagem-r-e-a-analise-replicavel&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Linguagem R e a análise replicável&lt;/h2&gt;
+&lt;p&gt;Diversas soluções já foram sugeridas para solucionar ou mitigar esta crise, mas o fato é que não há solução simples quando muitos são os fatores que contribuem para sua existência. No entanto, Roger Peng (2009) formulou uma atrativa definição de replicabilidade, traduzida a seguir [6]:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Em muitos campos de estudo, existem exemplos de investigações científicas que não podem ser totalmente replicadas devido à falta de tempo ou recursos. Em tal situação, é necessário um padrão mínimo que possa preencher o vazio entre a replicação completa e nada. Um candidato a esse padrão mínimo é a “pesquisa reproduzível”, que exige que conjuntos de dados e códigos de computação sejam disponibilizados a outros para verificar os resultados publicados e realizar análises alternativas.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A partir da afirmação de Peng pode-se compreender a importante contribuição do R, R Markdown, knitr, sweave, R Studio e GitHub na promoção da replicabilidade de estudos científicos. Por esta razão este Blog utiliza estes recursos de modo a promover e incentivar a transparência na investigação científica e a contribuição técnico-científica e pedagógica das análises replicáveis.&lt;/p&gt;
+&lt;p&gt;Mãos à obra!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;referencias&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Referências&lt;/h2&gt;
+&lt;p&gt;[1] &lt;a href=&#34;https://periodicos.ufpe.br/revistas/politicahoje/article/download/3770/3074&#34; class=&#34;uri&#34;&gt;https://periodicos.ufpe.br/revistas/politicahoje/article/download/3770/3074&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2] &lt;a href=&#34;https://www.nature.com/news/1-500-scientists-lift-the-lid-on-reproducibility-1.19970&#34; class=&#34;uri&#34;&gt;https://www.nature.com/news/1-500-scientists-lift-the-lid-on-reproducibility-1.19970&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[3] &lt;a href=&#34;https://doi.org/10.1371/journal.pone.0202447&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1371/journal.pone.0202447&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[4] &lt;a href=&#34;http://www.astropt.org/2016/06/01/existe-uma-crise-de-reprodutibilidade-na-ciencia/&#34; class=&#34;uri&#34;&gt;http://www.astropt.org/2016/06/01/existe-uma-crise-de-reprodutibilidade-na-ciencia/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[5] &lt;a href=&#34;http://www.labi.ufscar.br/2018/04/27/reprodutibilidade-na-ciencia-e-epidemia-de-fiscalizacao/&#34; class=&#34;uri&#34;&gt;http://www.labi.ufscar.br/2018/04/27/reprodutibilidade-na-ciencia-e-epidemia-de-fiscalizacao/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[6] &lt;a href=&#34;https://academic.oup.com/biostatistics/article/10/3/405/293660&#34; class=&#34;uri&#34;&gt;https://academic.oup.com/biostatistics/article/10/3/405/293660&lt;/a&gt;&lt;/p&gt;
+&lt;style&gt;
+body {
+text-align: justify}
+h1 {
+text-align: center}
+&lt;/style&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+&lt;/style&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Funções de afilamento de forma fixa e variável</title>
+      <link>/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/</link>
+      <pubDate>Thu, 18 Apr 2019 09:28:18 -0300</pubDate>
+      <guid>/post/funcoes-de-afilamento-de-forma-fixa-e-variavel/</guid>
+      <description>
+
+
+&lt;p&gt;Na mensuração florestal, funções de afilamento de forma fixa são as mais difundidas devido à facilidade em seu ajuste, uso e aplicação. O procedimento de integração exigido para obtenção dos volumes a diferentes alturas também é facilitado pelo uso desse tipo de função. Tradicionalmente, são mais utilizadas as funções polinomiais, como o modelo de Schöepfer (1966) e de Hradetzky (1976), descritos matematicamente pelas seguintes expressões.&lt;/p&gt;
+&lt;div id=&#34;modelo-de-schoepfer-1966&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Modelo de Schöepfer (1966)&lt;/h4&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\frac{d_i}{dap}=\beta_0\frac{h_i}{ht}+\beta_1\frac{h_i}{ht}^2+\beta_2\frac{h_i}{ht}^3+\beta_3\frac{h_i}{ht}^4+\beta_4\frac{h_i}{ht}^5\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modelo-de-hradetzky-1976&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Modelo de Hradetzky (1976)&lt;/h4&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\frac{d_i}{dap}=\beta_0\frac{h_i}{ht}+\beta_1\frac{h_i}{ht}^{p_1}+\beta_2\frac{h_i}{ht}^{p_2}+...+\beta_n\frac{h_i}{ht}^{p_n}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;em que:&lt;br /&gt;
+&lt;span class=&#34;math inline&#34;&gt;\(\beta_1,\beta_2,...,\beta_n\)&lt;/span&gt; = parâmetros do modelo;&lt;br /&gt;
+&lt;span class=&#34;math inline&#34;&gt;\(p_1,p_2,...,p_n\)&lt;/span&gt; = parâmetros selecionados pelo procedimento &lt;em&gt;stepwise&lt;/em&gt;;
+&lt;span class=&#34;math inline&#34;&gt;\(h_i\)&lt;/span&gt; = altura até a seção i do fuste;&lt;br /&gt;
+&lt;span class=&#34;math inline&#34;&gt;\(d_i\)&lt;/span&gt; = diâmetro na seção i do fuste;&lt;br /&gt;
+&lt;span class=&#34;math inline&#34;&gt;\(dap\)&lt;/span&gt; = diãmetro à altura do peito;&lt;br /&gt;
+&lt;span class=&#34;math inline&#34;&gt;\(ht\)&lt;/span&gt; = altura total.&lt;/p&gt;
+&lt;p&gt;As funções de afilamento de forma variável, introduzidas por Kozak (1988) e Newnham (1988), possuem como principal vantagem a capacidade de modelar diferentes formas de árvore em função de características dendrométricas, tornando possível a utilização de uma única equação de afilamento para árvores em diferentes idades e de diferentes portes. A utilização desta técnica permite a redução do número de funções de afilamento ajustados considerando povoamentos de uma mesma espécie estabelecidos em momentos e condições distintas. Neste exercício testaremos o modelo de Kozak (2004) e a função trigonométrica de Bi (2000) como representantes desta categoria de modelos.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modelo-de-kozak-2004&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Modelo de Kozak (2004)&lt;/h4&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[d_i = \beta_0dap^{\beta_1}\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{\beta_2+\beta_3\left(\frac{1}{e^{dap/ht}}\right)+\beta_4dap^{\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]}+\beta_5\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{dap/ht}}\]&lt;/span&gt;
+em que:&lt;br /&gt;
+&lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; = primeiro ponto de inflexão calculado no modelo segmentado de Max e Burkhart (1976). Obs: neste exercício, será tratado como mais uma parâmetro a ser ajustado.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modelo-de-bi-2000&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Modelo de Bi (2000)&lt;/h4&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[d_i=dap\left[ \left( \frac{log\;sin \left( \frac{\pi}{2} \frac{h_i}{ht} \right)}
+{log\;sin \left( \frac{\pi}{2} \frac{1,3}{ht} \right)} \right) ^{\beta_0+\beta_1sin\left(\frac{\pi}{2}\frac{h_i}{ht}\right)+\beta_2sin\left(\frac{3\pi}{2}\frac{h_i}{ht}\right)+\beta_3sin\left(\frac{\pi}{2}\frac{h_i}{ht}\right)/\frac{h_i}{ht}+\beta_4dap+\beta_5\frac{h_i}{ht}\sqrt{dap}+\beta_6\frac{h_i}{ht}\sqrt{ht}}
+\right]\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Agora vamos importar um conjunto de dados de cubagens.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Importar dados
+library(readxl)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;readxl&amp;#39; was built under R version 3.6.1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dados &amp;lt;- read_excel(&amp;#39;dados_cubagens.xlsx&amp;#39;)
+dados&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 54,415 x 7
+##    ARVORE   DAP    DI     HI    HT `HI/HT` `DI/DAP`
+##     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1      1 0.600 1.91  0.0735  1.47  0.05       3.18
+##  2      1 0.600 1.59  0.1     1.47  0.0680     2.65
+##  3      1 0.600 1.59  0.147   1.47  0.1        2.65
+##  4      1 0.600 1.27  0.221   1.47  0.15       2.12
+##  5      1 0.600 1.27  0.3     1.47  0.204      2.12
+##  6      1 0.600 1.27  0.368   1.47  0.25       2.12
+##  7      1 0.600 1.27  0.515   1.47  0.35       2.12
+##  8      1 0.600 0.955 0.662   1.47  0.45       1.59
+##  9      1 0.600 0.955 0.7     1.47  0.476      1.59
+## 10      1 0.600 0.955 0.809   1.47  0.55       1.59
+## # ... with 54,405 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(dados)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      ARVORE          DAP              DI               HI         
+##  Min.   :   1   Min.   : 0.60   Min.   : 0.000   Min.   : 0.0735  
+##  1st Qu.: 840   1st Qu.:11.80   1st Qu.: 5.411   1st Qu.: 0.8315  
+##  Median :1688   Median :18.10   Median :12.096   Median : 3.0600  
+##  Mean   :1688   Mean   :18.39   Mean   :13.455   Mean   : 5.5745  
+##  3rd Qu.:2534   3rd Qu.:23.90   3rd Qu.:19.735   3rd Qu.: 8.8200  
+##  Max.   :3369   Max.   :56.70   Max.   :72.256   Max.   :33.1300  
+##        HT            HI/HT              DI/DAP      
+##  Min.   : 1.47   Min.   :0.003018   Min.   :0.0000  
+##  1st Qu.: 8.79   1st Qu.:0.074244   1st Qu.:0.4310  
+##  Median :14.26   Median :0.350000   Median :0.8402  
+##  Mean   :14.23   Mean   :0.396116   Mean   :0.7572  
+##  3rd Qu.:19.40   3rd Qu.:0.750000   3rd Qu.:1.0459  
+##  Max.   :33.13   Max.   :1.000000   Max.   :3.8197&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Plotar dispersão da relação hi/ht x di/dap
+plot(`DI/DAP`~`HI/HT`, data = dados,
+     xlab = &amp;#39;hi/ht&amp;#39;, ylab = &amp;#39;di/dap&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Plotar dispersão da relação dap x ht
+plot(HT~DAP, data = dados,
+     xlab = &amp;#39;DAP (cm)&amp;#39;, ylab = &amp;#39;Ht (m)&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-1-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A base carregada consiste em dados de cubagens de 3.369 árvores, que tiveram diâmetros medidos a alturas relativas (5%, 10%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85% e 95%), e também a alturas fixas (0,1, 0,3, 0,7 e 1,30 m).&lt;/p&gt;
+&lt;p&gt;Foram cubadas árvores de 0,6 a 56,7 cm de DAP, com alturas variando entre 1,47 e 33,13 m, indicando uma elevada variabilidade de portes de árvores.&lt;/p&gt;
+&lt;p&gt;Para utilização de funções polinomiais ou outras de forma fixa, é necessária a estratificação dos dados visando a redução da variabilidade existente. Neste caso, deverá ser gerada uma função de afilamento para cada estrato.
+Neste exemplo vamos estratificar o conjunto de dados a partir do DAP, sendo que o primeiro grupo compreenderá as árvores com menos de 5cm de dap e os demais serão formados com intervalos de 10 cm.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Gerar as classes
+dados$classe_dap &amp;lt;- cut(dados$DAP,
+                          breaks = c(0,c(5,15,25,35,45,Inf)))
+# Resumir as classes
+summary(dados$classe_dap)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    (0,5]   (5,15]  (15,25]  (25,35]  (35,45] (45,Inf] 
+##     2992    17072    22495     9744     1808      304&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Agora iremos ajustar o modelo de Schöepfer para cada um dos grupos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Criar uma lista para armazenar os modelos
+funcoes_schoepfer &amp;lt;- list()
+# Ajustar um modelo para cada grupo
+for(i in levels(dados$classe_dap)){
+funcoes_schoepfer[[i]] &amp;lt;- lm(`DI/DAP`~`HI/HT`+I(`HI/HT`^2)+I(`HI/HT`^3)+I(`HI/HT`^4)+I(`HI/HT`^5), data = subset(dados,dados$classe_dap==i))
+}
+# Resumo dos resultados dos modelos
+lapply(funcoes_schoepfer, summary)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $`(0,5]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.66404 -0.13447 -0.03705  0.07904  2.09370 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)    1.92582    0.02667  72.209  &amp;lt; 2e-16 ***
+## `HI/HT`       -4.70643    0.55981  -8.407  &amp;lt; 2e-16 ***
+## I(`HI/HT`^2)  16.05552    3.46957   4.628 3.86e-06 ***
+## I(`HI/HT`^3) -39.11067    8.78035  -4.454 8.72e-06 ***
+## I(`HI/HT`^4)  43.79063    9.62348   4.550 5.57e-06 ***
+## I(`HI/HT`^5) -17.91781    3.79077  -4.727 2.39e-06 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.2528 on 2986 degrees of freedom
+## Multiple R-squared:  0.8186, Adjusted R-squared:  0.8183 
+## F-statistic:  2694 on 5 and 2986 DF,  p-value: &amp;lt; 2.2e-16
+## 
+## 
+## $`(5,15]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.36353 -0.06147 -0.01085  0.04006  0.87430 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)    1.379487   0.003302  417.77   &amp;lt;2e-16 ***
+## `HI/HT`       -3.688856   0.077362  -47.68   &amp;lt;2e-16 ***
+## I(`HI/HT`^2)  14.704332   0.517705   28.40   &amp;lt;2e-16 ***
+## I(`HI/HT`^3) -36.228895   1.369753  -26.45   &amp;lt;2e-16 ***
+## I(`HI/HT`^4)  39.094052   1.541516   25.36   &amp;lt;2e-16 ***
+## I(`HI/HT`^5) -15.249265   0.617510  -24.70   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.1055 on 17066 degrees of freedom
+## Multiple R-squared:  0.9396, Adjusted R-squared:  0.9396 
+## F-statistic: 5.313e+04 on 5 and 17066 DF,  p-value: &amp;lt; 2.2e-16
+## 
+## 
+## $`(15,25]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.23163 -0.03199 -0.00084  0.02766  0.48511 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)    1.246046   0.001145 1087.90   &amp;lt;2e-16 ***
+## `HI/HT`       -4.071009   0.030005 -135.68   &amp;lt;2e-16 ***
+## I(`HI/HT`^2)  17.476210   0.208070   83.99   &amp;lt;2e-16 ***
+## I(`HI/HT`^3) -38.933380   0.561174  -69.38   &amp;lt;2e-16 ***
+## I(`HI/HT`^4)  37.991111   0.639011   59.45   &amp;lt;2e-16 ***
+## I(`HI/HT`^5) -13.708137   0.257950  -53.14   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.05219 on 22489 degrees of freedom
+## Multiple R-squared:  0.981,  Adjusted R-squared:  0.9809 
+## F-statistic: 2.316e+05 on 5 and 22489 DF,  p-value: &amp;lt; 2.2e-16
+## 
+## 
+## $`(25,35]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.20115 -0.03189  0.00065  0.02693  0.35102 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)    1.216174   0.001565  776.87   &amp;lt;2e-16 ***
+## `HI/HT`       -4.202002   0.043583  -96.41   &amp;lt;2e-16 ***
+## I(`HI/HT`^2)  18.609030   0.305483   60.92   &amp;lt;2e-16 ***
+## I(`HI/HT`^3) -40.530337   0.825602  -49.09   &amp;lt;2e-16 ***
+## I(`HI/HT`^4)  38.157955   0.940584   40.57   &amp;lt;2e-16 ***
+## I(`HI/HT`^5) -13.252322   0.379751  -34.90   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.05069 on 9738 degrees of freedom
+## Multiple R-squared:  0.9816, Adjusted R-squared:  0.9815 
+## F-statistic: 1.036e+05 on 5 and 9738 DF,  p-value: &amp;lt; 2.2e-16
+## 
+## 
+## $`(35,45]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.142770 -0.027460 -0.002403  0.022018  0.257885 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)    1.200521   0.003163  379.56   &amp;lt;2e-16 ***
+## `HI/HT`       -4.266131   0.091633  -46.56   &amp;lt;2e-16 ***
+## I(`HI/HT`^2)  18.779570   0.647795   28.99   &amp;lt;2e-16 ***
+## I(`HI/HT`^3) -39.872610   1.753872  -22.73   &amp;lt;2e-16 ***
+## I(`HI/HT`^4)  36.363012   1.998715   18.19   &amp;lt;2e-16 ***
+## I(`HI/HT`^5) -12.208106   0.806897  -15.13   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.0463 on 1802 degrees of freedom
+## Multiple R-squared:  0.9846, Adjusted R-squared:  0.9845 
+## F-statistic: 2.303e+04 on 5 and 1802 DF,  p-value: &amp;lt; 2.2e-16
+## 
+## 
+## $`(45,Inf]`
+## 
+## Call:
+## lm(formula = `DI/DAP` ~ `HI/HT` + I(`HI/HT`^2) + I(`HI/HT`^3) + 
+##     I(`HI/HT`^4) + I(`HI/HT`^5), data = subset(dados, dados$classe_dap == 
+##     i))
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.122237 -0.031020  0.003504  0.025404  0.166978 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)    1.191807   0.007745 153.874  &amp;lt; 2e-16 ***
+## `HI/HT`       -4.527408   0.231443 -19.562  &amp;lt; 2e-16 ***
+## I(`HI/HT`^2)  20.094868   1.650086  12.178  &amp;lt; 2e-16 ***
+## I(`HI/HT`^3) -42.661480   4.478459  -9.526  &amp;lt; 2e-16 ***
+## I(`HI/HT`^4)  38.969213   5.107729   7.629 3.20e-13 ***
+## I(`HI/HT`^5) -13.070928   2.062564  -6.337 8.63e-10 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.04846 on 298 degrees of freedom
+## Multiple R-squared:  0.9834, Adjusted R-squared:  0.9832 
+## F-statistic:  3539 on 5 and 298 DF,  p-value: &amp;lt; 2.2e-16&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para ajustar o modelo de Kozak, vamos utilizar a função &lt;code&gt;nlsLM&lt;/code&gt; do pacote &lt;code&gt;minpack.LM&lt;/code&gt;. Esta função busca parâmetros de modelos não lineares empregando o algoritmo Levenberg-Marquadt e costuma ser mais eficiente que a função &lt;code&gt;nls&lt;/code&gt;, especialmente quando buscamos ajustar modelos mais complexos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(minpack.lm)
+# Ajuste do modelo de Kozak
+kozak &amp;lt;- nlsLM(DI~b0*(DAP^b1)*((1-(HI/HT)^(1/4))/(1-p^(1/4)))^(b2+b3*(1/exp(DAP/HT))+b4*DAP^((1-(HI/HT)^(1/4))/(1-p^(1/4)))+b5*((1-(HI/HT)^(1/4))/(1-p^(1/4)))^(DAP/HT)),
+data = dados,
+start=list(b0=1,b1=1,b2=1,b3=-1,b4=0.00001,b5=-0.01, p = 0.3))
+summary(kozak)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Formula: DI ~ b0 * (DAP^b1) * ((1 - (HI/HT)^(1/4))/(1 - p^(1/4)))^(b2 + 
+##     b3 * (1/exp(DAP/HT)) + b4 * DAP^((1 - (HI/HT)^(1/4))/(1 - 
+##     p^(1/4))) + b5 * ((1 - (HI/HT)^(1/4))/(1 - p^(1/4)))^(DAP/HT))
+## 
+## Parameters:
+##      Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## b0  1.129e+00  6.062e-03  186.26   &amp;lt;2e-16 ***
+## b1  8.896e-01  9.135e-04  973.88   &amp;lt;2e-16 ***
+## b2  6.994e-01  2.313e-03  302.40   &amp;lt;2e-16 ***
+## b3 -6.180e-01  6.870e-03  -89.95   &amp;lt;2e-16 ***
+## b4  2.752e-06  3.284e-07    8.38   &amp;lt;2e-16 ***
+## b5 -3.390e-02  9.240e-04  -36.69   &amp;lt;2e-16 ***
+## p   2.868e-01  4.167e-03   68.83   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 1.248 on 54408 degrees of freedom
+## 
+## Number of iterations to convergence: 10 
+## Achieved convergence tolerance: 1.49e-08&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Ajuste do modelo de Bi
+bi = nlsLM(DI ~ DAP*(log(sin((pi/2)*(HI/HT)))/(log(sin((pi/2)*(1.3/HT)))))**
+  (b0+b1*sin((pi/2)*(HI/HT))+b2*cos((3*pi/2)*(HI/HT))+b3*(sin((pi/2)*(HI/HT))/(HI/HT))+
+     b4*DAP+b5*(HI/HT)*DAP**0.5+b6*(HI/HT)*HT**0.5),
+data=dados,
+start=c(b0=1.8,b1=-0.2,b2=-0.04,b3=-0.9,b4=-0.0006,b5=0.07,b6=-.14))
+summary(bi)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Formula: DI ~ DAP * (log(sin((pi/2) * (HI/HT)))/(log(sin((pi/2) * (1.3/HT)))))^(b0 + 
+##     b1 * sin((pi/2) * (HI/HT)) + b2 * cos((3 * pi/2) * (HI/HT)) + 
+##     b3 * (sin((pi/2) * (HI/HT))/(HI/HT)) + b4 * DAP + b5 * (HI/HT) * 
+##     DAP^0.5 + b6 * (HI/HT) * HT^0.5)
+## 
+## Parameters:
+##      Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## b0  1.801e+00  1.212e-02  148.65   &amp;lt;2e-16 ***
+## b1 -2.803e-01  6.123e-03  -45.78   &amp;lt;2e-16 ***
+## b2 -5.107e-02  1.565e-03  -32.62   &amp;lt;2e-16 ***
+## b3 -9.142e-01  7.134e-03 -128.14   &amp;lt;2e-16 ***
+## b4 -8.873e-04  5.188e-05  -17.10   &amp;lt;2e-16 ***
+## b5  7.406e-02  1.161e-03   63.79   &amp;lt;2e-16 ***
+## b6 -1.277e-01  9.892e-04 -129.13   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.9302 on 54408 degrees of freedom
+## 
+## Number of iterations to convergence: 4 
+## Achieved convergence tolerance: 1.49e-08&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Agora que temos as funções de forma fixa e variável ajustadas, vamos comparar os métodos. Para tal, precisamos armazenar os resíduos em vetores e calcular o erro quadrático médio em relação ao &lt;span class=&#34;math inline&#34;&gt;\(d_i\)&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Criar conjuntos que armazenarão os resultados das funções de Schoepfer
+di_schoepfer &amp;lt;- c()
+residuos_schoepfer &amp;lt;- c()
+# Calcular os resíduos a partir das funções de Schoepfer
+for(i in unique(dados$classe_dap)){
+di_schoepfer &amp;lt;- append(di_schoepfer,predict(funcoes_schoepfer[[i]])*subset(dados$DAP,dados$classe_dap==i))
+residuos_schoepfer &amp;lt;- append(residuos_schoepfer,subset(dados$DI,dados$classe_dap==i)-predict(funcoes_schoepfer[[i]])*subset(dados$DAP,dados$classe_dap==i))}
+# Resíduos da função de Kozak e Bi
+residuos_kozak &amp;lt;- residuals(kozak)
+residuos_bi &amp;lt;- residuals(bi)
+# Calcular o erro quadrático médio
+eqm_schoepfer &amp;lt;- sqrt(sum(residuos_schoepfer^2)/nrow(dados))
+eqm_kozak &amp;lt;- sqrt(sum(residuos_kozak^2)/nrow(dados))
+eqm_bi &amp;lt;- sqrt(sum(residuos_bi^2)/nrow(dados))
+# Calcular o erro quadrático médio percentual
+eqm_perc_schoepfer &amp;lt;- eqm_schoepfer/mean(dados$DI)*100
+eqm_perc_kozak &amp;lt;- eqm_kozak/mean(dados$DI)*100
+eqm_perc_bi &amp;lt;- eqm_bi/mean(dados$DI)*100
+# Plotar resultados
+par(mfrow=c(1,3))
+plot(residuos_schoepfer~di_schoepfer,
+     main = paste(&amp;#39;Schoepfer - EQM% = &amp;#39;, round(eqm_perc_schoepfer,2)),
+     xlab = &amp;#39;Di estimado&amp;#39;, ylab = &amp;#39;Resíduos&amp;#39;,
+     ylim = c(-15,15))+
+  lines(x=c(0,70),y=c(0,0))
+plot(residuos_kozak~dados$DI,
+     main = paste(&amp;#39;Kozak - EQM% = &amp;#39;, round(eqm_perc_kozak,2)),
+     xlab = &amp;#39;Di estimado&amp;#39;, ylab = &amp;#39;Resíduos&amp;#39;,
+     ylim = c(-15,15))+
+  lines(x=c(0,70),y=c(0,0))
+plot(residuos_bi~dados$DI,
+     main = paste(&amp;#39;Bi - EQM% = &amp;#39;, round(eqm_perc_bi,2)),
+     xlab = &amp;#39;Di estimado&amp;#39;, ylab = &amp;#39;Resíduos&amp;#39;,
+     ylim = c(-15,15))+
+  lines(x=c(0,70),y=c(0,0))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+O modelo trigonométrico de Bi superou os demais tanto pelo menor erro quadrático médio, quanto pela dispersão de resíduos mais homogeneamente distribuída ao longo da linha de ajuste.&lt;br /&gt;
+Por fim, vamos visualizar a capacidade da equação gerada a partir do modelo de Bi em descrever diferentes formas de fuste.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Simular dados de árvores de diferentes portes
+arvores_simuladas &amp;lt;- data.frame(DAP = rep(c(5,20,50),each = 100),
+                                HT = rep(c(5,25,35),each = 100),
+                                `HI/HT` = seq(0.01,1,0.01))
+arvores_simuladas$HI &amp;lt;- arvores_simuladas$HI.HT*arvores_simuladas$HT
+# Aplicar a equação ajustada de Bi aos dados simulados
+arvores_simuladas$DI &amp;lt;- predict(bi,arvores_simuladas)
+# Plotar curvas de afilamento
+lt &amp;lt;- 1
+plot(I(DI/DAP)~I(HI/HT),subset(arvores_simuladas, arvores_simuladas$DAP==unique(arvores_simuladas$DAP)[1]), type = &amp;#39;l&amp;#39;, lty = lt,
+             xlab =&amp;#39;DI/DAP&amp;#39;, ylab = &amp;#39;HI/HT&amp;#39;)+
+for (i in unique(arvores_simuladas$DAP)[-1]) {
+  lt &amp;lt;- lt+1
+  lines(I(DI/DAP)~I(HI/HT),
+        subset(arvores_simuladas,arvores_simuladas$DAP==i), lty = lt)
+}
+    legend(&amp;#39;topright&amp;#39;, legend= c(&amp;#39;DAP = 5&amp;#39;, &amp;#39;DAP = 20&amp;#39;, &amp;#39;DAP = 50&amp;#39;),
+           lty = 1:3)&lt;/code&gt;&lt;/pre&gt;
+&lt;img src=&#34;/post/2019-03-20-funcoes-de-afilamento-de-forma-fixa-e-variavel_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+&lt;style&gt;
+body {
+text-align: justify}
+h1 {
+text-align: center}
+&lt;/style&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+&lt;/style&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Classificação de sítios florestais</title>
+      <link>/post/classificacao-de-sitios-florestais/</link>
+      <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
+      <guid>/post/classificacao-de-sitios-florestais/</guid>
+      <description>
+
+
+&lt;p&gt;O índice de sítio é a medida que representa a capacidade produtiva de um local. Geralmente este atributo é representado pela altura dominante em uma idade de referência, que costuma ser a idade de rotação do povoamento (&lt;em&gt;e.g.&lt;/em&gt; 7 anos para eucaliptos). Por sua vez, a altura dominante geralmente é representada pela média da altura das 100 árvores de maior diâmetro por hectare, mas outros conceitos também podem ser utilizados (&lt;em&gt;e.g.&lt;/em&gt; altura média das 100 árvores de maior altura).&lt;/p&gt;
+&lt;p&gt;Nesse post iremos praticar a modelagem da altura dominante e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Importar dados
+library(readxl)
+dados &amp;lt;- read_excel(&amp;#39;dados_processados.xlsx&amp;#39;)
+dados&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 813 x 9
+##    PARCELA ESPÉCIE     IDADE   DAP ALTURA     N  HDOM     G VOLTOT
+##      &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1       1 PINUS TAEDA  19.8  24.1   23.6  927.  25.5  44.5   509.
+##  2       2 PINUS TAEDA  19.8  25.1   24.0  748.  25.6  38.1   436.
+##  3       3 PINUS TAEDA  24.2  28.0   26.6  700   26.3  44.6   563.
+##  4       4 PINUS TAEDA  24.2  30.3   25.9  600.  29.9  44.9   551.
+##  5       5 PINUS TAEDA  24.2  32.0   27.9  600   31.3  49.4   655.
+##  6       6 PINUS TAEDA  24.2  30.7   27.4  650   29.5  50.1   657.
+##  7       7 PINUS TAEDA  24.2  30.8   25.3  583.  27.2  44.5   532.
+##  8       8 PINUS TAEDA  24.2  30.0   26.2  640.  30.3  46.7   579.
+##  9       9 PINUS TAEDA  24.2  30.4   26.4  633.  31.1  47.2   594.
+## 10      10 PINUS TAEDA  24.2  28.2   26.4  620.  29.2  40.1   507.
+## # ... with 803 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Cada linha representa uma unidade amostral processada, totalizando 819 parcelas. Agora vamos visualizar a dispersão da altura dominante em relação à idade.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Visualizar a dispersão dos pares de dados Idade x Hdom
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &amp;#39;Idade (anos)&amp;#39;, ylab = &amp;#39;Hdom (m)&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;O crescimento em altura dominante usualmente é representado por modelos biológicos como o de Chapman-Richards, que possui a seguinte expressão matemática:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Para o ajuste de funções não lineares, utilizamos a função &lt;code&gt;nls&lt;/code&gt;. Para tal, devemos especificar os valores iniciais de busca para cada um dos três parâmetros, no argumento &lt;code&gt;start&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Ajuste do modelo de Chapman-Richards
+chapman_richards &amp;lt;- nls(HDOM ~ b0*(1-exp(-b1*IDADE))^b2,
+                    start=list(b0=30,b1=0.1,b2=1),
+                    data = dados)
+summary(chapman_richards)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Formula: HDOM ~ b0 * (1 - exp(-b1 * IDADE))^b2
+## 
+## Parameters:
+##     Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## b0 29.457221   0.641201   45.94   &amp;lt;2e-16 ***
+## b1  0.109695   0.009308   11.79   &amp;lt;2e-16 ***
+## b2  1.193787   0.088648   13.47   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 1.706 on 810 degrees of freedom
+## 
+## Number of iterations to convergence: 4 
+## Achieved convergence tolerance: 3.513e-06&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Alguns indicadores de ajuste podem ser acessadas diretamente da seguinte maneira:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Erro padrão das estimativas
+summary(chapman_richards)$sigma&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.706423&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Coeficientes do modelo ajustado
+coef(chapman_richards)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         b0         b1         b2 
+## 29.4572212  0.1096947  1.1937874&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Definir range da projeção
+idade_inicial &amp;lt;- 0; idade_final &amp;lt;- 30; intervalo_projecao &amp;lt;- 1
+# Gerar curva guia
+curva_guia &amp;lt;- data.frame(IDADE = seq(from = idade_inicial, to = idade_final,by = intervalo_projecao))
+curva_guia$HDOM = predict(chapman_richards,curva_guia)
+# Plotar curva guia
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &amp;#39;Idade (anos)&amp;#39;, ylab = &amp;#39;Hdom (m)&amp;#39;)+
+lines(HDOM~IDADE,curva_guia)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Plotar dispersão dos resíduos
+plot(dados$HDOM,residuals(chapman_richards),
+     xlab = &amp;#39;Idade (anos)&amp;#39;, ylab = &amp;#39;Hdom (m)&amp;#39;)+
+  lines(c(0,35),c(0,0))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-5-2.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Realizados os procedimentos de ajuste e avaliação do modelo, partimos para a geração de curvas de sítio. Empregaremos o método da diferença algébrica para projetar todas as observações para uma idade de referência. Por estarmos trabalhando com dados de &lt;em&gt;Pinus taeda&lt;/em&gt;, adotaremos a idade de 15 anos como referência.&lt;br /&gt;
+O método da diferença algébrica exige a aplicação de uma forma diferencial do modelo de crescimento, em que partimos de uma idade e altura dominante conhecida. Utilizaremos a forma que deriva a equação em função do parâmetro &lt;span class=&#34;math inline&#34;&gt;\(\beta_0\)&lt;/span&gt;, permitindo a construção de curvas anamórficas.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(Hdom_2 = Hdom_1\frac{(1-exp^{\beta_1*Idade_2})^{\beta_2}}{(1-exp^{\beta_1*Idade_1})^{\beta_2}}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Agora vamos criar uma função para projetar as alturas dominantes utilizando a equação diferencial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Equação diferencial de Chapman-Richards
+chapman_richards_proj &amp;lt;-function(hdom1,id2,id1){
+  hdom1*
+    ((1-exp(-coef(chapman_richards)[2]*id2))/(1-exp(-coef(chapman_richards)[2]*id1)))^
+    coef(chapman_richards)[3]}
+# Projeção da altura dominante para a idade de 15 anos
+dados$sitio &amp;lt;- chapman_richards_proj(hdom1=dados$HDOM,id2=15,id1=dados$IDADE)
+summary(dados$sitio)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   16.90   21.55   22.93   22.79   23.98   31.13&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;O próximo passo será criar a classes de sítio. Neste exercício, vamos criar 5 classes dimensionadas em função de limites mínimos e máximos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Definir o número de classes
+nclasses &amp;lt;- 5
+# Identificar a amplitude das classes de sitio
+amplitude &amp;lt;- round(max(dados$sitio),0) - round(min(dados$sitio),0)
+# Aqui diminuo a amplitude para reduzir o efeito dos extremos
+amplitude &amp;lt;- amplitude-4
+# Definir o intervalo de classe
+ic &amp;lt;- amplitude/nclasses
+ic&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Limite inferior
+li &amp;lt;- mean(dados$sitio)-((nclasses-1)/2*ic)-ic/2
+# Definir as classes
+classes &amp;lt;- rep(NA,nclasses)
+for(i in 1:nclasses){
+classes[i] &amp;lt;-  li+i*ic-ic/2
+}
+classes &amp;lt;- round(classes,1)
+classes&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 18.8 20.8 22.8 24.8 26.8&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Criar data.frame para armazenar as curvas das classes
+curvas_classes &amp;lt;- data.frame(Sitio = rep(classes, each = nrow(curva_guia)),
+                             Idade = rep(curva_guia$IDADE,times = nclasses))
+# Projetar curvas para as classes
+curvas_classes$Hdom &amp;lt;- chapman_richards_proj(hdom1=curvas_classes$Sitio,id2=curvas_classes$Idade,id1=rep(15, nrow(curvas_classes)))
+# Plotar gráfico
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &amp;#39;Idade (anos)&amp;#39;, ylab = &amp;#39;Hdom (m)&amp;#39;)+
+  for(j in classes){
+  lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## integer(0)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para agregar mais informações ao nosso gráfico, vamos gerar curvas para os limites de classe.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Definir os limites de classes
+limites &amp;lt;- rep(NA,nclasses+1)
+for(i in 1:(nclasses+1)){
+limites[i] &amp;lt;-  li+(i-1)*ic
+}
+limites
+# Criar data.frame para armazenar as curvas dos limites de classes
+curvas_limites &amp;lt;-  data.frame(Sitio = rep(limites, each = nrow(curva_guia)),
+                              Idade = rep(curva_guia$IDADE,times = nclasses+1))
+# Projetar curvas para os limites de classes
+curvas_limites$Hdom &amp;lt;- chapman_richards_proj(hdom1=curvas_limites$Sitio,id2=curvas_limites$Idade,id1=rep(15, nrow(curvas_limites)))
+# Plotar gráfico
+plot(HDOM~IDADE, data = dados, 
+     col= rgb(red = 0, green = 0, blue = 0, alpha = 0.5), # Adicionar transparência
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &amp;#39;Idade (anos)&amp;#39;, ylab = &amp;#39;Hdom (m)&amp;#39;)+
+  for(j in classes){
+  lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}+
+  for(k in limites){
+  lines(Hdom~Idade,subset(curvas_limites, curvas_limites$Sitio==k), lty=2)}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Para finalizar, vamos definir a qual classe de sitio cada parcela pertence. Para facilitar nosso trabalho, vamos utilizar função ´cut´.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Classificação de sitio
+dados$classe_sitio &amp;lt;- cut(dados$sitio,
+                          breaks = c(-Inf,limites[-c(1,nclasses+1)],Inf),
+                          labels = classes)
+# Resumo das classes
+table(dados$classe_sitio)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## 18.8 20.8 22.8 24.8 26.8 
+##   53  180  339  205   36&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A função &lt;code&gt;table&lt;/code&gt; conta o número de casos para cada classe. Podemos também visualizar a distribuição de parcelas nas classes de sítio por meio de um histograma.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;text(barplot(table(dados$classe_sitio),
+             xlab = &amp;#39;Classe de sítio&amp;#39;, ylab = &amp;#39;Número de parcelas&amp;#39;,
+             ylim = c(0,max(table(dados$classe_sitio))*1.1)),table(dados$classe_sitio)+20,
+       labels=table(dados$classe_sitio))&lt;/code&gt;&lt;/pre&gt;
+&lt;img src=&#34;/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+&lt;style&gt;
+body {
+text-align: justify}
+h1 {
+text-align: center}
+&lt;/style&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+&lt;/style&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

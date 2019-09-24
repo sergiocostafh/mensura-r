@@ -1,0 +1,191 @@
+---
+title: Classificação de sítios florestais
+author: Sérgio Costa
+date: '2019-03-20'
+slug: classificacão-de-sitios-florestais
+categories:
+  - Biometria
+tags: []
+subtitle: ''
+summary: 'Ajuste do modelo de Chapman-Richards para obtenção de índices de sítio e a geração de classes pelo método da curva guia.'
+authors: []
+lastmod: '2019-03-21T12:09:05-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+O índice de sítio é a medida que representa a capacidade produtiva de um  local. Geralmente este atributo é representado pela altura dominante em uma idade de referência, que costuma ser a idade de rotação do povoamento (*e.g.* 7 anos para eucaliptos). Por sua vez, a altura dominante geralmente é representada pela média da altura das 100 árvores de maior diâmetro por hectare, mas outros conceitos também podem ser utilizados (*e.g.* altura média das 100 árvores de maior altura).
+
+Nesse post iremos praticar a modelagem da altura dominante e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.
+
+```{r warning= FALSE}
+# Importar dados
+library(readxl)
+dados <- read_excel('dados_processados.xlsx')
+dados
+```
+
+
+Cada linha representa uma unidade amostral processada, totalizando 819 parcelas. Agora vamos visualizar a dispersão da altura dominante em relação à idade.
+
+```{r, fig.align='center'}
+# Visualizar a dispersão dos pares de dados Idade x Hdom
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = 'Idade (anos)', ylab = 'Hdom (m)')
+```
+
+O crescimento em altura dominante usualmente é representado por modelos biológicos como o de Chapman-Richards, que possui a seguinte expressão matemática:  
+  
+$Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}$  
+  
+Para o ajuste de funções não lineares, utilizamos a função `nls`. Para tal, devemos especificar os valores iniciais de busca para cada um dos três parâmetros, no argumento `start`.
+```{r}
+# Ajuste do modelo de Chapman-Richards
+chapman_richards <- nls(HDOM ~ b0*(1-exp(-b1*IDADE))^b2,
+                    start=list(b0=30,b1=0.1,b2=1),
+                    data = dados)
+summary(chapman_richards)
+```
+Alguns indicadores de ajuste podem ser acessadas diretamente da seguinte maneira:
+```{r}
+# Erro padrão das estimativas
+summary(chapman_richards)$sigma
+# Coeficientes do modelo ajustado
+coef(chapman_richards)
+```
+```{r, results='hide',fig.keep='all',fig.align='center'}
+# Definir range da projeção
+idade_inicial <- 0; idade_final <- 30; intervalo_projecao <- 1
+# Gerar curva guia
+curva_guia <- data.frame(IDADE = seq(from = idade_inicial, to = idade_final,by = intervalo_projecao))
+curva_guia$HDOM = predict(chapman_richards,curva_guia)
+# Plotar curva guia
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = 'Idade (anos)', ylab = 'Hdom (m)')+
+lines(HDOM~IDADE,curva_guia)
+# Plotar dispersão dos resíduos
+plot(dados$HDOM,residuals(chapman_richards),
+     xlab = 'Idade (anos)', ylab = 'Hdom (m)')+
+  lines(c(0,35),c(0,0))
+
+```
+
+Realizados os procedimentos de ajuste e avaliação do modelo, partimos para a geração de curvas de sítio. Empregaremos o método da diferença algébrica para projetar todas as observações para uma idade de referência. Por estarmos trabalhando com dados de *Pinus taeda*, adotaremos a idade de 15 anos como referência.  
+O método da diferença algébrica exige a aplicação de uma forma diferencial do modelo de crescimento, em que partimos de uma idade e altura dominante conhecida. Utilizaremos a forma que deriva a equação em função do parâmetro $\beta_0$, permitindo a construção de curvas anamórficas.
+  
+$Hdom_2 = Hdom_1\frac{(1-exp^{\beta_1*Idade_2})^{\beta_2}}{(1-exp^{\beta_1*Idade_1})^{\beta_2}}$  
+  
+Agora vamos criar uma função para projetar as alturas dominantes utilizando a equação diferencial.
+```{r}
+# Equação diferencial de Chapman-Richards
+chapman_richards_proj <-function(hdom1,id2,id1){
+  hdom1*
+    ((1-exp(-coef(chapman_richards)[2]*id2))/(1-exp(-coef(chapman_richards)[2]*id1)))^
+    coef(chapman_richards)[3]}
+# Projeção da altura dominante para a idade de 15 anos
+dados$sitio <- chapman_richards_proj(hdom1=dados$HDOM,id2=15,id1=dados$IDADE)
+summary(dados$sitio)
+```
+
+O próximo passo será criar a classes de sítio. Neste exercício, vamos criar 5 classes dimensionadas em função de limites mínimos e máximos.
+```{r}
+#Definir o número de classes
+nclasses <- 5
+# Identificar a amplitude das classes de sitio
+amplitude <- round(max(dados$sitio),0) - round(min(dados$sitio),0)
+# Aqui diminuo a amplitude para reduzir o efeito dos extremos
+amplitude <- amplitude-4
+# Definir o intervalo de classe
+ic <- amplitude/nclasses
+ic
+# Limite inferior
+li <- mean(dados$sitio)-((nclasses-1)/2*ic)-ic/2
+# Definir as classes
+classes <- rep(NA,nclasses)
+for(i in 1:nclasses){
+classes[i] <-  li+i*ic-ic/2
+}
+classes <- round(classes,1)
+classes
+# Criar data.frame para armazenar as curvas das classes
+curvas_classes <- data.frame(Sitio = rep(classes, each = nrow(curva_guia)),
+                             Idade = rep(curva_guia$IDADE,times = nclasses))
+# Projetar curvas para as classes
+curvas_classes$Hdom <- chapman_richards_proj(hdom1=curvas_classes$Sitio,id2=curvas_classes$Idade,id1=rep(15, nrow(curvas_classes)))
+# Plotar gráfico
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = 'Idade (anos)', ylab = 'Hdom (m)')+
+  for(j in classes){
+  lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}
+  
+```
+Para agregar mais informações ao nosso gráfico, vamos gerar curvas para os limites de classe.
+```{r, results='hide',fig.keep='all',fig.align='center'}
+# Definir os limites de classes
+limites <- rep(NA,nclasses+1)
+for(i in 1:(nclasses+1)){
+limites[i] <-  li+(i-1)*ic
+}
+limites
+# Criar data.frame para armazenar as curvas dos limites de classes
+curvas_limites <-  data.frame(Sitio = rep(limites, each = nrow(curva_guia)),
+                              Idade = rep(curva_guia$IDADE,times = nclasses+1))
+# Projetar curvas para os limites de classes
+curvas_limites$Hdom <- chapman_richards_proj(hdom1=curvas_limites$Sitio,id2=curvas_limites$Idade,id1=rep(15, nrow(curvas_limites)))
+# Plotar gráfico
+plot(HDOM~IDADE, data = dados, 
+     col= rgb(red = 0, green = 0, blue = 0, alpha = 0.5), # Adicionar transparência
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = 'Idade (anos)', ylab = 'Hdom (m)')+
+  for(j in classes){
+  lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}+
+  for(k in limites){
+  lines(Hdom~Idade,subset(curvas_limites, curvas_limites$Sitio==k), lty=2)}
+```
+Para finalizar, vamos definir a qual classe de sitio cada parcela pertence. Para facilitar nosso trabalho, vamos utilizar função ´cut´. 
+```{r warning=FALSE, message=FALSE}
+# Classificação de sitio
+dados$classe_sitio <- cut(dados$sitio,
+                          breaks = c(-Inf,limites[-c(1,nclasses+1)],Inf),
+                          labels = classes)
+# Resumo das classes
+table(dados$classe_sitio)
+```
+A função `table` conta o número de casos para cada classe. Podemos também visualizar a distribuição de parcelas nas classes de sítio por meio de um histograma.
+```{r, results='hide',fig.keep='all',fig.align='center'}
+text(barplot(table(dados$classe_sitio),
+             xlab = 'Classe de sítio', ylab = 'Número de parcelas',
+             ylim = c(0,max(table(dados$classe_sitio))*1.1)),table(dados$classe_sitio)+20,
+       labels=table(dados$classe_sitio))
+```
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+</style>

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Sérgio Costa">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Análise da série mensal de dados de desmatamento provenientes do Sistema de Alerta de Desmatamento do Imazon, ao longo de 10 anos. ">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#4caf50">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.f4abb599bb56654c53d64efd32461c0d.css">
+
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-148593204-1', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon-32.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/">
+
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Mensura-R - Ciência Florestal em linguagem R">
+  <meta property="og:url" content="/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/">
+  <meta property="og:title" content="Análise de dados de desmatamento do Imazon | Mensura-R - Ciência Florestal em linguagem R">
+  <meta property="og:description" content="Análise da série mensal de dados de desmatamento provenientes do Sistema de Alerta de Desmatamento do Imazon, ao longo de 10 anos. "><meta property="og:image" content="/img/share.png">
+  <meta property="twitter:image" content="/img/share.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2019-09-14T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2019-09-14T18:58:01-03:00">
+  
+
+  
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/"
+    },
+    "headline": "Análise de dados de desmatamento do Imazon",
+    
+    "datePublished": "2019-09-14T00:00:00Z",
+    "dateModified": "2019-09-14T18:58:01-03:00",
+    
+    "author": {
+      "@type": "Person",
+      "name": "Sérgio Costa"
+    },
+    
+    "description": "Análise da série mensal de dados de desmatamento provenientes do Sistema de Alerta de Desmatamento do Imazon, ao longo de 10 anos. "
+  }
+</script>
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Análise de dados de desmatamento do Imazon | Mensura-R - Ciência Florestal em linguagem R</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Pesquisar</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/"><img src="/img/logo.png" alt="Mensura-R - Ciência Florestal em linguagem R"></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Alterar navegação">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Postagens</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Sobre</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Análise de dados de desmatamento do Imazon</h1>
+
+  
+
+  
+    
+
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Última atualização em
+      
+    
+    Sep 14, 2019
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/#disqus_thread"></a>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/categories/generalidades/">Generalidades</a></span>
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/&amp;text=An%c3%a1lise%20de%20dados%20de%20desmatamento%20do%20Imazon" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/&amp;t=An%c3%a1lise%20de%20dados%20de%20desmatamento%20do%20Imazon" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=An%c3%a1lise%20de%20dados%20de%20desmatamento%20do%20Imazon&amp;body=/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/&amp;title=An%c3%a1lise%20de%20dados%20de%20desmatamento%20do%20Imazon" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=An%c3%a1lise%20de%20dados%20de%20desmatamento%20do%20Imazon%20/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/desmatamento-na-amazonia-analise-de-dados-do-imazon/&amp;title=An%c3%a1lise%20de%20dados%20de%20desmatamento%20do%20Imazon" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+
+
+<div id="introducao" class="section level2">
+<h2>Introdução</h2>
+<p>Recentemente os principais jornais do Brasil e do mundo noticiaram um possível aumento nas taxas de desmatamento na Amazônia, a partir de dados divulgados pelo INPE (Instituto Nacional de Pesquisas Espaciais). O tema gerou polêmicas envolvendo o atual presidente Jair Bolsonaro, o Ministro do Meio Ambiente Ricardo Salles e o agora ex-diretor do órgão, Ricardo Galvão - os governistas questionaram a veracidade das informações, incendiando a discussão que culminou na demissão de Galvão.<br />
+Não somente o INPE, mas outras insituições que monitoram a perda de cobertura vegetal na Amazônia brasileira dispararam alertas para a elevação nas taxas de desmatamento, como a Imazon e a Nasa, e a discussão em torno do assunto prosseguiu para além do território brasileiro.</p>
+<div id="o-embate-entre-o-inpe-e-o-governo-federal" class="section level3">
+<h3>O embate entre o INPE e o Governo Federal</h3>
+<p>Os dados divulgados no início de agosto pelo INPE a partir do sistema DETER indicou que a área desmatada na Amazônia brasileira teve um aumento de 278% em relação a julho de 2018, somando 2.254 km² [1]. Considerando o acumulado no período de agosto de 2018 a julho de 2019 os alertas indicaram um aumento de 50% em relação ao mesmo período do ano anterior (agosto de 2017 a julho de 2018).
+Além da alta no desmatamento o INPE também apontou um aumento expressivo nos focos de incêndio na região e como desmatamento e queimada estão fortemente relacionados [2], o aumento no número de focos de incêndio têm acompanhado o aumento dos alertas de desmatamento [3].
+Após a fivulgação dos dados, o presidente Jair Bolsonaro acusou o Inpe de divulgar dados que não condiziam com a realidade [4] e Ricardo Salles atribuiu o aumento dos incêndios à ocorrência de tempo seco, vento e calor na região [5].</p>
+</div>
+<div id="a-busca-pelos-dados" class="section level3">
+<h3>A busca pelos dados</h3>
+<p>Como aqui busco defender o conceito de análise replicável, fui em busca dos dados originais disponibilizados pelo INPE para gerar minhas próprias análises e interpretações sobre o tema, já que assunto tomou as redes sociais, que ficaram repletas de informações distorcidas [2]. Apesar do <em>dashboard</em> disponível na plataforma <a href="http://terrabrasilis.dpi.inpe.br/">TerraBrasilis</a> permitir visualização e análise dos dados do Deter, estes são disponibilizados apenas para o período de 1 ano, o que impede que possamos comparar os dados recentes com os obtidos em anos anteriores.</p>
+</div>
+<div id="o-sistema-de-alerta-de-desmatamento-do-imazon" class="section level3">
+<h3>O Sistema de Alerta de Desmatamento do Imazon</h3>
+<p>O Imazon é uma instituição de pesquisas sem fins lucrativos, qualificada pelo Ministério da Justiça, e que realiza o monitoramento da Amazônia Legal pelo uso de imagens de satélites que reportam mensalmente o ritmo do desmatamento e da degradação florestal na região por meio do Sistema de Alerta de Desmatamento (SAD).
+No site <a href="https://imazongeo.org.br/#/">ImazonGeo</a> estão disponíveis os dados mensais de desmatamento e degradação florestal desde janeiro de 2008. É importante salientar que o sistema do Imazon somente detecta áreas de desmatamento superiores a 1 hectare e que apesar de ambos monitorarem o desmatamento na Amazônia, os dados do SAD não são comparáveis aos do DETER, devido a diferenças metodológicas. As detecções do SAD são realizadas somente para áreas de floresta primária, ou seja, florestas que nunca sofreram perturbações significativas, enquanto o Deter é um sistema de alertas que avalia alterações na cobertura florestal, servindo de suporte para órgãos de fiscalização ambiental. Maiores informações sobre o método empregado pelo SAD pode ser obtidos <a href="https://imazon.org.br/publicacoes/faq-sad/">aqui</a>.</p>
+</div>
+<div id="obtendo-dados-climaticos-da-amazonia-legal" class="section level3">
+<h3>Obtendo dados climáticos da Amazônia Legal</h3>
+<p>Já que desmatamento e focos de incêndio estão correlacionados e foi apontado que o aumento das queimadas na Amazônia pode ser um efeito do clima mais seco, resolvi complementar a análise consolidando dados de estações meteorológicas do Banco de Dados Meteorológicos para Ensino e Pesquisa (BDMEP) do Instituto Nacional de Meteorologia (INMET). O banco abriga dados meteorológicos diários em forma digital, coletados por meio das várias estações meteorológicas convencionais da rede de estações do INMET, de acordo com as normas técnicas internacionais da Organização Meteorológica Mundial [6].
+O procedimento de consolidação foi simples: a partir dos dados diários das estações meteorológicas instaladas nos Estados do Acre, Amazonas, Amapá, Pará, Roraima e Rondônia (47 estações) foi obtida a precipitação mensal média para cada mês-ano, considerando os dados de todas as estações. O procedimento de obtenção dos dados pode ser acessado <a href="https://github.com/sergiocostafh/desmatamento_sad_imazon">aqui</a>.</p>
+</div>
+</div>
+<div id="analisando-os-dados-do-sad" class="section level2">
+<h2>Analisando os dados do SAD</h2>
+<p>Os dados de desmatamento disponibilizados pelo SAD estão em formato <em>shapefile</em> e foi necessário algum trabalho computacional para compilá-los em uma tabela, já que os arquivos são separados mês a mês. Fiz o download de todos os meses compreendidos entre agosto de 2009 e julho de 2019, totalizando 10 anos de análise ou 120 meses. Isso foi possível graças ao programa R, e todo o procedimento desenvolvido para compilação dos dados em uma única tabela está disponível em meu repositório pessoal no GitHub (clique <a href="https://github.com/sergiocostafh/desmatamento_sad_imazon/blob/master/tratamento%20de%20dados_imazon.R">aqui</a> para acessar). Observação: Não há dados para o mês de fevereiro de 2016, pois, segundo a equipe de suporte do Imazon, neste período o satélite MODIS que era utilizado para o mapeamento das áreas se encontrava em manutenção.</p>
+<p>Nesta postagem foi possível reproduzir resultados que têm sido publicados na <a href="https://imazon.org.br/categorias/transparencia-florestal/">seção de transparência florestal</a> no site do Imazon. Todos os códigos de programação em R utilizados para as análises acessadas clicando no botão <strong>código</strong> localizado logo acima dos gráficos, no canto direito.</p>
+<p>Vamos então às análises. Mas não sem antes recomendar que você clique <a href="http://127.0.0.1:4321/post/linguagem-r-e-a-crise-de-replicabilidade-na-ciencia/">aqui</a> e entenda por que apresento os scripts de análises ao longo das postagens e a importância das análises replicáveis.</p>
+<p>Ao visualizar a série histórica dos dados mensais de desmatamento mapeado pelo SAD, alguns padrões já nos saltam aos olhos. O primeiro que podemos elencar é que o mês de julho de 2019 registrou o maior acúmulo de área desmatada em um mês para toda a série histórica, e isso já explica boa parte da discussão levantada nas últimas semanas. Outro ponto importante é que há uma clara tendência na formação de picos ascendentes na taxa de desmatamento desde 2012.<br />
+Os picos ocorrem geralmente entre os meses de junho e julho, que coincide com o período do ano de menor pluviosidade na região. No entanto, não há alterações visíveis no padrão de chuvas na região ao longo dos 10 anos de análise, indicando inexistência de períodos mais secos na região, e que portanto, não há relação climática com o aumento na quantidade de focos de incêndio detectados pelo INPE.</p>
+<pre class="r"><code># Importar a base de dados do SAD
+dados_desmatamento &lt;- read.table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_sad.txt&#39;)
+dados_precipitacao &lt;- read.table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/serie_precipitacao_amazonia_inmet.txt&#39;)
+dados_precipitacao$date &lt;- as.Date(dados_precipitacao$date)
+# Criar coluna Mês - Ano
+dados_desmatamento$`MES ANO`=as.Date(paste(dados_desmatamento$ANO,&#39;-&#39;,dados_desmatamento$MES,&#39;-01&#39;, sep=&#39;&#39;))
+# Carregar pacotes necessário para geração dos gráficos
+library(ggplot2)
+library(plotly)
+# Plotar série histórica de desmatamento mensal
+ggplot()+
+  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = &#39;Desmatamento&#39;))+
+  geom_bar(aes(x=dados_precipitacao$date, y=dados_precipitacao$prec*2,
+            fill = &#39;Precipitação&#39;),stat = &#39;identity&#39;, alpha = .3, color = NA)+
+    scale_x_date(expand = c(0,0), limits = c(as.Date(&#39;2009/01/01&#39;),as.Date(&#39;2019/12/31&#39;)) ,breaks = &#39;year&#39;,
+                 date_labels = &#39;%Y&#39;, minor_breaks = NULL)+
+    scale_y_continuous(expand = c(0,0), limits = c(0,1500),
+                     breaks = seq(0,1500,250),
+                     sec.axis = sec_axis(~./2, name = &#39;Precipitação acumulada (mm/mês)&#39;))+
+  scale_color_manual(name = NULL ,values = c(&#39;black&#39;))+
+  scale_fill_manual(name = NULL ,values = c(&#39;blue&#39;))+
+  xlab(NULL)+
+  ylab(&#39;Desmatamento detectado (km²)&#39;)+
+  labs(title = &#39;Área desmatada na Amazônia Legal&#39;,
+       subtitle = &#39;Acumulado mensal&#39;,
+       caption = &#39;Fonte de dados: SAD - Imazon (2019) e BDMEP - Inmet (2019)&#39;)+
+  theme_light(base_size = 14)+
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        axis.text.x = element_text(hjust = -0.5),
+        legend.position = &#39;bottom&#39;)+
+  annotate(geom=&#39;text&#39;, size = 3.5,
+           x=dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],
+           y=dados_desmatamento$AREA[c(1,13,21,39,49,59,72,82,95,106,119)]+50,
+           label=format.Date(dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],&#39;%b %Y&#39;))</code></pre>
+<p><img src="/post/2019-09-14-desmatamento-na-amazônia-análise-de-dados-do-imazon_files/figure-html/unnamed-chunk-1-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Comparação julho 2019/julho 2018
+# round(1-dados_desmatamento$AREA[119]/dados_desmatamento$AREA[107], 3)*-1
+# Comparação junho 2019/julho 2018
+# round(1-dados_desmatamento$AREA[118]/dados_desmatamento$AREA[106], 3)*-1</code></pre>
+<p>Se tomarmos por base a área desmatada no mês de julho de 2018 (758 km²) e compararmos ao mesmo mês de 2019 (1.287 km²), constataremos que houve um aumento de 70%. A interpretação deste resultado exige cuidado pois pode gerar interpretações tendenciosas quando avaliado isoladamente. Um exemplo disso, é que se aplicarmos a mesma análise ao mês de junho, em que a área desmatada somou 1167 km² e 801 km² para 2018 e 2019 respectivamente, o resultado será uma redução de 31,4%.
+O fato é que para podermos interpretar os dados de desmatamento de maneira mais consistente, precisamos avaliar o acúmulo de área desmatada em períodos maiores.
+O gráfico seguinte apresenta a área total desmatada detectada pelo SAD nos meses de janeiro a julho e a série histórica anual do PRODES e do SAD, desde 2010. Assim como o DETER, os dados do PRODES não devem ser comparados diretamente com os dados do SAD por diferenças metodológicas - o PRODES calcula o desmatamento entre 1º de agosto de um ano 31 de julho do ano seguinte, e considera não somente áreas primárias de vegetação, mas também secundárias [7]. Ainda assim, é possível observar a mesma tendência de elevação no desmatamento a partir de 2012/2013.</p>
+<pre class="r"><code># Calcular área desmatada acumulada até julho
+acumulado_julho &lt;- subset(dados_desmatamento,dados_desmatamento$MES&lt;=7)
+acumulado_julho &lt;- aggregate(acumulado_julho$AREA, by = list(ANO = as.integer(acumulado_julho$ANO)), sum)
+acumulado_ano &lt;- aggregate(dados_desmatamento$AREA, by = list(ANO = as.integer(dados_desmatamento$ANO)), sum)[-c(1,11),]
+# Dados do PRODES
+dados_prodes &lt;- read.delim(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_prodes.txt&#39;)
+dados_prodes &lt;- subset(dados_prodes,dados_prodes$Ano.Estados&gt;=2010)
+# Plotar gráfico
+ggplot()+
+  geom_line(aes(x=acumulado_ano$ANO,y=acumulado_ano$x, linetype = &#39;Acumulado anual (SAD)&#39;, color = &#39;Acumulado anual (SAD)&#39;))+
+  geom_line(aes(x=acumulado_julho$ANO,y=acumulado_julho$x, linetype = &#39;Acumulado até julho (SAD)&#39;, color = &#39;Acumulado até julho (SAD)&#39;))+
+  geom_line(aes(x=dados_prodes$Ano.Estados,y=dados_prodes$AMZ.LEGAL, linetype = &#39;Acumulado anual (PRODES)&#39;, color = &#39;Acumulado anual (PRODES)&#39;))+
+    geom_point(aes(x=acumulado_ano$ANO,y=acumulado_ano$x, shape = &#39;Acumulado anual (SAD)&#39;, color = &#39;Acumulado anual (SAD)&#39;))+
+  geom_point(aes(x=acumulado_julho$ANO,y=acumulado_julho$x, shape = &#39;Acumulado até julho (SAD)&#39;, color = &#39;Acumulado até julho (SAD)&#39;))+
+  geom_point(aes(x=dados_prodes$Ano.Estados,y=dados_prodes$AMZ.LEGAL, shape = &#39;Acumulado anual (PRODES)&#39;, color = &#39;Acumulado anual (PRODES)&#39;))+
+  scale_x_continuous(breaks=seq(2009,2019,1), minor_breaks = NULL)+
+  scale_y_continuous(expand=c(0,0),limits = c(0,8000), breaks = seq(0,8000,1000))+
+  scale_linetype_manual(name = NULL, values = c(&#39;dashed&#39;,&#39;dotted&#39;,&#39;solid&#39;))+
+  scale_shape_manual(name = NULL, values = c(1,2,3))+
+  scale_color_manual(name = NULL, values = c(&#39;darkgray&#39;,&#39;black&#39;,&#39;black&#39;))+
+  xlab(NULL)+
+  ylab(&#39;Desmatamento detectado (km²)&#39;)+
+  labs(title = &#39;Área desmatada na Amazônia Legal&#39;,
+       subtitle = &#39;Acumulado anual e de janeiro a julho&#39;,
+       caption = &#39;Fonte de dados: SAD - Imazon (2019) e PRODES - Inpe (2019)&#39;)+
+  theme_light()+
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position = &#39;bottom&#39;)</code></pre>
+<p><img src="/post/2019-09-14-desmatamento-na-amazônia-análise-de-dados-do-imazon_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual, e que em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. A partir disso pode-se inferir que em 2019 teremos uma taxa similar a 2018, ou mesmo maior, considerando o expressivo aumento detectado no mês de julho, citado anteriormente.</p>
+</div>
+<div id="conclusoes" class="section level2">
+<h2>Conclusões</h2>
+<p>A partir das análises realizadas, podemos conluir que:<br />
+<strong>1.</strong> Em julho de 2019 a série de desmatamento detectado pelo Sistema de Alerta de Desmatamento do Imazon alcançou sua máxima histórica no período de 10 anos de análise, considerando a cobertura vegetal primária perdida no período de um mês.<br />
+<strong>2.</strong> Não há ocorrência de períodos mais secos na Amazônia Legal que justifiquem aumento nos focos de incêndio apontados pelo INPE.<br />
+<strong>3.</strong> Há uma tendência de aumento nas taxas de desmatamento iniciada após o ano de 2012.<br />
+<strong>4.</strong> As análises sugerem que o acumulado anual de 2019 pode alcançar o mesmo patamar de 2018, ou mesmo atingir uma nova máxima histórica.</p>
+<center>
+</div>
+<div id="referencias" class="section level2">
+<h2>Referências</h2>
+<p>[1]<a href="http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/" class="uri">http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/</a></p>
+<p>[2]<a href="https://aosfatos.org/noticias/o-que-realmente-se-sabe-sobre-queimadas-no-brasil/" class="uri">https://aosfatos.org/noticias/o-que-realmente-se-sabe-sobre-queimadas-no-brasil/</a></p>
+<p>[3]<a href="https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439" class="uri">https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439</a></p>
+<p>[4]<a href="https://www.terra.com.br/noticias/ciencia/sustentabilidade/bolsonaro-acusa-inpe-de-divulgar-dados-mentirosos-sobre-desmatamento,41bf3feb7bab7d742c3bbb4f84c62bb74nes2dyy.html" class="uri">https://www.terra.com.br/noticias/ciencia/sustentabilidade/bolsonaro-acusa-inpe-de-divulgar-dados-mentirosos-sobre-desmatamento,41bf3feb7bab7d742c3bbb4f84c62bb74nes2dyy.html</a></p>
+<p>[5]<a href="https://oglobo.globo.com/sociedade/ricardo-salles-atribui-aumento-de-queimadas-seca-mas-ipam-diz-que-estiagem-este-ano-foi-menor-23891622" class="uri">https://oglobo.globo.com/sociedade/ricardo-salles-atribui-aumento-de-queimadas-seca-mas-ipam-diz-que-estiagem-este-ano-foi-menor-23891622</a></p>
+<p>[6]<a href="http://www.inmet.gov.br/projetos/rede/pesquisa/" class="uri">http://www.inmet.gov.br/projetos/rede/pesquisa/</a></p>
+<p>[7]<a href="http://www.obt.inpe.br/prodes/metodologia.pdf" class="uri">http://www.obt.inpe.br/prodes/metodologia.pdf</a></p>
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+</style>
+</div>
+
+    </div>
+
+    
+
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/ggplot2/">ggplot2</a>
+  
+  <a class="badge badge-light" href="/tags/plotly/">plotly</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      
+      <img class="portrait mr-3" src="/authors/admin/avatar_hud331b0fa8fcc1f2536696b8503e9bd94_274393_250x250_fill_lanczos_center_2.png" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Sérgio Costa</a></h5>
+      <h6 class="card-subtitle">MSc. Engenheiro Florestal</h6>
+      <p class="card-text" itemprop="description">Mestre em Engenharia Florestal pela Universidade Federal do Paraná, atualmente trabalha como Especialista em Modelagem de Dados na Arauco Forest Brasil.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+          <li>
+            <a itemprop="sameAs" href="mailto:sergio.vscf@gmail.com" >
+              <i class="fas fa-envelope"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://www.linkedin.com/in/sergio-costafh/" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/sergiocostafh" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+    
+
+    
+
+    
+<section id="comments">
+  
+    
+<div id="disqus_thread"></div>
+<script>
+  let disqus_config = function () {
+    
+    
+    
+  };
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+      return;
+    }
+    var d = document, s = d.createElement('script'); s.async = true;
+    s.src = 'https://' + "mensura-r" + '.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    <script id="dsq-count-scr" src="https://mensura-r.disqus.com/count.js" async></script>
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.dc856155b640fa1cd8bd8b7b068fe79c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    
+      <a href="/privacy/">Privacy Policy</a>
+    
+    
+       &middot; 
+      <a href="/terms/">Terms</a>
+        
+  </p>
+  
+
+  <p class="powered-by">
+    &copy; Mensura-R, 2019 &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

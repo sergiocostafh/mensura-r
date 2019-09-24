@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Sérgio Costa">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Nesse exemplo são apresentados os procedimentos para interpolação do índice de sítio por meio de krigagem ordinária.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/krigagem-do-indice-de-sitio/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#4caf50">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.f4abb599bb56654c53d64efd32461c0d.css">
+
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-148593204-1', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon-32.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/krigagem-do-indice-de-sitio/">
+
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Mensura-R - Ciência Florestal em linguagem R">
+  <meta property="og:url" content="/post/krigagem-do-indice-de-sitio/">
+  <meta property="og:title" content="Krigagem do índice de sitio | Mensura-R - Ciência Florestal em linguagem R">
+  <meta property="og:description" content="Nesse exemplo são apresentados os procedimentos para interpolação do índice de sítio por meio de krigagem ordinária."><meta property="og:image" content="/img/share.png">
+  <meta property="twitter:image" content="/img/share.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2019-08-14T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2019-08-15T20:04:42-03:00">
+  
+
+  
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "/post/krigagem-do-indice-de-sitio/"
+    },
+    "headline": "Krigagem do índice de sitio",
+    
+    "datePublished": "2019-08-14T00:00:00Z",
+    "dateModified": "2019-08-15T20:04:42-03:00",
+    
+    "author": {
+      "@type": "Person",
+      "name": "Sérgio Costa"
+    },
+    
+    "description": "Nesse exemplo são apresentados os procedimentos para interpolação do índice de sítio por meio de krigagem ordinária."
+  }
+</script>
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Krigagem do índice de sitio | Mensura-R - Ciência Florestal em linguagem R</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Pesquisar</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/"><img src="/img/logo.png" alt="Mensura-R - Ciência Florestal em linguagem R"></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Alterar navegação">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Postagens</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Sobre</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Krigagem do índice de sitio</h1>
+
+  
+
+  
+    
+
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Última atualização em
+      
+    
+    Aug 15, 2019
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/krigagem-do-indice-de-sitio/#disqus_thread"></a>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/categories/geoprocessamento/">Geoprocessamento</a></span>
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/krigagem-do-indice-de-sitio/&amp;text=Krigagem%20do%20%c3%adndice%20de%20sitio" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/krigagem-do-indice-de-sitio/&amp;t=Krigagem%20do%20%c3%adndice%20de%20sitio" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Krigagem%20do%20%c3%adndice%20de%20sitio&amp;body=/post/krigagem-do-indice-de-sitio/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/krigagem-do-indice-de-sitio/&amp;title=Krigagem%20do%20%c3%adndice%20de%20sitio" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Krigagem%20do%20%c3%adndice%20de%20sitio%20/post/krigagem-do-indice-de-sitio/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/krigagem-do-indice-de-sitio/&amp;title=Krigagem%20do%20%c3%adndice%20de%20sitio" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+
+
+<p>O índice de sítio é um atributo que representa o potencial de produtividade de determinado local, sendo influenciado por fatores geológicos, topográficos, climáticos, edáficos e bióticos, apresentando de modo geral algum nível de dependência espacial, sendo portanto possível a realização de inferências espaciais sob seu comportamento.<br />
+Nesse exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de <a href="http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf">Mello (2004)</a> e <a href="https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf">Pelissari (2015)</a>.</p>
+<p>Iniciaremos este exemplo com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas.</p>
+<pre class="r"><code>library(readxl)</code></pre>
+<pre><code>## Warning: package &#39;readxl&#39; was built under R version 3.6.1</code></pre>
+<pre class="r"><code>library(geoR)</code></pre>
+<pre><code>## --------------------------------------------------------------
+##  Analysis of Geostatistical Data
+##  For an Introduction to geoR go to http://www.leg.ufpr.br/geoR
+##  geoR version 1.7-5.2.1 (built on 2016-05-02) is now loaded
+## --------------------------------------------------------------</code></pre>
+<pre class="r"><code># Importar dados
+dados &lt;- read_excel(&#39;dados_interpolacao.xlsx&#39;)
+dados</code></pre>
+<pre><code>## # A tibble: 101 x 4
+##    PARCELA      X       Y    IS
+##      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1       1 440559 7801189  31.3
+##  2       2 440846 7801282  32.0
+##  3       3 440734 7801475  29.6
+##  4       4 440923 7801657  29.4
+##  5       5 440683 7800566  33.8
+##  6       6 440709 7800769  36.9
+##  7       7 440528 7800929  35.7
+##  8       8 440783 7800975  31.0
+##  9       9 440989 7800264  30.4
+## 10      10 440872 7800395  33.9
+## # ... with 91 more rows</code></pre>
+<pre class="r"><code># Transformar dados em geodata
+dados &lt;- as.geodata(dados,coords.col = 2:3, data.col = 4)</code></pre>
+<p>Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência. Esta avaliação é importante para averiguarmos a necessidade de transformação nos dados, caso estes possuam uma distribuição não normal.</p>
+<pre class="r"><code># Plotar histograma
+hist(dados$data,
+     xlab = &#39;Índice de Sítio (m)&#39;, ylab = &#39;Frequência&#39;,
+     main = &#39;Histograma - Índice de Sítio&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Por meio de uma análise visual, os valores de sítio parecem apresentar uma distribuição próxima da normal. Vamos confirmar se há aderência aplicando o teste de Kolmogorov-Smirnov.</p>
+<pre class="r"><code># Teste de Kolmogorov-Smirnov 
+ks = ks.test(dados$data, &#39;pnorm&#39;, mean = mean(dados$data), sd = sd(dados$data))
+ks</code></pre>
+<pre><code>## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  dados$data
+## D = 0.050885, p-value = 0.9562
+## alternative hypothesis: two-sided</code></pre>
+<p>O elevado <em>p-value</em> aponta que não há diferença estatística entre a distribuição normal e a distribuição dos dados que estamos analisando, corroborando que poderemos proceder à krigagem sem transformação da variável de interesse.<br />
+A próxima etapa será plotar e analisar o semivariograma. Para tal, utilizaremos a função <code>variog</code> do <code>geoR</code>.<br />
+Dois argumentos são importantes neste procedimento. O primeiro <code>max.dist</code> se refere à distância máxima para construção do variograma. É importante que este valor seja grande o suficiente para que o variograma compreenda o alcance (<em>range</em>) que indica a zona de influência ou de dependência espacial entre as amostras.<br />
+O segundo argumento <code>uvec</code> indica o número de pontos de referência (<em>lags</em>) que serão distribuídos proporcionalmente até atingir a distância máxima definida para o variograma.<br />
+O procedimento para obtenção de valores para estes parâmetros é iterativo e será tema de uma próxima postagem. Por hora, definiremos o valor de 1000 para <code>max.dist</code> e 10 para <code>uvec</code> (1000/10 = 100, que é a distância aproximada entre as unidades amostrais alocadas ).</p>
+<pre class="r"><code># Plotar semivariograma
+semivariograma &lt;- variog(dados, max.dist = 1000, uvec = 10,messages=FALSE)
+plot(semivariograma,
+     ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" />
+O semivariograma acima considera que a semivariância possui o mesmo comportamento em todas as direções. No entanto, é fundamental avaliar se esta premissa é verdadeira. Vamos averiguar se o fenômeno da anisotropia ocorre para este conjunto de dados utilizando a função <code>variog4</code>.</p>
+<pre class="r"><code># Investigar anisotropia
+plot(variog4(dados, max.dist = 1000, uvec = 10,messages=FALSE),
+     ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
+Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia. Do contrário, seria necessária uma transformação das coordenadas, de modo a estabelecer a isotropia.
+Realizadas as devidas análises, procedemos ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.</p>
+<pre class="r"><code># Definir modelos a serem ajustados
+modelos &lt;- c(&#39;spherical&#39;,&#39;exponential&#39;,&#39;gaussian&#39;,&#39;cubic&#39;)
+# Criar lista para armazenar modelos ajustados
+modelos_ajustados &lt;- list()
+# Ajustar modelos de semivariância
+for(i in modelos){
+modelos_ajustados[[i]] &lt;- variofit(semivariograma, cov.model = i, messages = FALSE)
+}
+modelos_ajustados</code></pre>
+<pre><code>## $spherical
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: spherical
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   0.6878   2.4059 334.7681 
+## Practical Range with cor=0.05 for asymptotic range: 334.7681
+## 
+## variofit: minimised weighted sum of squares = 182.0471
+## 
+## $exponential
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: exponential
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   1.8991   1.7099 500.6367 
+## Practical Range with cor=0.05 for asymptotic range: 1499.773
+## 
+## variofit: minimised weighted sum of squares = 130.6787
+## 
+## $gaussian
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: gaussian
+## parameter estimates:
+##    tausq  sigmasq      phi 
+##   2.3775   1.0351 557.8393 
+## Practical Range with cor=0.05 for asymptotic range: 965.5186
+## 
+## variofit: minimised weighted sum of squares = 136.2159
+## 
+## $cubic
+## variofit: model parameters estimated by WLS (weighted least squares):
+## covariance model is: cubic
+## parameter estimates:
+##     tausq   sigmasq       phi 
+##    2.3595    1.0223 1282.4003 
+## Practical Range with cor=0.05 for asymptotic range: 1282.4
+## 
+## variofit: minimised weighted sum of squares = 135.2704</code></pre>
+<p>Os quatro modelos ajustados possuem três parâmetros interpretáveis: <code>tausq</code> se refere ao efeito pepita (<em>nugget</em>), <code>sigmasq</code> é também conhecido como <em>partial sill</em> e consiste no valor do patamar menos o efeito pepita, e <code>phi</code> se refere ao alcance (<em>range</em>). Vamos plotar as curvas de semivariância geradas a partir dos modelos ajustados.</p>
+<pre class="r"><code>par(mfrow = c(2,2))
+for(i in modelos){
+  plot(semivariograma,
+     ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;,
+     main = i)
+  lines.variomodel(modelos_ajustados[[i]])
+}</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+Para avaliar a eficiência dos modelos ajustados na predição do índice de sítio em locais não amostrados, devemos proceder à validação cruzada, conforme o procedimento a seguir.</p>
+<pre class="r"><code># Cria lista para armazenar resultado da validação cruzada
+modelos_xvalid &lt;- list()
+# Validação cruzada para todos os modelos
+for(i in modelos){
+modelos_xvalid[[i]] &lt;- xvalid(dados, model = modelos_ajustados[[i]], messages = FALSE)
+}
+# Formatação dos resultados
+erro_padrao &lt;- unlist(lapply(modelos_xvalid,summary))[c(11,25,39,53)]
+names(erro_padrao) &lt;- modelos
+desvio_do_erro &lt;- unlist(lapply(modelos_xvalid,summary))[c(14,28,42,56)]
+names(desvio_do_erro) &lt;- modelos
+# Plotar
+par(mfrow = c(1,2))
+text(barplot(erro_padrao, ylim =c(-0.01,0.01), main = &#39;Erro padrão da validação cruzada&#39;), y = erro_padrao+sign(erro_padrao)*0.001,labels = round(erro_padrao,5))
+text(barplot(desvio_do_erro, ylim = c(0,2), main = &#39;Desvio padrão do erro&#39;), y = desvio_do_erro+sign(desvio_do_erro)*0.1,labels = round(desvio_do_erro,3))</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-8-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>As estatísticas de validação cruzada são favoráveis ao uso do modelo cúbico, portanto, utilizaremos este para interpolar o índice de sítio para toda a área de interesse. Vamos importar os limites das áreas a serem interpoladas.</p>
+<pre class="r"><code># Definir modelo a ser utilizado
+modelo_selecionado &lt;- modelos_ajustados$cubic
+# Importar shape com os limites da área de interesse
+library(rgdal)</code></pre>
+<pre><code>## Carregando pacotes exigidos: sp</code></pre>
+<pre><code>## Warning: package &#39;sp&#39; was built under R version 3.6.1</code></pre>
+<pre><code>## rgdal: version: 1.4-4, (SVN revision 833)
+##  Geospatial Data Abstraction Library extensions to R successfully loaded
+##  Loaded GDAL runtime: GDAL 2.2.3, released 2017/11/20
+##  Path to GDAL shared files: C:/Users/sergio.costa/Documents/R/win-library/3.6/rgdal/gdal
+##  GDAL binary built with GEOS: TRUE 
+##  Loaded PROJ.4 runtime: Rel. 4.9.3, 15 August 2016, [PJ_VERSION: 493]
+##  Path to PROJ.4 shared files: C:/Users/sergio.costa/Documents/R/win-library/3.6/rgdal/proj
+##  Linking to sp version: 1.3-1</code></pre>
+<pre class="r"><code>talhoes &lt;- readOGR(&#39;.&#39;, &#39;talhoes&#39;, verbose = FALSE)
+# Plotar talhões e pontos amostrais
+points(plot(talhoes),
+       x = dados[[1]][,1],y = dados[[1]][,2],
+       pch=&#39;+&#39;, col=&#39;red&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Agora devemos gerar um grid de interpolação para toda a área de interesse e, por fim, aplicar o modelo cúbico ajustado.</p>
+<pre class="r"><code># Gerar grid de interpolação
+library(sp)
+grid &lt;- spsample(talhoes, type = &#39;regular&#39;, n = 10000)
+plot(grid)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Realizar a krigagem
+krigagem_is &lt;- krige.conv(dados, locations = as.data.frame(grid), krige = krige.control(obj.model = modelo_selecionado))
+# Armazenar resultado em spatial data frame
+krigagem_is &lt;- coordinates(data.frame(x = data.frame(grid)[,1],
+                                      y = data.frame(grid)[,2],
+                                      IS = krigagem_is$predict))
+# Converter em raster
+library(raster)
+krigagem_is &lt;- rasterFromXYZ(krigagem_is)
+# Definir projeção
+projection(krigagem_is) &lt;- CRS(&quot;+init=epsg:31982&quot;)
+image(krigagem_is, asp=1,xlab=&#39;Longitude&#39;,ylab = &#39;Latitude&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plotar resultado com bordas e pontos amostrais
+image(krigagem_is, asp=1,xlab=&#39;Longitude&#39;,ylab = &#39;Latitude&#39;)
+plot(talhoes, add = TRUE)
+points(x = dados[[1]][,1],y = dados[[1]][,2],
+       pch=&#39;+&#39;, col=&#39;black&#39;)</code></pre>
+<p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Agora que visualizamos o resultado da krigagem, podemos exportar um arquivo em formato .tif, que permitirá a visualização em qualquer outro software de SIG.</p>
+<pre class="r"><code># Salvar arquivo .tif
+writeRaster(krigagem_is,&#39;krigagem_is.tif&#39;, overwrite = TRUE)</code></pre>
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+</style>
+
+    </div>
+
+    
+
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/geor/">geoR</a>
+  
+  <a class="badge badge-light" href="/tags/rgdal/">rgdal</a>
+  
+  <a class="badge badge-light" href="/tags/sp/">sp</a>
+  
+  <a class="badge badge-light" href="/tags/raster/">raster</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      
+      <img class="portrait mr-3" src="/authors/admin/avatar_hud331b0fa8fcc1f2536696b8503e9bd94_274393_250x250_fill_lanczos_center_2.png" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Sérgio Costa</a></h5>
+      <h6 class="card-subtitle">MSc. Engenheiro Florestal</h6>
+      <p class="card-text" itemprop="description">Mestre em Engenharia Florestal pela Universidade Federal do Paraná, atualmente trabalha como Especialista em Modelagem de Dados na Arauco Forest Brasil.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+          <li>
+            <a itemprop="sameAs" href="mailto:sergio.vscf@gmail.com" >
+              <i class="fas fa-envelope"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://www.linkedin.com/in/sergio-costafh/" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/sergiocostafh" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+    
+
+    
+
+    
+<section id="comments">
+  
+    
+<div id="disqus_thread"></div>
+<script>
+  let disqus_config = function () {
+    
+    
+    
+  };
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+      return;
+    }
+    var d = document, s = d.createElement('script'); s.async = true;
+    s.src = 'https://' + "mensura-r" + '.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    <script id="dsq-count-scr" src="https://mensura-r.disqus.com/count.js" async></script>
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.dc856155b640fa1cd8bd8b7b068fe79c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    
+      <a href="/privacy/">Privacy Policy</a>
+    
+    
+       &middot; 
+      <a href="/terms/">Terms</a>
+        
+  </p>
+  
+
+  <p class="powered-by">
+    &copy; Mensura-R, 2019 &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
