@@ -24,9 +24,6 @@ copyright = "&copy; Mensura-R, {year}"
 
 # Enable analytics by entering your Google Analytics tracking ID
 googleAnalytics = "UA-148593204-1"
-
-# Link custom CSS
-custom_css = ["codefolding.css"]
 ############################
 ## Advanced options below ##
 ############################
