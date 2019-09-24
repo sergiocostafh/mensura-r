@@ -9,7 +9,7 @@ tags: []
 subtitle: ''
 summary: 'Essa postagem visa explicar a razão pela qual devemos disponibilizar dados e scripts de análise em estudos científicos.'
 authors: []
-lastmod: '2019-09-01T20:15:48-03:00'
+lastmod: '2019-07-01T23:15:48-03:00'
 featured: no
 image:
   caption: ''
