@@ -1,0 +1,21 @@
+---
+title: Ajuste e avaliação de modelos de crescimento em altura dominante
+author: Sérgio Costa
+date: '2019-09-01'
+slug: ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante
+categories:
+  - Biometria
+tags:
+  - minpack.lm
+  - ggplot2
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-09-24T17:24:55-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
