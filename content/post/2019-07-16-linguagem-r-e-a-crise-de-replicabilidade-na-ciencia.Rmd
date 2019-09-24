@@ -1,5 +1,5 @@
 ---
-title: Linguagem R e a Crise de Replicabilidade na Ciência
+title: Linguagem R e a crise de replicabilidade na ciência
 author: Sérgio Costa
 date: '2019-07-16'
 slug: linguagem-r-e-a-crise-de-replicabilidade-na-ciencia

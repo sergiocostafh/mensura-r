@@ -1,5 +1,5 @@
 ---
-title: Krigagem do Índice de Sitio
+title: Krigagem do índice de sítio
 author: Sérgio COsta
 date: '2019-08-14'
 slug: krigagem-do-índice-de-sitio
