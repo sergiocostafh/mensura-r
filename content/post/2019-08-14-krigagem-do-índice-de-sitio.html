@@ -1,8 +1,8 @@
 ---
-title: Krigagem do Índice de Sitio
+title: Krigagem do índice de sitio
 author: Sérgio COsta
 date: '2019-08-14'
-slug: krigagem-do-índice-de-sitio
+slug: krigagem-do-indice-de-sitio
 categories: 
   - Geoprocessamento
 tags:
@@ -13,7 +13,7 @@ tags:
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2019-09-01T20:04:42-03:00'
+lastmod: '2019-08-15T20:04:42-03:00'
 featured: no
 image:
   caption: ''
@@ -26,7 +26,7 @@ projects: []
 
 <p>O índice de sítio é um atributo que representa o potencial de produtividade de determinado local, sendo influenciado por fatores geológicos, topográficos, climáticos, edáficos e bióticos, apresentando de modo geral algum nível de dependência espacial, sendo portanto possível a realização de inferências espaciais sob seu comportamento.<br />
 Neste exemplo iremos interpolar o índice de sítio por meio de krigagem ordinária. A base teórica para os procedimentos abaixo descritos pode ser consultada nas teses de <a href="http://www.teses.usp.br/teses/disponiveis/11/11150/tde-06122004-100612/publico/jose.pdf">Mello (2004)</a> e <a href="https://acervodigital.ufpr.br/bitstream/handle/1884/37953/R%20-%20T%20-%20ALLAN%20LIBANIO%20PELISSARI.pdf">Pelissari (2015)</a>.</p>
-<p>Iniciaremos com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas.</p>
+<p>Iniciaremos este exemplo com a importação de dados de unidades amostrais com índice de sítio estimado e respectivas coordenadas geográficas.</p>
 <pre class="r"><code>library(readxl)
 library(geoR)</code></pre>
 <pre><code>## --------------------------------------------------------------
@@ -53,13 +53,13 @@ dados</code></pre>
 ## # ... with 91 more rows</code></pre>
 <pre class="r"><code># Transformar dados em geodata
 dados &lt;- as.geodata(dados,coords.col = 2:3, data.col = 4)</code></pre>
-<p>Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência.</p>
+<p>Podemos avaliar visualmente a distribuição dos dados plotando um histograma de frequência. Esta avaliação é importante para averiguarmos a necessidade de transformação nos dados, caso estes possuam uma distribuição não normal.</p>
 <pre class="r"><code># Plotar histograma
 hist(dados$data,
      xlab = &#39;Índice de Sítio (m)&#39;, ylab = &#39;Frequência&#39;,
      main = &#39;Histograma - Índice de Sítio&#39;)</code></pre>
 <p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>O gráfico indica que os valores de sítio apresentam uma distribuição próxima da normal, o que significa que não há necessidade de transformação dos dados. Vamos confirmar aplicando o teste de Kolmogorov-Smirnov.</p>
+<p>Por meio de uma análise visual, os valores de sítio parecem apresentar uma distribuição próxima da normal. Vamos confirmar se há aderência aplicando o teste de Kolmogorov-Smirnov.</p>
 <pre class="r"><code># Teste de Kolmogorov-Smirnov 
 ks = ks.test(dados$data, &#39;pnorm&#39;, mean = mean(dados$data), sd = sd(dados$data))
 ks</code></pre>
@@ -73,7 +73,7 @@ ks</code></pre>
 A próxima etapa será plotar e analisar o semivariograma. Para tal, utilizaremos a função <code>variog</code> do <code>geoR</code>.<br />
 Dois argumentos são importantes neste procedimento. O primeiro <code>max.dist</code> se refere à distância máxima para construção do variograma. É importante que este valor seja grande o suficiente para que o variograma compreenda o alcance (<em>range</em>) que indica a zona de influência ou de dependência espacial entre as amostras.<br />
 O segundo argumento <code>uvec</code> indica o número de pontos de referência (<em>lags</em>) que serão distribuídos proporcionalmente até atingir a distância máxima definida para o variograma.<br />
-O procedimento para obtenção de valores para estes parâmetros é iterativo e será tema de um próximo post. Por hora, definiremos o valor de 1000 para <code>max.dist</code> e 10 para <code>uvec</code> (1000/10 = 100, que é a distância aproximada entre as unidades amostrais alocadas ).</p>
+O procedimento para obtenção de valores para estes parâmetros é iterativo e será tema de uma próxima postagem. Por hora, definiremos o valor de 1000 para <code>max.dist</code> e 10 para <code>uvec</code> (1000/10 = 100, que é a distância aproximada entre as unidades amostrais alocadas ).</p>
 <pre class="r"><code># Plotar semivariograma
 semivariograma &lt;- variog(dados, max.dist = 1000, uvec = 10,messages=FALSE)
 plot(semivariograma,
@@ -84,7 +84,7 @@ O semivariograma acima considera que a semivariância possui o mesmo comportamen
 plot(variog4(dados, max.dist = 1000, uvec = 10,messages=FALSE),
      ylab = &#39;Semivariância&#39;, xlab = &#39;Distância&#39;)</code></pre>
 <p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
-Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia.
+Verifica-se que as linhas que representam variogramas para diferentes direções se cruzam diversas vezes, sem haver clara distinção de tendências. Deste modo, consideramos verdadeira a premissa de isotropia. Do contrário, seria necessária uma transformação das coordenadas, de modo a estabelecer a isotropia.
 Realizadas as devidas análises, procedemos ao ajuste de modelos de semivariância. Neste exemplo testaremos os modelos Esférico, Exponencial, Gaussiano e Cúbico.</p>
 <pre class="r"><code># Definir modelos a serem ajustados
 modelos &lt;- c(&#39;spherical&#39;,&#39;exponential&#39;,&#39;gaussian&#39;,&#39;cubic&#39;)
@@ -160,7 +160,7 @@ par(mfrow = c(1,2))
 text(barplot(erro_padrao, ylim =c(-0.01,0.01), main = &#39;Erro padrão da validação cruzada&#39;), y = erro_padrao+sign(erro_padrao)*0.001,labels = round(erro_padrao,5))
 text(barplot(desvio_do_erro, ylim = c(0,2), main = &#39;Desvio padrão do erro&#39;), y = desvio_do_erro+sign(desvio_do_erro)*0.1,labels = round(desvio_do_erro,3))</code></pre>
 <p><img src="/post/2019-08-14-krigagem-do-índice-de-sitio_files/figure-html/unnamed-chunk-8-1.png" width="1344" style="display: block; margin: auto;" /></p>
-<p>As estatísticas de validação cruzada são favoráveis ao uso do modelo cúbico, portanto, utilizaremos este para interpolar o índice de sítio para toda a área e interesse. Vamos importar os limites das áreas a serem interpoladas.</p>
+<p>As estatísticas de validação cruzada são favoráveis ao uso do modelo cúbico, portanto, utilizaremos este para interpolar o índice de sítio para toda a área de interesse. Vamos importar os limites das áreas a serem interpoladas.</p>
 <pre class="r"><code># Definir modelo a ser utilizado
 modelo_selecionado &lt;- modelos_ajustados$cubic
 # Importar shape com os limites da área de interesse
@@ -212,6 +212,8 @@ writeRaster(krigagem_is,&#39;krigagem_is.tif&#39;, overwrite = TRUE)</code></pre
 <style>
 body {
 text-align: justify}
+h1 {
+text-align: center}
 </style>
 <style type="text/css">
 
@@ -223,5 +225,7 @@ code.r{
 }
 pre {
   font-size: 14px
+}
+
 }
 </style>

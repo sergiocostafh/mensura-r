@@ -1,0 +1,188 @@
+---
+title: Ajuste e avaliação de modelos de crescimento em altura dominante
+author: Sérgio Costa
+date: '2019-09-01'
+slug: ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante
+categories:
+  - Biometria
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-09-01T21:16:26-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>Na mensuração florestal a utilização de modelos de regressão para representação de comportamentos biológicos é uma tarefa comum. Para dada variável a ser modelada o teste de diferentes modelos é necessário para aplicação daquele que melhor representa o comportamento sob análise. O método tradicionalmente aplicado para classificação de sítios florestais exige o emprego de modelos de crescimento em altura dominante, e o ajuste e análise destes será objeto desta postagem.</p>
+<p>Começaremos importando uma base de dados de povoamentos de <em>Pinus taeda</em>.</p>
+<pre class="r"><code># Importar dados
+library(readxl)
+dados &lt;- read_excel(&quot;dados_processados.xlsx&quot;)
+dados</code></pre>
+<pre><code>## # A tibble: 813 x 9
+##    PARCELA ESPÉCIE     IDADE   DAP ALTURA     N  HDOM     G VOLTOT
+##      &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+##  1       1 PINUS TAEDA  19.8  24.1   23.6  927.  25.5  44.5   509.
+##  2       2 PINUS TAEDA  19.8  25.1   24.0  748.  25.6  38.1   436.
+##  3       3 PINUS TAEDA  24.2  28.0   26.6  700   26.3  44.6   563.
+##  4       4 PINUS TAEDA  24.2  30.3   25.9  600.  29.9  44.9   551.
+##  5       5 PINUS TAEDA  24.2  32.0   27.9  600   31.3  49.4   655.
+##  6       6 PINUS TAEDA  24.2  30.7   27.4  650   29.5  50.1   657.
+##  7       7 PINUS TAEDA  24.2  30.8   25.3  583.  27.2  44.5   532.
+##  8       8 PINUS TAEDA  24.2  30.0   26.2  640.  30.3  46.7   579.
+##  9       9 PINUS TAEDA  24.2  30.4   26.4  633.  31.1  47.2   594.
+## 10      10 PINUS TAEDA  24.2  28.2   26.4  620.  29.2  40.1   507.
+## # ... with 803 more rows</code></pre>
+<pre class="r"><code>#Visualizar a relação Idade x Altura dominante
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)</code></pre>
+<p><img src="/post/2019-09-01-classificacao-de-sitio-ajuste-e-avaliacao-de-multiplos-modelos_files/figure-html/unnamed-chunk-1-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Nosso trabalho agora será ajustar diversos modelos e avaliar qual deles melhor representa os dados em questão. Testaremos os seguintes modelos.</p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="72%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Modelo</th>
+<th align="center">Expressão matemática</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Chapman-Richards</td>
+<td align="center"><span class="math inline">\(Hdom = \beta_0\left(1-exp^{\beta_1*Idade}\right)^{\beta_2}\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">Lundvist-Korf</td>
+<td align="center"><span class="math inline">\(Hdom = \beta_0exp^{-\beta_1\left(\frac{1}{Idade^{\beta_2}}\right)}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center">Bailey-3 parâmetros</td>
+<td align="center"><span class="math inline">\(Hdom = \beta_0\left(1-exp^{\beta_1*Idade^{\beta_2}}\right)\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">Clutter-Jones</td>
+<td align="center"><span class="math inline">\(Hdom = \beta_0\left(1+\beta_1Idade^{\beta_2}\right)^{\beta_3}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Para o ajuste dos modelos utilizaremos a função <code>nlsLM</code> do pacote <code>minpack.lm</code>. A diferença entre esta e a função <code>nls</code> é o algoritmo de busca dos parâmetros. A função <code>nlsLM</code> utiliza o algoritmo Levenberg-Marquardt que é mais eficiente que o Gauss-Newton utilizado pela <code>nls</code>, especialmente quando não temos referências iniciais para declarar ao argumento <code>start</code>, e/ou quando buscamos ajustar modelos com maior quantidade de parâmetros.</p>
+<pre class="r"><code># Ajustar modelos de crescimento em altura dominante
+library(minpack.lm)
+chapman_richards &lt;- nlsLM(HDOM ~ b0*(1-exp(-b1*IDADE))^b2,
+                          start=list(b0=30,b1=0.5,b2=1), control = nls.control(maxiter = 1024),
+                          data = dados)
+lundqvist_korf &lt;- nlsLM(HDOM ~ b0*exp(-b1*(1/(IDADE^b2))),
+                        start = list(b0=40,b1=5,b2=0.5), control = nls.control(maxiter = 1024),
+                        data = dados)
+bailey_3p &lt;- nlsLM(HDOM ~ b0*(1-exp(-b1*IDADE^b2)),
+                   start = list(b0=24,b1=0.05, b2=1.5), control = nls.control(maxiter = 1024),
+                   data = dados)
+clutter_jones = nlsLM(HDOM ~ b0*(1+b1*IDADE^b2)^b3,
+                      start=list(b0=25,b1=-0.2, b2=-0.1, b3=20), control = nls.control(maxiter = 1024),
+                      data = dados)
+# Armazenar modelos em uma lista
+modelos &lt;- mget(c(&#39;chapman_richards&#39;, &#39;lundqvist_korf&#39;, &#39;bailey_3p&#39;, &#39;clutter_jones&#39;),
+                envir = globalenv())</code></pre>
+<p>A vantagem de armazenar modelos em listas é que podemos analisá-los por meio de scripts mais compactos. Por exemplo, com uma única linha de código podemos acessar os coeficientes de todos os modelos empregando a função <code>lapply</code>.</p>
+<pre class="r"><code>lapply(modelos, coefficients)</code></pre>
+<pre><code>## $chapman_richards
+##         b0         b1         b2 
+## 29.4572596  0.1096941  1.1937825 
+## 
+## $lundqvist_korf
+##        b0        b1        b2 
+## 39.211720  5.203893  0.832053 
+## 
+## $bailey_3p
+##          b0          b1          b2 
+## 29.40328604  0.07718152  1.09415279 
+## 
+## $clutter_jones
+##         b0         b1         b2         b3 
+## 40.2647981 -0.4400840 -0.7712678 10.2314371</code></pre>
+<p>A seguir vamos gerar os gráficos da curva de ajuste, de dispersão e de distribuição de resíduos em classes de erro. Em vez de criarmos todos os gráficos um a um, apresentaremos a lista de modelos a uma função que gera os três gráficos para cada elemento da lista.</p>
+<pre class="r"><code>library(ggplot2)
+library(egg)
+library(tibble)
+library(dplyr)
+library(purrr)
+library(stringr)
+# Idade máxima de predição
+idmax = 25
+# Função para gerar análise gráfica de modelos
+graficos = syms(names(modelos)) %&gt;% set_names() %&gt;% 
+  imap(function(modelo, nome_modelo) {
+    # Obter o modelo
+    modelo = eval(modelo)
+    # Formatar nome do modelo
+    nome_modelo = str_to_title(gsub(&quot;_&quot;, &quot;-&quot;, nome_modelo))
+    # Criar os dados para predição
+    dados_ajuste = eval(modelo$data)
+    dados_predicao = tibble(IDADE = seq(0, idmax, 0.1))
+    dados_predicao$HDOM = predict(modelo, newdata=dados_predicao)
+    # Listar gráficos
+    list(curva_ajuste = ggplot(dados_predicao, aes(IDADE, HDOM)) +
+           geom_line() +
+           geom_point(data=dados_ajuste, alpha=0.2) +
+           scale_x_continuous(expand=expand_scale(mult=c(0,0.01)), breaks = seq(0,idmax,2)) +
+           scale_y_continuous(expand=c(0,0)) +
+           labs(x=&#39;Idade (anos)&#39;, y=&#39;Hdom (m)&#39;,
+                title = paste0(nome_modelo,&#39; - Syx = &#39;, round(summary(modelo)$sigma, 2)))+
+           theme_light(),
+         
+         dispersao_residuos = ggplot(tibble(x=dados_ajuste$IDADE, y=residuals(modelo)/mean(x)*100)) +
+           geom_point(alpha=0.2, aes(x, y)) +
+           geom_hline(yintercept=0) +
+           scale_x_continuous(expand=expand_scale(mult=c(0,0.01))) +
+           scale_y_continuous(expand=c(0,0), limits = c(-50,50)) +
+           labs(x=&#39;Hdom estimada (m)&#39;, y=&#39;Desvio (%)&#39;)+
+           geom_line(stat = &#39;smooth&#39;, method = &#39;loess&#39;, aes(x, y), color = &#39;red&#39;, alpha = .8,
+                     size = 1, linetype =&quot;dashed&quot;,)+
+           theme_light(),
+         
+         distribuicao_residuos = ggplot(tibble(x=residuals(modelo)/mean(dados_ajuste$HDOM)*100)) +
+           geom_histogram(aes(x, y=..count../nrow(dados_ajuste)*100), breaks=seq(-27.5,27.5,by=5),
+                          colour=&#39;black&#39;) +
+           labs(x=&#39;Classe&#39;, y=&#39;Frequência (%)&#39;) +
+           scale_y_continuous(limits=c(0,30))+
+           theme_light()
+    )
+  })
+# Plotar todos os gráficos em uma única imagem
+map(graficos, ~ggarrange(plots=.x, ncol=3, draw=FALSE)) %&gt;% 
+  grid.arrange(grobs=., ncol=1)</code></pre>
+<img src="/post/2019-09-01-classificacao-de-sitio-ajuste-e-avaliacao-de-multiplos-modelos_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" />
+Os quatro modelos tiveram desempenho bastante similar para os gráficos de resíduos e para o erro padrão das estimativas. No entanto, há uma diferença considerável nas assíntotas (coeficiente b0) e nas predições de altura dominante para idades inferiores a 3 anos. Os modelos de Lundqvist-Korf e Clutter-Jones sugerem que no futuro as árvores dominantes alcançarão em média os 40 metros de altura, enquanto os modelos de Chapman-Richards e Bailey-3p indicam que a assíntota se dá em torno de 30 metros. Esta é uma questão pouco relevante se considerarmos que neste caso os povoamentos serão submetidos a corte raso entre os 14 e os 16 anos, e que nesta faixa de idade temos uma quantidade suficiente de amostras.<br />
+Por outro lado, as curvas geradas por esses pares de modelos também apresentam comportamento divergente para idades inferiores a 4 anos, em que não há observações. Neste caso os modelos de Lundqvist-Korf e Clutter-Jones sugerem que povoamentos com 1 ano de idade possuem altura dominante igual a zero, o que é bastante equivocado do ponto de vista biológico. O problema na utilização destes modelos se daria se, por alguma razão, houvesse a necessidade de predizer o sítio em povoamentos cuja idade no momento do inventário é inferior a 3 anos. Em todos os casos não temos observações para representar o crescimento em idades inferiores a 4 anos, mas o bom senso, a experiência e a lógica são suficientes para nos garantir que povoamentos com um ano de idade já possuem algum crescimento em altura.<br />
+Então, para concluir, já que os modelos apresentaram grande similiaridade entre si para as análises de resíduos, eu escolheria o modelo de Chapman-Richards ou Bailey-3p para representar o crescimento em altura dominante deste povoamento, tomando por base o comportamento biológico esperado.
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+}
+</style>
