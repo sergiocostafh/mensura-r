@@ -1,7 +1,7 @@
 ---
 title: Análise de dados de desmatamento do Imazon
 author: Sérgio Costa
-date: '2019-09-19'
+date: '2019-09-14'
 slug: desmatamento-na-amazonia-analise-de-dados-do-imazon
 categories:
   - Generalidades
@@ -9,18 +9,21 @@ tags:
   - ggplot2
   - plotly
 subtitle: ''
-summary: 'Análise da série mensal de dados de desmatamento provenientes do Sistema de Alerta de Desmatamento do Imazon, ao longo de 10 anos. '
+summary: ''
 authors: []
-lastmod: '2019-09-23T19:58:01-03:00'
+lastmod: '2019-09-18T18:58:01-03:00'
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
 projects: []
+output:
+  html_document:
+   code_folding: hide
 ---
 ## Introdução
-Recentemente os principais jornais do Brasil e do mundo noticiaram um possível aumento nas taxas de desmatamento na Amazônia, a partir de dados divulgados pelo INPE (Instituto Nacional de Pesquisas Espaciais). O tema gerou polêmicas envolvendo o atual presidente Jair Bolsonaro, o Ministro do Meio Ambiente Ricardo Salles e o agora ex-diretor do órgão, Ricardo Galvão - os governistas questionaram a veracidade das informações, incendiando a discussão que culminou na demissão de Galvão.  
+Recentemente os principais jornais do Brasil e do Mundo noticiaram um possível aumento nas taxas de desmatamento na Amazônia, a partir de dados divulgados pelo INPE (Instituto Nacional de Pesquisas Espaciais). O tema gerou polêmicas envolvendo o atual presidente Jair Bolsonaro, o Ministro do Meio Ambiente Ricardo Salles e o agora ex-diretor do órgão, Ricardo Galvão - os governistas questionaram a veracidade das informações, incendiando a discussão que culminou na demissão de Galvão.  
 Não somente o INPE, mas outras insituições que monitoram a perda de cobertura vegetal na Amazônia brasileira dispararam alertas para a elevação nas taxas de desmatamento, como a Imazon e a Nasa, e a discussão em torno do assunto prosseguiu para além do território brasileiro. 
 
 ### O embate entre o INPE e o Governo Federal
@@ -33,14 +36,14 @@ Como aqui busco defender o conceito de análise replicável, fui em busca dos da
 
 ### O Sistema de Alerta de Desmatamento do Imazon
 O Imazon é uma instituição de pesquisas sem fins lucrativos, qualificada pelo Ministério da Justiça, e que realiza o monitoramento da Amazônia Legal pelo uso de imagens de satélites que reportam mensalmente o ritmo do desmatamento e da degradação florestal na região por meio do Sistema de Alerta de Desmatamento (SAD).
-No site [ImazonGeo](https://imazongeo.org.br/#/) estão disponíveis os dados mensais de desmatamento e degradação florestal desde janeiro de 2008. É importante salientar que o sistema do Imazon somente detecta áreas de desmatamento superiores a 1 hectare e que apesar de ambos monitorarem o desmatamento na Amazônia, os dados do SAD não são comparáveis aos do DETER, devido a diferenças metodológicas. As detecções do SAD são realizadas somente para áreas de floresta primária, ou seja, florestas que nunca sofreram perturbações significativas, enquanto o Deter é um sistema de alertas que avalia alterações na cobertura florestal, servindo de suporte para órgãos de fiscalização ambiental. Maiores informações sobre o método empregado pelo SAD pode ser obtidos [aqui](https://imazon.org.br/publicacoes/faq-sad/).
+No site do [ImazonGeo](https://imazongeo.org.br/#/) estão disponíveis os dados mensais de desmatamento e degradação florestal desde janeiro de 2008. É importante salientar que o SAD somente detecta áreas de desmatamento superiores a 1 hectare e que apesar de ambos monitorarem o desmatamento na Amazônia, os dados do SAD não são comparáveis aos do DETER, devido a diferenças metodológicas. As detecções do SAD são realizadas somente para áreas de floresta primária, ou seja, florestas que nunca sofreram perturbações significativas, enquanto o Deter é um sistema de alertas que avalia alterações na cobertura florestal, servindo de suporte para órgãos de fiscalização ambiental. Maiores informações sobre o método empregado pelo SAD pode ser obtidos [aqui](https://imazon.org.br/publicacoes/faq-sad/).
 
-### Obtendo dados climáticos da Amazônia Legal
-Já que desmatamento e focos de incêndio estão correlacionados e foi apontado que o aumento das queimadas na Amazônia pode ser um efeito do clima mais seco, resolvi complementar a análise consolidando dados de estações meteorológicas do Banco de Dados Meteorológicos para Ensino e Pesquisa (BDMEP) do Instituto Nacional de Meteorologia (INMET). O banco abriga dados meteorológicos diários em forma digital, coletados por meio das várias estações meteorológicas convencionais da rede de estações do INMET, de acordo com as normas técnicas internacionais da Organização Meteorológica Mundial [6].
+### Obtendo dados climáticos da Amazonia Legal
+Para complementar a análise, consolidei dados de estações meteorológicas do Banco de Dados Meteorológicos para Ensino e Pesquisa (BDMEP) do Instituto Nacional de Meteorologia (INMET). O banco abriga dados meteorológicos diários em forma digital, coletados por meio das várias estações meteorológicas convencionais da rede de estações do INMET, de acordo com as normas técnicas internacionais da Organização Meteorológica Mundial [6].
 O procedimento de consolidação foi simples: a partir dos dados diários das estações meteorológicas instaladas nos Estados do Acre, Amazonas, Amapá, Pará, Roraima e Rondônia (47 estações) foi obtida a precipitação mensal média para cada mês-ano, considerando os dados de todas as estações. O procedimento de obtenção dos dados pode ser acessado [aqui](https://github.com/sergiocostafh/desmatamento_sad_imazon).
 
 ## Analisando os dados do SAD
-Os dados de desmatamento disponibilizados pelo SAD estão em formato *shapefile* e foi necessário algum trabalho computacional para compilá-los em uma tabela, já que os arquivos são separados mês a mês. Fiz o download de todos os meses compreendidos entre agosto de 2009 e julho de 2019, totalizando 10 anos de análise ou 120 meses. Isso foi possível graças ao programa R, e todo o procedimento desenvolvido para compilação dos dados em uma única tabela está disponível em meu repositório pessoal no GitHub (clique [aqui](https://github.com/sergiocostafh/desmatamento_sad_imazon/blob/master/tratamento%20de%20dados_imazon.R) para acessar). Observação: Não há dados para o mês de fevereiro de 2016, pois, segundo a equipe de suporte do Imazon, neste período o satélite MODIS que era utilizado para o mapeamento das áreas se encontrava em manutenção.
+Os dados de desmatamento disponibilizados pelo SAD estão em formato *shapefile* e foi necessário algum trabalho computacional para compilá-los em uma tabela, já que os arquivos são separados mês a mês. Fiz o download de todos os meses compreendidos entre agosto de 2009 e julho de 2019, totalizando 10 anos de análise ou 120 meses. Isso foi possível graças ao programa R, e todo o procedimento desenvolvido para compilação dos dados em uma única tabela está disponível em meu repositório pessoal no GitHub (clique [aqui](https://github.com/sergiocostafh/desmatamento_sad_imazon/blob/master/tratamento%20de%20dados_imazon.R) para acessar).
 
 Nesta postagem foi possível reproduzir resultados que têm sido publicados na [seção de transparência florestal](https://imazon.org.br/categorias/transparencia-florestal/) no site do Imazon. Todos os códigos de programação em R utilizados para as análises  acessadas clicando no botão **código** localizado logo acima dos gráficos, no canto direito.
 
@@ -131,10 +134,10 @@ Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acum
   
 ## Conclusões
 A partir das análises realizadas, podemos conluir que:  
-**1.** Em julho de 2019 a série de desmatamento detectado pelo Sistema de Alerta de Desmatamento do Imazon alcançou sua máxima histórica no período de 10 anos de análise, considerando a cobertura vegetal primária perdida no período de um mês.  
+**1.** Em julho de 2019 a série de desmatamento detectado pelo Sistema de Alertas de Desmatamento do Imazon alcançou sua máxima histórica, considerando a cobertura vegetal primária perdida no período de um mês.  
 **2.** Não há ocorrência de períodos mais secos na Amazônia Legal que justifiquem aumento nos focos de incêndio apontados pelo INPE.  
 **3.** Há uma tendência de aumento nas taxas de desmatamento iniciada após o ano de 2012.  
-**4.** As análises sugerem que o acumulado anual de 2019 pode alcançar o mesmo patamar de 2018, ou mesmo atingir uma nova máxima histórica.  
+**4.** As análises sugerem que o acumulado anual de 2019 pode alcançar o mesmo patamar de 2018, ou até mesmo atingir uma nova máxima histórica.  
 
 <center>
 ## Referências
@@ -155,8 +158,6 @@ A partir das análises realizadas, podemos conluir que:
 <style>
 body {
 text-align: justify}
-h1 {
-text-align: center}
 </style>
 <style type="text/css">
 
@@ -168,7 +169,5 @@ code.r{
 }
 pre {
   font-size: 14px
-}
-
 }
 </style>
