@@ -129,7 +129,7 @@ ggplot()+
 Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual. Em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. Essa análise permite inferir que em 2019 teremos uma taxa similar a 2018 ou mesmo maior, caso a tendência de julho do ano corrente - em que observou-se a máxima histórica do período sob análise - se mantenha para os próximos meses.
   
 ## Conclusões
-Esta breve análise, permite algumas conclusões:
+Esta breve análise, permite algumas conclusões:  
 **1.** Em julho de 2019 a série de desmatamento detectado pelo Sistema de Alertas de Desmatamento do Imazon alcançou sua máxima histórica, considerando a cobertura vegetal primária perdida no período de um mês.  
 **2.** Não há ocorrência de períodos mais secos na Amazônia Legal que justifiquem aumento nos focos de incêndio apontados pelo INPE.  
 **3.** Há uma tendência de aumento nas taxas de desmatamento iniciada após o ano de 2012.  
