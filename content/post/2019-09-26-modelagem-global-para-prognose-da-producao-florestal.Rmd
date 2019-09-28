@@ -1,0 +1,148 @@
+---
+title: Modelagem global para prognose da produção florestal
+author: Sérgio Costa
+date: '2019-09-26'
+slug: modelagem-global-para-prognose-da-producao-florestal
+categories:
+  - Biometria
+tags: []
+subtitle: ''
+summary: 'Essa postagem apresenta um procedimento para prognose da produção florestal a nível de povoamento considerando diferentes classes de sítio.'
+authors: []
+lastmod: '2019-09-26T21:06:26-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. Para gerar esta informação, devemos fazer uso de ferramentas de modelagem estatística, de modo que se possa representar o crescimento e a produção florestal sob diferentes condições.  
+Podemos agrupar os métodos para prognose da produção florestal em três classes de abrangência: modelos a nível de povoamento, de classes diamétricas, e de árvores individuais.  
+Neste exemplo trabalharemos com modelos a nível de povoamento, também conhecidos como modelos globais, que se baseiam em características do povoamento como idade, área basal e índice de sítio, sendo os mais amplamente utilizados na modelagem do crescimento e da produção no Brasil.  
+Iniciaremos o procedimento de modelagem global com a importação e visualização dos dados.
+```{r, warning=FALSE, message=FALSE}
+# Importar conjunto de dados
+dados <- readxl::read_excel('dados_processados.xlsx')
+library(ggplot2)
+# Plotar Idade x Volume
+ggplot()+
+  geom_point(aes(x=IDADE, y=VOLTOT), data = dados, alpha = 0.3)+
+  xlab('Idade (anos)')+
+  ylab('Volume total (m³/ha)')+
+  scale_x_continuous(expand = c(0,0), limits = c(0,30), breaks = seq(0,30,5))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,800))+
+  theme_bw()
+```
+  
+No gráfico acima podemos observar os volumes obtidos para povoamentos de *Pinus taeda* em diferentes idades, considerando um empreendimento florestal. O primeiro passo na modelagem será a classificação de sítios. O procedimento é explicado de maneira detalhada utilizando os mesmos dados no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/). Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.
+```{r}
+library(minpack.lm)
+# Ajustar modelos de Chapman-Richards para o crescimento em hdom
+chapman.richards_hdom <- nlsLM(HDOM ~ a*(1-exp(-b*IDADE))^c,
+                  data = dados,
+                  start=list(a=30, b=0.1, c=0.8))
+# Criar função de projeção
+chapman.richards_hdom_proj <-function(hdom1,id2,id1){
+  hdom1*
+    ((1-exp(-coef(chapman.richards_hdom)[2]*id2))/(1-exp(-coef(chapman.richards_hdom)[2]*id1)))^
+    coef(chapman.richards_hdom)[3]}
+# Projetar a altura dominante para a idade de 15 anos (idade de referência)
+dados$sitio <- chapman.richards_hdom_proj(hdom1=dados$HDOM,id2=15,id1=dados$IDADE)
+#Definir o número de classes
+nclasses <- 5
+# Identificar a amplitude das classes de sitio
+amplitude <- round(max(dados$sitio),0) - round(min(dados$sitio),0)
+# Aqui diminuo a amplitude para reduzir o efeito dos extremos
+amplitude <- amplitude-4
+# Definir o intervalo de classe
+ic <- amplitude/nclasses
+# Limite inferior
+li <- mean(dados$sitio)-((nclasses-1)/2*ic)-ic/2
+# Definir as classes
+classes <- rep(NA,nclasses)
+for(i in 1:nclasses){
+classes[i] <-  li+i*ic-ic/2
+}
+classes <- round(classes,1)
+# Definir os limites de classes
+limites <- rep(NA,nclasses+1)
+for(i in 1:(nclasses+1)){
+limites[i] <-  li+(i-1)*ic
+}
+# Classificação de sitio
+dados$classe_sitio <- cut(dados$sitio,
+                          breaks = c(-Inf,limites[-c(1,nclasses+1)],Inf),
+                          labels = classes)
+```
+Realizada a classificação de sítio, podemos visualizar como esta variável se relaciona com distribuição de pares de observações de idade x volume total.
+
+````{r}
+plot_vol <- ggplot()+
+  geom_point(aes(x=IDADE, y=VOLTOT, color=factor(classe_sitio)), data = dados, alpha = 0.8)+
+  xlab('Idade (anos)')+
+  ylab('Volume total (m³)')+
+  scale_x_continuous(expand = c(0,0), limits = c(0,30), breaks = seq(0,30,5))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,800))+
+  scale_color_brewer(name='Classes de sítio', palette = 'YlOrRd')+
+  theme_bw()+
+  theme(legend.position = 'bottom')
+plot_vol
+````
+O gráfico demonstra o comportamento esperado entre sítio de volume total, em que povoamentos de classes superiores tendem a apresentar maior produção em volume. Vamos ajustar um modelo de crescimento em volume total considerando a variável sítio. Isso nos permitirá estimar a produção esperada para um sitio definido e em qualquer idade.
+```{r}
+# Ajustar modelo global de volume
+chapman.richards_vol <- nlsLM(VOLTOT ~ (a+a1*sitio)*(1-exp(-b*IDADE))^c,
+                  data = dados,
+                  start=list(a=700, a1=1, b=0.1, c=0.8))
+# Calcular erro padrão das estimativas
+syx_abs_richards_v <- summary(chapman.richards_vol)$sigma
+syx_abs_richards_v <- syx_abs_richards_v/mean(dados$VOLTOT)*100
+# Conjunto de dados para gerar curvas de predição
+idades <- seq(0,30,0.1)
+dados_predict_sitio <- data.frame(IDADE=rep(idades,times=5),
+                            sitio=rep(classes,
+                                      each=length(idades)))
+# Gerar curvas de predição
+dados_predict_sitio$Vol <- round(predict(chapman.richards_vol,
+                          dados_predict_sitio),1)
+# Obter de produtividade dos sítios na idade de 15 anos (idade de referência)
+dados15 <- subset(dados_predict_sitio,dados_predict_sitio$IDADE==15)
+dados15$IMA <- round(dados15$Vol/dados15$IDADE,1)
+# Plotar curvas
+plot_vol+
+  geom_line(aes(x=IDADE,
+                y=Vol,
+                linetype=factor(sitio)),
+            data=dados_predict_sitio, size=.5,
+            show.legend = FALSE)+
+  scale_linetype_manual(values=c('dashed','dashed','solid','dashed','dashed'))+
+  ggtitle(paste0('Modelo global de volume - Syx% = ',
+                             round(syx_abs_richards_v,2)))
+```
+O modelo acima ajustado possui um modificador (coeficiente $b_{01}$) na assíntota (coeficiente $b_0$) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer idade a partir de um par de observações de idade e volume conhecidos. O procedimento para esta finalidade é o mesmo descrito no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/).  
+Por fim, vamos visualizar um resumo da produção esperada por classe de sítio definida.  
+```{r, fig.align='center'}
+colnames(dados15) <- c('Idade','Sítio','Volume total (m³/ha)','IMA (m³/ha/ano)')
+rownames(dados15) <- NULL
+print(dados15[,-1], row.names = FALSE)
+```
+
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

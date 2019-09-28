@@ -171,6 +171,8 @@ text(barplot(table(dados$classe_sitio),
 <style>
 body {
 text-align: justify}
+h1 {
+text-align: center}
 </style>
 <style type="text/css">
 
