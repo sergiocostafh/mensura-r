@@ -17,7 +17,7 @@ image:
   preview_only: no
 projects: []
 ---
-Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. Para gerar esta informação, devemos fazer uso de ferramentas de modelagem estatística, de modo que se possa representar o crescimento e a produção florestal sob diferentes condições.  
+Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. Para gerar esta informação, devemos fazer uso de ferramentas de modelagem estatística, de modo que se possa representar o crescimento e a produção dos povoamentos sob diferentes condições.  
 Podemos agrupar os métodos para prognose da produção florestal em três classes de abrangência: modelos a nível de povoamento, de classes diamétricas, e de árvores individuais.  
 Neste exemplo trabalharemos com modelos a nível de povoamento, também conhecidos como modelos globais, que se baseiam em características do povoamento como idade, área basal e índice de sítio, sendo os mais amplamente utilizados na modelagem do crescimento e da produção no Brasil.  
 Iniciaremos o procedimento de modelagem global com a importação e visualização dos dados.
@@ -35,7 +35,7 @@ ggplot()+
   theme_bw()
 ```
   
-No gráfico acima podemos observar os volumes obtidos para povoamentos de *Pinus taeda* em diferentes idades, considerando um empreendimento florestal. O primeiro passo na modelagem será a classificação de sítios. O procedimento é explicado de maneira detalhada utilizando os mesmos dados no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/). Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.
+No gráfico acima podemos observar os volumes obtidos para povoamentos de *Pinus taeda* em diferentes idades. O primeiro passo na modelagem será a classificação de sítios. O procedimento é explicado de maneira detalhada no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/). Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.
 ```{r}
 library(minpack.lm)
 # Ajustar modelos de Chapman-Richards para o crescimento em hdom
@@ -89,7 +89,7 @@ plot_vol <- ggplot()+
   theme(legend.position = 'bottom')
 plot_vol
 ````
-O gráfico demonstra o comportamento esperado entre sítio de volume total, em que povoamentos de classes superiores tendem a apresentar maior produção em volume. Vamos ajustar um modelo de crescimento em volume total considerando a variável sítio. Isso nos permitirá estimar a produção esperada para um sitio definido e em qualquer idade.
+O gráfico demonstra o comportamento esperado entre sítio e produção em volume, em que povoamentos de classes superiores tendem ser mais produtivos. Vamos ajustar um modelo de produção em volume total considerando as variáveis sítio e idade.
 ```{r}
 # Ajustar modelo global de volume
 chapman.richards_vol <- nlsLM(VOLTOT ~ (a+a1*sitio)*(1-exp(-b*IDADE))^c,
@@ -120,7 +120,7 @@ plot_vol+
   ggtitle(paste0('Modelo global de volume - Syx% = ',
                              round(syx_abs_richards_v,2)))
 ```
-O modelo acima ajustado possui um modificador (coeficiente $b_{01}$) na assíntota (coeficiente $b_0$) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer idade a partir de um par de observações de idade e volume conhecidos. O procedimento para esta finalidade é o mesmo descrito no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/).  
+O modelo acima ajustado possui um modificador (coeficiente $b_{01}$) na assíntota (coeficiente $b_0$) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer momento a partir de um par de observações de idade e volume conhecidos. O procedimento para esta finalidade é o mesmo descrito no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/).  
 Por fim, vamos visualizar um resumo da produção esperada por classe de sítio definida.  
 ```{r, fig.align='center'}
 colnames(dados15) <- c('Idade','Sítio','Volume total (m³/ha)','IMA (m³/ha/ano)')
