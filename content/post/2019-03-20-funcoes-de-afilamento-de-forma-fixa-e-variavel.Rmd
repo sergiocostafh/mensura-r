@@ -7,6 +7,9 @@ categories:
   - Biometria
 tags:
   - minpack.lm
+  - função de afilamento
+  - taper function
+  - ggplot2
 subtitle: ''
 summary: 'Ajuste e avaliação de funções de afilamento de forma fixa e de forma variável.'
 authors: []

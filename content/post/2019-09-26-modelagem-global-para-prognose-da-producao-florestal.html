@@ -5,9 +5,17 @@ date: '2019-09-26'
 slug: modelagem-global-para-prognose-da-producao-florestal
 categories:
   - Biometria
-tags: []
+tags:
+  - crescimento e produção
+  - biometria
+  - modelagem
+  - ggplot2
+  - chapman-richards
+  - minpack.lm
+  - simulação florestal
+  - engenharia florestal
 subtitle: ''
-summary: 'Essa postagem apresenta um procedimento para prognose da produção florestal a nível de povoamento considerando diferentes classes de sítio.'
+summary: 'Essa postagem apresenta um procedimento para prognose da produção florestal a nível de povoamento considerando classes de produtividade.'
 authors: []
 lastmod: '2019-09-26T21:06:26-03:00'
 featured: no
@@ -20,7 +28,7 @@ projects: []
 
 
 
-<p>Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. Para gerar esta informação, devemos fazer uso de ferramentas de modelagem estatística, de modo que se possa representar o crescimento e a produção dos povoamentos sob diferentes condições.<br />
+<p>Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. A geração dessa informação a partir de uma base de dados pré existente exige o uso de ferramentas de modelagem estatística, que permitam simular o crescimento e a produção de povoamentos para diferentes classes de produtividade.<br />
 Podemos agrupar os métodos para prognose da produção florestal em três classes de abrangência: modelos a nível de povoamento, de classes diamétricas, e de árvores individuais.<br />
 Neste exemplo trabalharemos com modelos a nível de povoamento, também conhecidos como modelos globais, que se baseiam em características do povoamento como idade, área basal e índice de sítio, sendo os mais amplamente utilizados na modelagem do crescimento e da produção no Brasil.<br />
 Iniciaremos o procedimento de modelagem global com a importação e visualização dos dados.</p>
@@ -36,7 +44,12 @@ ggplot()+
   scale_y_continuous(expand = c(0,0), limits = c(0,800))+
   theme_bw()</code></pre>
 <p><img src="/post/2019-09-26-modelagem-global-para-prognose-da-producao-florestal_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>No gráfico acima podemos observar os volumes obtidos para povoamentos de <em>Pinus taeda</em> em diferentes idades. O primeiro passo na modelagem será a classificação de sítios. O procedimento é explicado de maneira detalhada no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>. Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.</p>
+No gráfico acima podemos observar os volumes obtidos para povoamentos de <em>Pinus taeda</em> em diferentes idades. O primeiro passo na modelagem será a classificação de sítios. Utilizaremos para geração da curva guia o modelo de Chapman-Richards, cuja expressão matemática se dá da seguinte forma:<br />
+
+<center>
+<p><span class="math inline">\(Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}\)</span></p>
+</center>
+<p>O procedimento de classificação é explicado de maneira detalhada no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>. Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.</p>
 <pre class="r"><code>library(minpack.lm)
 # Ajustar modelos de Chapman-Richards para o crescimento em hdom
 chapman.richards_hdom &lt;- nlsLM(HDOM ~ a*(1-exp(-b*IDADE))^c,
@@ -74,7 +87,7 @@ limites[i] &lt;-  li+(i-1)*ic
 dados$classe_sitio &lt;- cut(dados$sitio,
                           breaks = c(-Inf,limites[-c(1,nclasses+1)],Inf),
                           labels = classes)</code></pre>
-<p>Realizada a classificação de sítio, podemos visualizar como esta variável se relaciona com distribuição de pares de observações de idade x volume total.</p>
+<p>Após a classificação de sítio, podemos visualizar como esta variável se relaciona com distribuição de pares de observações de idade x volume total.</p>
 <pre class="r"><code>plot_vol &lt;- ggplot()+
   geom_point(aes(x=IDADE, y=VOLTOT, color=factor(classe_sitio)), data = dados, alpha = 0.8)+
   xlab(&#39;Idade (anos)&#39;)+
@@ -102,9 +115,6 @@ dados_predict_sitio &lt;- data.frame(IDADE=rep(idades,times=5),
 # Gerar curvas de predição
 dados_predict_sitio$Vol &lt;- round(predict(chapman.richards_vol,
                           dados_predict_sitio),1)
-# Obter de produtividade dos sítios na idade de 15 anos (idade de referência)
-dados15 &lt;- subset(dados_predict_sitio,dados_predict_sitio$IDADE==15)
-dados15$IMA &lt;- round(dados15$Vol/dados15$IDADE,1)
 # Plotar curvas
 plot_vol+
   geom_line(aes(x=IDADE,
@@ -116,9 +126,12 @@ plot_vol+
   ggtitle(paste0(&#39;Modelo global de volume - Syx% = &#39;,
                              round(syx_abs_richards_v,2)))</code></pre>
 <p><img src="/post/2019-09-26-modelagem-global-para-prognose-da-producao-florestal_files/figure-html/unnamed-chunk-4-1.png" width="672" />
-O modelo acima ajustado possui um modificador (coeficiente <span class="math inline">\(b_{01}\)</span>) na assíntota (coeficiente <span class="math inline">\(b_0\)</span>) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer momento a partir de um par de observações de idade e volume conhecidos. O procedimento para esta finalidade é o mesmo descrito no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>.<br />
-Por fim, vamos visualizar um resumo da produção esperada por classe de sítio definida.</p>
-<pre class="r"><code>colnames(dados15) &lt;- c(&#39;Idade&#39;,&#39;Sítio&#39;,&#39;Volume total (m³/ha)&#39;,&#39;IMA (m³/ha/ano)&#39;)
+O modelo acima ajustado possui um modificador (coeficiente <span class="math inline">\(b_{01}\)</span>) na assíntota (coeficiente <span class="math inline">\(b_0\)</span>) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer momento a partir de um par de observações de idade e volume conhecidos. Para esta finalidade aplicamos o método da diferença algébrica, cujo procedimento é descrito no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>.<br />
+Por fim, vamos visualizar a produção esperada na idade de corte por classe de sítio definida.</p>
+<pre class="r"><code># Obter de produtividade dos sítios na idade de 15 anos (idade de referência)
+dados15 &lt;- subset(dados_predict_sitio,dados_predict_sitio$IDADE==15)
+dados15$IMA &lt;- round(dados15$Vol/dados15$IDADE,1)
+colnames(dados15) &lt;- c(&#39;Idade&#39;,&#39;Sítio&#39;,&#39;Volume total (m³/ha)&#39;,&#39;IMA (m³/ha/ano)&#39;)
 rownames(dados15) &lt;- NULL
 print(dados15[,-1], row.names = FALSE)</code></pre>
 <pre><code>##  Sítio Volume total (m³/ha) IMA (m³/ha/ano)

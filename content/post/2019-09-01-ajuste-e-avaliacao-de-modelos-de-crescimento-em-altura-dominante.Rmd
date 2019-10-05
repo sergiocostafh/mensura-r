@@ -13,6 +13,12 @@ tags:
   - dplyr
   - purrr
   - stringr
+  - classificação de sítios
+  - crescimento e produção
+  - engenharia florestal
+  - chapman-richards
+  - lundqvist-korf
+  - modelos não lineares
 subtitle: ''
 summary: 'Essa postagem exemplifica um procedimento de ajuste e avaliação de modelos de crescimento em altura dominante.'
 authors: []

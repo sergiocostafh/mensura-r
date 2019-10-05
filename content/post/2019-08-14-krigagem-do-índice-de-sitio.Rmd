@@ -10,6 +10,10 @@ tags:
   - rgdal
   - sp
   - raster
+  - krigagem
+  - classificação de sítio
+  - engenharia florestal
+  - geoestatística
 subtitle: ''
 summary: 'Nesse exemplo são apresentados os procedimentos para interpolação do índice de sítio por meio de krigagem ordinária.'
 authors: []
