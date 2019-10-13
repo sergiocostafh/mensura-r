@@ -47,7 +47,7 @@ plot(curva_acum,
      lty=2,
      xlab="Unidades amostrais",
      ylab="Riqueza",
-     main="Curvas de acumulação de espécies")
+     main="Curva de acumulação de espécies")
 ```
 
 A interpretação mais trivial para a curva do coletor é que quando esta se estabiliza, formando um patamar, foi atingida a suficiência amostral para a comunidade em questão.  
