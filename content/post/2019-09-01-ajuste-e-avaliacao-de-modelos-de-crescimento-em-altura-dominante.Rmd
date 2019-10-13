@@ -6,19 +6,9 @@ slug: ajuste-e-avaliacao-de-modelos-de-crescimento-em-altura-dominante
 categories:
   - Biometria
 tags:
-  - minpack.lm
-  - ggplot2
-  - egg
-  - tibble
-  - dplyr
-  - purrr
-  - stringr
-  - classificação de sítios
-  - crescimento e produção
-  - engenharia florestal
-  - chapman-richards
-  - lundqvist-korf
-  - modelos não lineares
+  - Biometria
+  - Classificação de sítios
+  - Crescimento e produção
 subtitle: ''
 summary: 'Essa postagem exemplifica um procedimento de ajuste e avaliação de modelos de crescimento em altura dominante.'
 authors: []

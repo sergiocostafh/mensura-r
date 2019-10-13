@@ -5,16 +5,10 @@ date: '2019-10-08'
 slug: fitossociologia-cálculo-de-índices-ecológicos
 categories:
   - Fitossociologia
-tags:
-  - ecologia
-  - biologia
-  - engenharia florestal
-  - botânica
-  - Margalef
-  - Shannon
-  - Simpson
-  - Pielou
-  - Jaccard
+tags: 
+  - Fitossociologia
+  - Ecologia
+
 subtitle: ''
 summary: Procedimentos para cálculo dos índices de  Margalef, Shannon, Simpson, Pielou e Jaccard, e construção de dendrograma de similaridade.
 authors: []
@@ -92,6 +86,7 @@ knitr::kable(tabela_indices, row.names = FALSE)%>%
   kableExtra::kable_styling(full_width = F, position = "center")
 ```
   
+A tabela acima apesenta todos os parãmetros ecológicos calculados a nível de parcela e também para toda a comunidade.  
 Outro indicador ecológico comumente utilizado em estudos fitossociológicos é o Índice de Jaccard, que expressa a similaridade de espécies entre os locais amostrados, rendo a seguinte expressão matemática:  
 
 <center>

@@ -5,11 +5,9 @@ date: '2019-10-05'
 slug: fitossociologia-analise-da-estrutura-horizontal-de-comunidades-vegetais
 categories: 
   - Fitossociologia
-tags:
-  - fitossociologia
-  - engenharia florestal
-  - biologia
-  - botânica
+tags: 
+  - Fitossociologia
+  - Ecologia
 subtitle: ''
 summary: Demonstração de procedimentos para análise de dados de levantamento fitossociológico e descrição da estrutura horizontal.
 authors: []

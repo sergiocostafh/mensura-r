@@ -6,7 +6,7 @@ slug: linguagem-r-e-a-crise-de-replicabilidade-na-ciencia
 categories:
   - Generalidades
 tags:
-  - análises replicáveis
+  - Generalidades
 subtitle: ''
 summary: 'Essa postagem visa explicar a razão pela qual devemos disponibilizar dados e scripts de análise em estudos científicos.'
 authors: []

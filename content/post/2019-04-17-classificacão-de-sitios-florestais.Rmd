@@ -6,10 +6,9 @@ slug: classificacão-de-sitios-florestais
 categories:
   - Biometria
 tags:
-  - chapman-richards
-  - ggplot2
-  - modelos não lineares
-  - engenharia florestal
+  - Biometria
+  - Crescimento e Produção
+  - Classificação de sítios
 subtitle: ''
 summary: 'Ajuste do modelo de Chapman-Richards para classificação de sítio pelo método da curva guia.'
 authors: []
