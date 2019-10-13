@@ -68,7 +68,8 @@ Nesse post calcularemos praticaremos o cálculo dos seguintes índices:</p>
 </tbody>
 </table>
 <p>Em que: <span class="math inline">\(S\)</span> = número de espécies amostradas; <span class="math inline">\(N\)</span> = quantidade de indivíduos amostrados; <span class="math inline">\(n_i\)</span> = quantidade de indivíduos amostradados da espécie <span class="math inline">\(i\)</span>;<span class="math inline">\(ln\)</span> = logaritmo natural.<br />
-Vamos às análises. Iniciaremos importando a mesma base de dados utilizada no post em que analisamos a estrutura horizontal. Na sequência calcularemos todos os índices, com auxílio do pacote <code>vegan</code>.</p>
+Vamos às análises. Iniciaremos importando a mesma base de dados utilizada no <a href="https://mensura-r.netlify.com/post/fitossociologia-analise-da-estrutura-horizontal-de-comunidades-vegetais/">post em que analisamos a estrutura horizontal</a> e e também no <a href="https://mensura-r.netlify.com/post/fitossociologia-curvas-de-rarefacao-e-acumulacao-de-especies/">post em que construímos curvas de acumulação de espécies e de rarefação</a>. A seguir calcularemos todos os índices ecológicos acima apresentados, com auxílio do pacote <code>vegan</code>.<br />
+Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/blob/master/content/post/dados_fitossociologia.xlsx?raw=true">aqui</a>.</p>
 <pre class="r"><code># Importar dados
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados
@@ -505,15 +506,9 @@ knitr::kable(tabela_indices, row.names = FALSE)%&gt;%
 <td align="right">3.51</td>
 <td align="right">0.86</td>
 </tr>
-<tr class="odd">
-<td align="left">Outro indi</td>
-<td align="right">cador ecoló</td>
-<td align="right">gico comum</td>
-<td align="right">ente utili</td>
-<td align="right">zado em estudos fitossociológicos é o Índice de Jaccard, que expressa a similaridade de espécies entre os locais amostrados, rendo a seguinte expressão matemática:</td>
-</tr>
 </tbody>
 </table>
+<p>Outro indicador ecológico comumente utilizado em estudos fitossociológicos é o Índice de Jaccard, que expressa a similaridade de espécies entre os locais amostrados, rendo a seguinte expressão matemática:</p>
 <center>
 <span class="math inline">\(J=\frac{C}{A+B+C}\)</span>
 </center>

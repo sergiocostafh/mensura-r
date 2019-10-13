@@ -25,11 +25,12 @@ projects: []
 
 
 
-<p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, no entanto há uma grande dificuldade em se determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comuniade vegetal.<br />
+<p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, no entanto há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comuniade vegetal.<br />
 Uma ferramenta bastante utilizada para esta finalidade é a curva de acumulação de espécies, também conhecida como curva do coletor, que relaciona o número de novas espécies encontradas a medida em que se aumenta o número de amostras ou a área amostral.<br />
 Um problema encontrado na construção da curva do coletor é a arbitrariedade na ordem de entrada das unidades amostrais, já que cada possível ordenação das unidades amostrais pode gerar uma curva diferente, invalidando qualquer interpretação com base em sua forma.<br />
 Para contornar esse problema devemos utilizar uma curva suavizada, que consiste em uma curva média obtida a partir da construção de um grande número de curvas obtidas por procedimentos de aleatorização das unidades amostrais.<br />
-A função <code>specaccum</code>, implementada no pacote <code>vegan</code> do R, é capaz de gerar uma curva de acumulação de espécies suavizada do modo descrito acima, conforme o procedimento a seguir.</p>
+A função <code>specaccum</code>, implementada no pacote <code>vegan</code> do R, é capaz de gerar uma curva de acumulação de espécies suavizada do modo descrito acima, conforme o procedimento a seguir.<br />
+Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/blob/master/content/post/dados_fitossociologia.xlsx?raw=true">aqui</a>.</p>
 <pre class="r"><code># Importar dados
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados
