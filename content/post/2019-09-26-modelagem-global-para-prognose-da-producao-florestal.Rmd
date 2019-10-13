@@ -15,7 +15,7 @@ tags:
   - simulação florestal
   - engenharia florestal
 subtitle: ''
-summary: 'Essa postagem apresenta um procedimento para prognose da produção florestal a nível de povoamento considerando classes de produtividade.'
+summary: Procedimentos para realização da prognose da produção florestal a nível de povoamento considerando classes de produtividade.
 authors: []
 lastmod: '2019-09-26T21:06:26-03:00'
 featured: no
@@ -32,6 +32,7 @@ Iniciaremos o procedimento de modelagem global com a importação e visualizaç�
 ```{r, warning=FALSE, message=FALSE}
 # Importar conjunto de dados
 dados <- readxl::read_excel('dados_processados.xlsx')
+# Carrega pacote de gráficos
 library(ggplot2)
 # Plotar Idade x Volume
 ggplot()+
@@ -51,6 +52,7 @@ $Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}$
 </center>
 O procedimento de classificação é explicado de maneira detalhada no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/). Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.  
 ```{r}
+# Carrega pacote necessário para ajuste dos modelos
 library(minpack.lm)
 # Ajustar modelos de Chapman-Richards para o crescimento em hdom
 chapman.richards_hdom <- nlsLM(HDOM ~ a*(1-exp(-b*IDADE))^c,
@@ -113,7 +115,7 @@ chapman.richards_vol <- nlsLM(VOLTOT ~ (a+a1*sitio)*(1-exp(-b*IDADE))^c,
 syx_abs_richards_v <- summary(chapman.richards_vol)$sigma
 syx_abs_richards_v <- syx_abs_richards_v/mean(dados$VOLTOT)*100
 # Conjunto de dados para gerar curvas de predição
-idades <- seq(0,30,0.1)
+idades <- 0:30
 dados_predict_sitio <- data.frame(IDADE=rep(idades,times=5),
                             sitio=rep(classes,
                                       each=length(idades)))
@@ -132,14 +134,31 @@ plot_vol+
                              round(syx_abs_richards_v,2)))
 ```
 O modelo acima ajustado possui um modificador (coeficiente $b_{01}$) na assíntota (coeficiente $b_0$) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer momento a partir de um par de observações de idade e volume conhecidos. Para esta finalidade aplicamos o método da diferença algébrica, cujo procedimento é descrito no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/).  
-Por fim, vamos visualizar a produção esperada na idade de corte por classe de sítio definida.  
-```{r, fig.align='center'}
+Por fim, vamos visualizar a tabela de produção por classe de sítio  
+```{r, fig.align='center', message=FALSE, warning=FALSE}
 # Obter de produtividade dos sítios na idade de 15 anos (idade de referência)
-dados15 <- subset(dados_predict_sitio,dados_predict_sitio$IDADE==15)
-dados15$IMA <- round(dados15$Vol/dados15$IDADE,1)
-colnames(dados15) <- c('Idade','Sítio','Volume total (m³/ha)','IMA (m³/ha/ano)')
-rownames(dados15) <- NULL
-print(dados15[,-1], row.names = FALSE)
+tabela_prod <- data.frame(Idade = 0:30,
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[1]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[2]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[3]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[4]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[5]))
+
+colnames(tabela_prod) <- c('Idade',
+                           paste0('Sítio ',classes[1]),
+                           paste0('Sítio ',classes[2]),
+                           paste0('Sítio ',classes[3]),
+                           paste0('Sítio ',classes[4]),
+                           paste0('Sítio ',classes[5]))
+
+library(dplyr)
+knitr::kable(tabela_prod, row.names = F, caption = 'Tabela de produção em volume total (m³)')%>%
+  kableExtra::kable_styling(full_width = F, position = "center")
 ```
 
 <style>

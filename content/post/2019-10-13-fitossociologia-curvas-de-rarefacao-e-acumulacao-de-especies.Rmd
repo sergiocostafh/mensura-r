@@ -1,0 +1,87 @@
+---
+title: 'Curvas de rarefação e acumulação de espécies'
+author: Sérgio Costa
+date: '2019-10-13'
+slug: fitossociologia-curvas-de-rarefacao-e-acumulacao-de-especies
+categories:
+  - Fitossociologia
+tags:
+  - biologia
+  - botânica
+  - engenharia florestal
+  - ecologia
+  - curva do coletor
+subtitle: ''
+summary: Procedimentos para construção da curva de acumulação de espécies (curva do coletor) e de curvas de rarefação.
+authors: []
+lastmod: '2019-10-13T10:09:13-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, no entanto há uma grande dificuldade em se determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comuniade vegetal.  
+Uma ferramenta bastante utilizada para esta finalidade é a curva de acumulação de espécies, também conhecida como curva do coletor, que relaciona o número de novas espécies encontradas a medida em que se aumenta o número de amostras ou a área amostral.  
+Um problema encontrado na construção da curva do coletor é a arbitrariedade na ordem de entrada das unidades amostrais, já que cada possível ordenação das unidades amostrais pode gerar uma curva diferente, invalidando qualquer interpretação com base em sua forma.  
+Para contornar esse problema devemos utilizar uma curva suavizada, que consiste em uma curva média obtida a partir da construção de um grande número de curvas obtidas por procedimentos de aleatorização das unidades amostrais.  
+A função `specaccum`, implementada no pacote `vegan` do R, é capaz de gerar uma curva de acumulação de espécies suavizada do modo descrito acima, conforme o procedimento a seguir.
+
+```{r, message=FALSE, warning=FALSE}
+# Importar dados
+dados <- readxl::read_excel("dados_fitossociologia.xlsx")
+# Visualizar dados
+dados
+# Carrega pacote necessário para as análises
+library(vegan)
+# Gera matriz de frequência das espécies
+matriz_freq <- xtabs(~Parcela+Espécie, dados)
+# Visualizar as 6 primeiras linhas (parcelas) da matriz de frequência gerada
+head(matriz_freq)
+# Curva acumulação de espécies
+par(mfrow=c(1,1),mar=c(4,4,2,2))
+curva_acum <- specaccum(matriz_freq)
+plot(curva_acum, 
+     ci.type="polygon",
+     ci.col="lightgray",
+     ci.lty = 0,
+     lwd=2,
+     lty=2,
+     xlab="Unidades amostrais",
+     ylab="Riqueza",
+     main="Curvas de acumulação de espécies")
+```
+
+A interpretação mais trivial para a curva do coletor é que quando esta se estabiliza, formando um patamar, foi atingida a suficiência amostral para a comunidade em questão.  
+A riqueza representada em uma amostragem depende do esforço amostral, mais especificamente do número de indivíduos amostrados, que varia entre unidades amostrais, sendo inadequada a comparação da riqueza de dois locais cujo o número de indivíduos amostrados é diferente. Deste modo, para que possamos comaparar a riqueza, precisamos utilizar um mesmo denominador comum, que deve ser um número igual ou menor que o número de indivíduos amostrados nos locais. Este procedimento é conhecido como **rarefação**, que sumariamente gera uma relação entre o número de espécies e o número de indivíduos em uma ou mais amostras.  
+A função `rarecurve` do `vegan` retorna a riqueza esperada para um mesmo número de indivíduos, conforme o procedimento a seguir.
+```{r}
+# Curva de rarefação
+rarecurve(matriz_freq,
+          xlab = "Indivíduos amostrados",
+          ylab="Riqueza esperada",
+          main="Curvas de rarefação",
+          lty = 2)
+```
+
+O gráfico gerado nos indica que nas parcelas de número 9, 10, 18 e 16, cujas curvas de rarefação se encontram acima das demais, podemos esperar maior riqueza de espécies para um mesmo número de indivíduos amostrados, em comparação às demais unidades amostrais.
+
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

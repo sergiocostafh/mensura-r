@@ -1,0 +1,131 @@
+---
+title: 'Cálculo de índices ecológicos'
+author: Sérgio Costa
+date: '2019-10-08'
+slug: fitossociologia-cálculo-de-índices-ecológicos
+categories:
+  - Fitossociologia
+tags:
+  - ecologia
+  - biologia
+  - engenharia florestal
+  - botânica
+  - Margalef
+  - Shannon
+  - Simpson
+  - Pielou
+  - Jaccard
+subtitle: ''
+summary: Procedimentos para cálculo dos índices de  Margalef, Shannon, Simpson, Pielou e Jaccard, e construção de dendrograma de similaridade.
+authors: []
+lastmod: '2019-10-08T20:54:23-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+As análises fitossociológicas contemplam a utilização de índices ecológicos que exprimem a riqueza e a diversidade de comunidades vegetais, permitindo a comparação e o monitoramento dos recursos vegetais, além de fornecer subsídios ao seu manejo.  
+Nesse post calcularemos praticaremos o cálculo dos seguintes índices:
+  
+|Índice            |Fórmula|Descrição|
+|:-----------------:|:--------------:|:--------------|  
+|Índice de Margalef|$D_{Mg}=\frac{S-1}{ln(N)}$|Expressa riqueza de espécies|
+|Índice de Shannon|$H'=-\sum{\frac{n_i}{N}ln(\frac{n_i}{N})}$|Expressa a heterogeneidade da composição florística ou o grau de incerteza em relação à espécie de um indivíduo amostrado ao acaso|
+|Índice de Simpson|$D=-\sum\left({\frac{n_i}{N}}\right)^2$|Expressa a dominância de espécies e a probabilidade de dois indivíduos amostrados ao acaso pertencerem à mesma espécie|
+|Índice de Pielou|$J'=\frac{H'}{ln(S)}$|Exprime a equitabilidade, ou seja, o padrão de distribuição dos indivíduos entre as espécies.|
+  
+Em que: $S$ = número de espécies amostradas; $N$ = quantidade de indivíduos amostrados; $n_i$ = quantidade de indivíduos amostradados da espécie $i$;$ln$ = logaritmo natural.  
+Vamos às análises. Iniciaremos importando a mesma base de dados utilizada no post em que analisamos a estrutura horizontal. Na sequência calcularemos todos os índices, com auxílio do pacote `vegan`.
+
+```{r, warning=FALSE,message=FALSE, fig.align='center'}
+# Importar dados
+dados <- readxl::read_excel("dados_fitossociologia.xlsx")
+# Visualizar dados
+dados
+# Carregar pacotes necessários
+library(vegan)
+library(dplyr)
+# Gerar matriz de frequência das espécies
+matriz_freq <- xtabs(~Parcela+Espécie, dados)
+# Visualizar as 6 primeiras linhas (parcelas) da matriz de frequência gerada
+head(matriz_freq)
+# Número de indivíduos por parcela
+n_ind_parc <- rowSums(matriz_freq)
+# Número total de indivíduos amostrados
+n_ind_tot <- sum(n_ind_parc)
+# Número de espécies
+n_sp_parc <- specnumber(matriz_freq)
+# Número de espécies total
+n_sp_tot <- specnumber(colSums(matriz_freq))
+# Índice de Margalef para cada parcela
+margalef_parc <- (n_sp_parc-1)/n_ind_parc
+# Índice de Margalef para toda a comunidade
+margalef_tot <- (n_sp_tot-1)/n_ind_tot
+# Índice de Shannon para cada parcela
+simpson_parc <- diversity(matriz_freq, index = 'simpson')
+# Índice de Shannon para toda a comunidade
+simpson_tot <- diversity(colSums(matriz_freq), index = 'simpson')
+# Índice de Shannon para cada parcela
+shannon_parc <- diversity(matriz_freq, index = 'shannon')
+# Índice de Shannon para toda a comunidade
+shannon_tot <- diversity(colSums(matriz_freq), index = 'shannon')
+# Equabilidade de Pielou para cada parcela
+pielou_parc <- shannon_parc/log(n_sp_parc)
+# Equabilidade de Pielou para toda comunidade
+pielou_tot <- shannon_tot/log(n_sp_tot)
+
+# Gera tabela de resultados
+tabela_indices <- data.frame(Parcela = names(margalef_parc),
+                             Margalef = round(margalef_parc,2),
+                             Simpson = round(simpson_parc,2),
+                             Shannon = round(shannon_parc,2),
+                             Pielou = round(pielou_parc,2))
+tabela_indices <- bind_rows(tabela_indices,data.frame(Parcela = 'Total',
+                                                  Margalef = round(margalef_tot,2),
+                                                  Simpson = round(simpson_tot,2),
+                                                  Shannon = round(shannon_tot,2),
+                                                  Pielou = round(pielou_tot,2)))
+knitr::kable(tabela_indices, row.names = FALSE)%>%
+  kableExtra::kable_styling(full_width = F, position = "center")
+```
+Outro indicador ecológico comumente utilizado em estudos fitossociológicos é o Índice de Jaccard, que expressa a similaridade de espécies entre os locais amostrados, rendo a seguinte expressão matemática:  
+
+<center>
+$J=\frac{C}{A+B+C}$  
+</center>
+  
+Em que: $A$ = número de espécies presentes na parcela A e ausentes na parcela B; $B$ = número de espécies presentes na parcela B e ausentes na parcela A; $C$ número de espécies presentes nas parcelas A e B.
+```{r}
+# Índice de similaridade de Jaccard
+indice_jaccard <- betadiver(matriz_freq,'j')
+```
+Por fim, podemos analisar visualmente as relações de similaridade entre as parcelas ou adrupamento dessas por meio de um dendrograma. No gráfico abaixo podemos observar que as parcelas que, individualmente, apresentaram maior similaridade entre si foram 20 e 29.
+```{r}
+# Gerar dendrograma
+dendrograma <- hclust(indice_jaccard)
+par(mfrow=c(1,1),mar=c(1,4,3,1))
+plot(dendrograma, hang=1,
+     main = 'Dendrograma de similaridade',
+     ylab='Similaridade')
+```
+O dendrograma de similaridade é especialmente interessante para avaliar a a semelhança entre comunidades, embora possa também ser aplicado para comparar unidades amostrais em uma mesma comunidade. No presente exemplo, as unidades amostrais possuem área de 100 m², resultando em informações bastante limitadas a nível de parcela. Para este tipo de avaliação, unidades amostrais de maiores dimensões são mais adequadas pois reduzem a variação entre parcelas, permitindo uma avaliação mais abrangente. 
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

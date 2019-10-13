@@ -15,7 +15,7 @@ tags:
   - simulação florestal
   - engenharia florestal
 subtitle: ''
-summary: 'Essa postagem apresenta um procedimento para prognose da produção florestal a nível de povoamento considerando classes de produtividade.'
+summary: Procedimentos para realização da prognose da produção florestal a nível de povoamento considerando classes de produtividade.
 authors: []
 lastmod: '2019-09-26T21:06:26-03:00'
 featured: no
@@ -34,6 +34,7 @@ Neste exemplo trabalharemos com modelos a nível de povoamento, também conhecid
 Iniciaremos o procedimento de modelagem global com a importação e visualização dos dados.</p>
 <pre class="r"><code># Importar conjunto de dados
 dados &lt;- readxl::read_excel(&#39;dados_processados.xlsx&#39;)
+# Carrega pacote de gráficos
 library(ggplot2)
 # Plotar Idade x Volume
 ggplot()+
@@ -50,7 +51,8 @@ No gráfico acima podemos observar os volumes obtidos para povoamentos de <em>Pi
 <p><span class="math inline">\(Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}\)</span></p>
 </center>
 <p>O procedimento de classificação é explicado de maneira detalhada no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>. Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.</p>
-<pre class="r"><code>library(minpack.lm)
+<pre class="r"><code># Carrega pacote necessário para ajuste dos modelos
+library(minpack.lm)
 # Ajustar modelos de Chapman-Richards para o crescimento em hdom
 chapman.richards_hdom &lt;- nlsLM(HDOM ~ a*(1-exp(-b*IDADE))^c,
                   data = dados,
@@ -108,7 +110,7 @@ chapman.richards_vol &lt;- nlsLM(VOLTOT ~ (a+a1*sitio)*(1-exp(-b*IDADE))^c,
 syx_abs_richards_v &lt;- summary(chapman.richards_vol)$sigma
 syx_abs_richards_v &lt;- syx_abs_richards_v/mean(dados$VOLTOT)*100
 # Conjunto de dados para gerar curvas de predição
-idades &lt;- seq(0,30,0.1)
+idades &lt;- 0:30
 dados_predict_sitio &lt;- data.frame(IDADE=rep(idades,times=5),
                             sitio=rep(classes,
                                       each=length(idades)))
@@ -127,19 +129,293 @@ plot_vol+
                              round(syx_abs_richards_v,2)))</code></pre>
 <p><img src="/post/2019-09-26-modelagem-global-para-prognose-da-producao-florestal_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 O modelo acima ajustado possui um modificador (coeficiente <span class="math inline">\(b_{01}\)</span>) na assíntota (coeficiente <span class="math inline">\(b_0\)</span>) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer momento a partir de um par de observações de idade e volume conhecidos. Para esta finalidade aplicamos o método da diferença algébrica, cujo procedimento é descrito no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>.<br />
-Por fim, vamos visualizar a produção esperada na idade de corte por classe de sítio definida.</p>
+Por fim, vamos visualizar a tabela de produção por classe de sítio</p>
 <pre class="r"><code># Obter de produtividade dos sítios na idade de 15 anos (idade de referência)
-dados15 &lt;- subset(dados_predict_sitio,dados_predict_sitio$IDADE==15)
-dados15$IMA &lt;- round(dados15$Vol/dados15$IDADE,1)
-colnames(dados15) &lt;- c(&#39;Idade&#39;,&#39;Sítio&#39;,&#39;Volume total (m³/ha)&#39;,&#39;IMA (m³/ha/ano)&#39;)
-rownames(dados15) &lt;- NULL
-print(dados15[,-1], row.names = FALSE)</code></pre>
-<pre><code>##  Sítio Volume total (m³/ha) IMA (m³/ha/ano)
-##   18.8                323.1            21.5
-##   20.8                380.6            25.4
-##   22.8                438.0            29.2
-##   24.8                495.5            33.0
-##   26.8                553.0            36.9</code></pre>
+tabela_prod &lt;- data.frame(Idade = 0:30,
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[1]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[2]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[3]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[4]),
+                          subset(dados_predict_sitio$Vol,
+                                 dados_predict_sitio$sitio==classes[5]))
+
+colnames(tabela_prod) &lt;- c(&#39;Idade&#39;,
+                           paste0(&#39;Sítio &#39;,classes[1]),
+                           paste0(&#39;Sítio &#39;,classes[2]),
+                           paste0(&#39;Sítio &#39;,classes[3]),
+                           paste0(&#39;Sítio &#39;,classes[4]),
+                           paste0(&#39;Sítio &#39;,classes[5]))
+
+library(dplyr)
+knitr::kable(tabela_prod, row.names = F, caption = &#39;Tabela de produção em volume total (m³)&#39;)%&gt;%
+  kableExtra::kable_styling(full_width = F, position = &quot;center&quot;)</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-5">Table 1: </span>Tabela de produção em volume total (m³)</caption>
+<thead>
+<tr class="header">
+<th align="right">Idade</th>
+<th align="right">Sítio 18.8</th>
+<th align="right">Sítio 20.8</th>
+<th align="right">Sítio 22.8</th>
+<th align="right">Sítio 24.8</th>
+<th align="right">Sítio 26.8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">0.4</td>
+<td align="right">0.5</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">4.9</td>
+<td align="right">5.8</td>
+<td align="right">6.6</td>
+<td align="right">7.5</td>
+<td align="right">8.4</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">17.4</td>
+<td align="right">20.5</td>
+<td align="right">23.6</td>
+<td align="right">26.7</td>
+<td align="right">29.8</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">38.7</td>
+<td align="right">45.5</td>
+<td align="right">52.4</td>
+<td align="right">59.3</td>
+<td align="right">66.2</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">66.9</td>
+<td align="right">78.9</td>
+<td align="right">90.8</td>
+<td align="right">102.7</td>
+<td align="right">114.6</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">99.5</td>
+<td align="right">117.2</td>
+<td align="right">134.9</td>
+<td align="right">152.6</td>
+<td align="right">170.3</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">133.6</td>
+<td align="right">157.4</td>
+<td align="right">181.1</td>
+<td align="right">204.9</td>
+<td align="right">228.7</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">167.1</td>
+<td align="right">196.9</td>
+<td align="right">226.6</td>
+<td align="right">256.3</td>
+<td align="right">286.1</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">198.7</td>
+<td align="right">234.0</td>
+<td align="right">269.3</td>
+<td align="right">304.7</td>
+<td align="right">340.0</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">227.3</td>
+<td align="right">267.7</td>
+<td align="right">308.2</td>
+<td align="right">348.6</td>
+<td align="right">389.0</td>
+</tr>
+<tr class="even">
+<td align="right">11</td>
+<td align="right">252.7</td>
+<td align="right">297.6</td>
+<td align="right">342.6</td>
+<td align="right">387.5</td>
+<td align="right">432.5</td>
+</tr>
+<tr class="odd">
+<td align="right">12</td>
+<td align="right">274.8</td>
+<td align="right">323.6</td>
+<td align="right">372.5</td>
+<td align="right">421.4</td>
+<td align="right">470.2</td>
+</tr>
+<tr class="even">
+<td align="right">13</td>
+<td align="right">293.7</td>
+<td align="right">345.9</td>
+<td align="right">398.1</td>
+<td align="right">450.4</td>
+<td align="right">502.6</td>
+</tr>
+<tr class="odd">
+<td align="right">14</td>
+<td align="right">309.7</td>
+<td align="right">364.7</td>
+<td align="right">419.8</td>
+<td align="right">474.9</td>
+<td align="right">530.0</td>
+</tr>
+<tr class="even">
+<td align="right">15</td>
+<td align="right">323.1</td>
+<td align="right">380.6</td>
+<td align="right">438.0</td>
+<td align="right">495.5</td>
+<td align="right">553.0</td>
+</tr>
+<tr class="odd">
+<td align="right">16</td>
+<td align="right">334.3</td>
+<td align="right">393.7</td>
+<td align="right">453.2</td>
+<td align="right">512.7</td>
+<td align="right">572.1</td>
+</tr>
+<tr class="even">
+<td align="right">17</td>
+<td align="right">343.6</td>
+<td align="right">404.7</td>
+<td align="right">465.8</td>
+<td align="right">526.9</td>
+<td align="right">588.0</td>
+</tr>
+<tr class="odd">
+<td align="right">18</td>
+<td align="right">351.2</td>
+<td align="right">413.7</td>
+<td align="right">476.1</td>
+<td align="right">538.6</td>
+<td align="right">601.1</td>
+</tr>
+<tr class="even">
+<td align="right">19</td>
+<td align="right">357.5</td>
+<td align="right">421.1</td>
+<td align="right">484.7</td>
+<td align="right">548.3</td>
+<td align="right">611.8</td>
+</tr>
+<tr class="odd">
+<td align="right">20</td>
+<td align="right">362.6</td>
+<td align="right">427.1</td>
+<td align="right">491.6</td>
+<td align="right">556.1</td>
+<td align="right">620.7</td>
+</tr>
+<tr class="even">
+<td align="right">21</td>
+<td align="right">366.8</td>
+<td align="right">432.1</td>
+<td align="right">497.3</td>
+<td align="right">562.6</td>
+<td align="right">627.8</td>
+</tr>
+<tr class="odd">
+<td align="right">22</td>
+<td align="right">370.3</td>
+<td align="right">436.1</td>
+<td align="right">502.0</td>
+<td align="right">567.9</td>
+<td align="right">633.7</td>
+</tr>
+<tr class="even">
+<td align="right">23</td>
+<td align="right">373.1</td>
+<td align="right">439.4</td>
+<td align="right">505.8</td>
+<td align="right">572.1</td>
+<td align="right">638.5</td>
+</tr>
+<tr class="odd">
+<td align="right">24</td>
+<td align="right">375.3</td>
+<td align="right">442.1</td>
+<td align="right">508.9</td>
+<td align="right">575.6</td>
+<td align="right">642.4</td>
+</tr>
+<tr class="even">
+<td align="right">25</td>
+<td align="right">377.2</td>
+<td align="right">444.3</td>
+<td align="right">511.4</td>
+<td align="right">578.5</td>
+<td align="right">645.6</td>
+</tr>
+<tr class="odd">
+<td align="right">26</td>
+<td align="right">378.7</td>
+<td align="right">446.0</td>
+<td align="right">513.4</td>
+<td align="right">580.8</td>
+<td align="right">648.1</td>
+</tr>
+<tr class="even">
+<td align="right">27</td>
+<td align="right">379.9</td>
+<td align="right">447.5</td>
+<td align="right">515.1</td>
+<td align="right">582.6</td>
+<td align="right">650.2</td>
+</tr>
+<tr class="odd">
+<td align="right">28</td>
+<td align="right">380.9</td>
+<td align="right">448.6</td>
+<td align="right">516.4</td>
+<td align="right">584.2</td>
+<td align="right">651.9</td>
+</tr>
+<tr class="even">
+<td align="right">29</td>
+<td align="right">381.7</td>
+<td align="right">449.6</td>
+<td align="right">517.5</td>
+<td align="right">585.4</td>
+<td align="right">653.3</td>
+</tr>
+<tr class="odd">
+<td align="right">30</td>
+<td align="right">382.3</td>
+<td align="right">450.4</td>
+<td align="right">518.4</td>
+<td align="right">586.4</td>
+<td align="right">654.4</td>
+</tr>
+</tbody>
+</table>
 <style>
 body {
 text-align: justify}

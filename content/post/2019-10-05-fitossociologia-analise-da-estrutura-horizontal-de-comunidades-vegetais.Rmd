@@ -1,0 +1,119 @@
+---
+title: 'Análise da estrutura horizontal de comunidades vegetais'
+author: Sérgio Costa
+date: '2019-10-05'
+slug: fitossociologia-analise-da-estrutura-horizontal-de-comunidades-vegetais
+categories: 
+  - Fitossociologia
+tags:
+  - fitossociologia
+  - engenharia florestal
+  - biologia
+  - botânica
+subtitle: ''
+summary: Demonstração de procedimentos para análise de dados de levantamento fitossociológico e descrição da estrutura horizontal.
+authors: []
+lastmod: '2019-10-05T16:56:07-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+A fitossociologia é uma área complexa das ciências naturais que tem como objetivo caracterizar a distribuição, o agrupamento e as relações entre espécies em comunidades vegetais naturais, de modo a descrever sua estrutura e composição. A análise fitossociológica permite caracterizar vegetações quanto a sua tipologia, estágio sucessional e estado de conservação, subsidiando o manejo, a recuperação e a conservação de ecossistemas.
+  
+Este é o primeiro de uma série de posts em que apresentarei procedimentos para estudos fitossociológicos empregando dados reais. Nesse exemplo, faremos a análise da estrutura horizontal de uma comunidade de cerrado. Começaremos importando e visualizando dados oriundos de um levantamento realizado a partir de 29 unidades amostrais de 100 m².    
+
+```{r}
+# Importar base de dados
+dados <- readxl::read_excel("dados_fitossociologia.xlsx")
+# Visualizar dados importados
+dados
+# Visualizar as espécies amostradas
+unique(dados$Espécie)
+# Visualizar as famílias amostradas
+unique(dados$Família)
+```
+
+Ao todo 541 indivíduos foram amostrados no levantamento, abrangendo 58 espécies distribuídas em 29 famílias. Os principais parâmetros que descrevem a estrutura horizontal são apresentados a seguir.
+  
+<center>
+|Parâmetro         |Fórmula|
+|:-----------------|:-----------------------------------------------|  
+|Densidade absoluta|$DA_i=n_i/A$|
+|Densidade relativa|$DR_i=\frac{n_i}{N}*100$|
+|Frequência absoluta|$FA_i=\frac{u_i}{U}*100$|
+|Frequência relativa|$FR_i=\frac{FA_i}{\sum{FA}}*100$|
+|Dominância absoluta|$DoA_i=\frac{g_i}{A}$|
+|Dominância relativa|$DoR_i=\frac{g_i}{G}$|
+|Índice de Valor de Importância|$IVI_i=DR_i+FR_i+DoR_i$|
+</center>
+Em que: $n_i$ = quantidade de indivíduos amostrados da espécie *i*; $A$ = área total amostrada em hectares;$N$ = quantidade total de indivíduos amostrados; $u_i$ = número de unidades amostrais em que a espécie *i* foi registrada; $U$ = quantidade total de unidades amostrais; $g_i$ = área basal total ocupada pela espécie *i*; $G$ = soma da área basal de todos os indivíduos amostrados.
+  
+Agora vamos aplicar as fórmulas acima descritas aos dados que importamos para descrever a estrutura horizontal da comunidade amostrada. Ao final, geraremos uma tabela que apresenta os parâmetros calculados para todas as espécies, ordenadas pelo IVI.
+
+```{r, message=FALSE, warning=FALSE, fig.align='center'}
+# Definir tamanho da unidade amostral em m²
+area_ua <- 100
+# Número de parcelas
+n_ua <- length(unique(dados$Parcela))
+# Área total amostrada
+A <- area_ua*n_ua
+# Calcular área transversal dos indivíduos amostrados
+dados$g <- pi*dados$DAP^2/40000 
+# Contar número de indivíduos por espécie
+N <- table(dados$Espécie)
+# Densidades absoluta e relativa
+DA <- N*10000/A
+DR <- DA/sum(DA)*100
+# Frequências absoluta e relativa
+FA <- sapply(unique(dados$Espécie),
+         function(x){
+           length(unique(subset(dados,dados$Espécie==x)$Parcela))/n_ua
+           })*100
+FA <- FA[order(names(FA))]
+FR <- FA/sum(FA)*100
+# Dominâncias absoluta e relativa
+DOA <- aggregate(dados$g, list(dados$Espécie), sum)$x*10000/A
+DOR <- DOA/sum(DOA)*100
+
+# Montar tabela
+tabela_fito <- data.frame(Espécie=names(N),
+                          N=as.vector(N),
+                          DA=round(as.vector(DA),1),
+                          DR=round(as.vector(DR),1),
+                          FA=round(as.vector(FA),1),
+                          FR=round(as.vector(FR),1),
+                          DoA=round(DOA,1),
+                          DoR=round(DOR,1),
+                          IVI=round(as.vector(DR+FR+DOR),1))
+
+# Ordenar por IVI
+tabela_fito <- tabela_fito[order(tabela_fito$IVI,decreasing = T),]
+
+# Mostrar tabela
+library(dplyr)
+knitr::kable(tabela_fito, row.names = F)%>%
+  kableExtra::kable_styling(full_width = F, position = "center")
+
+```
+
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

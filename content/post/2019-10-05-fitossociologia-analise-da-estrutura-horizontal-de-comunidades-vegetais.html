@@ -1,0 +1,847 @@
+---
+title: 'Análise da estrutura horizontal de comunidades vegetais'
+author: Sérgio Costa
+date: '2019-10-05'
+slug: fitossociologia-analise-da-estrutura-horizontal-de-comunidades-vegetais
+categories: 
+  - Fitossociologia
+tags:
+  - fitossociologia
+  - engenharia florestal
+  - biologia
+  - botânica
+subtitle: ''
+summary: Demonstração de procedimentos para análise de dados de levantamento fitossociológico e descrição da estrutura horizontal.
+authors: []
+lastmod: '2019-10-05T16:56:07-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>A fitossociologia é uma área complexa das ciências naturais que tem como objetivo caracterizar a distribuição, o agrupamento e as relações entre espécies em comunidades vegetais naturais, de modo a descrever sua estrutura e composição. A análise fitossociológica permite caracterizar vegetações quanto a sua tipologia, estágio sucessional e estado de conservação, subsidiando o manejo, a recuperação e a conservação de ecossistemas.</p>
+<p>Este é o primeiro de uma série de posts em que apresentarei procedimentos para estudos fitossociológicos empregando dados reais. Nesse exemplo, faremos a análise da estrutura horizontal de uma comunidade de cerrado. Começaremos importando e visualizando dados oriundos de um levantamento realizado a partir de 29 unidades amostrais de 100 m².</p>
+<pre class="r"><code># Importar base de dados
+dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
+# Visualizar dados importados
+dados</code></pre>
+<pre><code>## # A tibble: 541 x 6
+##    Parcela Arvore   DAP Altura Família         Espécie              
+##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;                
+##  1       1      1 13.5     5   Dilleniaceae    Curatella americana  
+##  2       1      2  5.57    3.5 Annonaceae      Annona coriacea      
+##  3       1      3  5.09    4   Lauraceae       Ocotea minarum       
+##  4       1      4  5.25    4   Lauraceae       Ocotea minarum       
+##  5       1      5 11.8     4   Ebenaceae       Diospyros hispida    
+##  6       1      6  7.96    5.5 Fabaceae        Copaifera langsdorfii
+##  7       1      7  8.91    4.5 Sapindaceae     Matayba elaegnoides  
+##  8       1      8  5.89    3.5 Ebenaceae       Diospyros hispida    
+##  9       1      9  8.75    4.5 Ebenaceae       Diospyros hispida    
+## 10       1     10  4.77    2.5 Melastomataceae Miconia sp1          
+## # ... with 531 more rows</code></pre>
+<pre class="r"><code># Visualizar as espécies amostradas
+unique(dados$Espécie)</code></pre>
+<pre><code>##  [1] &quot;Curatella americana&quot;      &quot;Annona coriacea&quot;         
+##  [3] &quot;Ocotea minarum&quot;           &quot;Diospyros hispida&quot;       
+##  [5] &quot;Copaifera langsdorfii&quot;    &quot;Matayba elaegnoides&quot;     
+##  [7] &quot;Miconia sp1&quot;              &quot;Pouteria torta&quot;          
+##  [9] &quot;Byrsonima verbascifolia&quot;  &quot;Alibertia edulis&quot;        
+## [11] &quot;Qualea grandiflora&quot;       &quot;Leptolobium elegans&quot;     
+## [13] &quot;Myrcia sp1&quot;               &quot;Terminalia argentea&quot;     
+## [15] &quot;Indeterminada 2&quot;          &quot;Connarus suberosus&quot;      
+## [17] &quot;Xylopia aromatica&quot;        &quot;Psidium laruotteanum&quot;    
+## [19] &quot;Andira cuiabensis&quot;        &quot;Annona crassiflora&quot;      
+## [21] &quot;Dimorphandra mollis&quot;      &quot;Indeterminada 1&quot;         
+## [23] &quot;Tabebuia aurea&quot;           &quot;Campomanesia adamantium&quot; 
+## [25] &quot;Tachigali aurea&quot;          &quot;Byrsonima basiloba&quot;      
+## [27] &quot;Qualea parviflora&quot;        &quot;Schefflera macrocarpa&quot;   
+## [29] &quot;Tapirira guianensis&quot;      &quot;Handroanthus albus&quot;      
+## [31] &quot;Rhamnidium elaeocarpum&quot;   &quot;Anadenanthera falcata&quot;   
+## [33] &quot;Vochysia cinnamomea&quot;      &quot;Byrsonima coccolobifolia&quot;
+## [35] &quot;Couepia grandiflora&quot;      &quot;Buchenavia tomentosa&quot;    
+## [37] &quot;Syagrus flexuosa&quot;         &quot;Erythroxylum suberosum&quot;  
+## [39] &quot;Lafoensia pacari&quot;         &quot;Eriotheca gracilipes&quot;    
+## [41] &quot;Magonia pubescens&quot;        &quot;Kielmeyera coriacea&quot;     
+## [43] &quot;Bauhinia ungulata&quot;        &quot;Vatairea macrocarpa&quot;     
+## [45] &quot;Byrsonima pachyphylla&quot;    &quot;Roupala montana&quot;         
+## [47] &quot;Ouratea hexasperma&quot;       &quot;Pouteria ramiflora&quot;      
+## [49] &quot;Dipteryx alata&quot;           &quot;Eugenia aurata&quot;          
+## [51] &quot;Casearia sylvestris&quot;      &quot;Machaerium acutifoium&quot;   
+## [53] &quot;Bauhinia rufa&quot;            &quot;Eugenia punicifolia&quot;     
+## [55] &quot;Caryocar brasiliense&quot;     &quot;Ouratea spectabilis&quot;     
+## [57] &quot;Himenaea courbaril&quot;       &quot;Calliandra sp1&quot;</code></pre>
+<pre class="r"><code># Visualizar as famílias amostradas
+unique(dados$Família)</code></pre>
+<pre><code>##  [1] &quot;Dilleniaceae&quot;     &quot;Annonaceae&quot;       &quot;Lauraceae&quot;       
+##  [4] &quot;Ebenaceae&quot;        &quot;Fabaceae&quot;         &quot;Sapindaceae&quot;     
+##  [7] &quot;Melastomataceae&quot;  &quot;Sapotaceae&quot;       &quot;Malpighiaceae&quot;   
+## [10] &quot;Rubiaceae&quot;        &quot;Vochysiaceae&quot;     &quot;Myrtaceae&quot;       
+## [13] &quot;Combretaceae&quot;     &quot;Indeterminada&quot;    &quot;Connaraceae&quot;     
+## [16] &quot;Bignoniaceae&quot;     &quot;Araliaceae&quot;       &quot;Anacardiaceae&quot;   
+## [19] &quot;Rhamnaceae&quot;       &quot;Chrysobalanaceae&quot; &quot;Arecaceae&quot;       
+## [22] &quot;Erythroxylaceae&quot;  &quot;Lythraceae&quot;       &quot;Malvaceae&quot;       
+## [25] &quot;Calophyllaceae&quot;   &quot;Proteaceae&quot;       &quot;Ochnaceae&quot;       
+## [28] &quot;Salicaceae&quot;       &quot;Caryocaraceae&quot;</code></pre>
+<p>Ao todo 541 indivíduos foram amostrados no levantamento, abrangendo 58 espécies distribuídas em 29 famílias. Os principais parâmetros que descrevem a estrutura horizontal são apresentados a seguir.</p>
+<center>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Parâmetro</th>
+<th align="left">Fórmula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Densidade absoluta</td>
+<td align="left"><span class="math inline">\(DA_i=n_i/A\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Densidade relativa</td>
+<td align="left"><span class="math inline">\(DR_i=\frac{n_i}{N}*100\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Frequência absoluta</td>
+<td align="left"><span class="math inline">\(FA_i=\frac{u_i}{U}*100\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Frequência relativa</td>
+<td align="left"><span class="math inline">\(FR_i=\frac{FA_i}{\sum{FA}}*100\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Dominância absoluta</td>
+<td align="left"><span class="math inline">\(DoA_i=\frac{g_i}{A}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Dominância relativa</td>
+<td align="left"><span class="math inline">\(DoR_i=\frac{g_i}{G}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Índice de Valor de Importância</td>
+<td align="left"><span class="math inline">\(IVI_i=DR_i+FR_i+DoR_i\)</span></td>
+</tr>
+</tbody>
+</table>
+</center>
+<p>Em que: <span class="math inline">\(n_i\)</span> = quantidade de indivíduos amostrados da espécie <em>i</em>; <span class="math inline">\(A\)</span> = área total amostrada em hectares;<span class="math inline">\(N\)</span> = quantidade total de indivíduos amostrados; <span class="math inline">\(u_i\)</span> = número de unidades amostrais em que a espécie <em>i</em> foi registrada; <span class="math inline">\(U\)</span> = quantidade total de unidades amostrais; <span class="math inline">\(g_i\)</span> = área basal total ocupada pela espécie <em>i</em>; <span class="math inline">\(G\)</span> = soma da área basal de todos os indivíduos amostrados.</p>
+<p>Agora vamos aplicar as fórmulas acima descritas aos dados que importamos para descrever a estrutura horizontal da comunidade amostrada. Ao final, geraremos uma tabela que apresenta os parâmetros calculados para todas as espécies, ordenadas pelo IVI.</p>
+<pre class="r"><code># Definir tamanho da unidade amostral em m²
+area_ua &lt;- 100
+# Número de parcelas
+n_ua &lt;- length(unique(dados$Parcela))
+# Área total amostrada
+A &lt;- area_ua*n_ua
+# Calcular área transversal dos indivíduos amostrados
+dados$g &lt;- pi*dados$DAP^2/40000 
+# Contar número de indivíduos por espécie
+N &lt;- table(dados$Espécie)
+# Densidades absoluta e relativa
+DA &lt;- N*10000/A
+DR &lt;- DA/sum(DA)*100
+# Frequências absoluta e relativa
+FA &lt;- sapply(unique(dados$Espécie),
+         function(x){
+           length(unique(subset(dados,dados$Espécie==x)$Parcela))/n_ua
+           })*100
+FA &lt;- FA[order(names(FA))]
+FR &lt;- FA/sum(FA)*100
+# Dominâncias absoluta e relativa
+DOA &lt;- aggregate(dados$g, list(dados$Espécie), sum)$x*10000/A
+DOR &lt;- DOA/sum(DOA)*100
+
+# Montar tabela
+tabela_fito &lt;- data.frame(Espécie=names(N),
+                          N=as.vector(N),
+                          DA=round(as.vector(DA),1),
+                          DR=round(as.vector(DR),1),
+                          FA=round(as.vector(FA),1),
+                          FR=round(as.vector(FR),1),
+                          DoA=round(DOA,1),
+                          DoR=round(DOR,1),
+                          IVI=round(as.vector(DR+FR+DOR),1))
+
+# Ordenar por IVI
+tabela_fito &lt;- tabela_fito[order(tabela_fito$IVI,decreasing = T),]
+
+# Mostrar tabela
+library(dplyr)
+knitr::kable(tabela_fito, row.names = F)%&gt;%
+  kableExtra::kable_styling(full_width = F, position = &quot;center&quot;)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Espécie</th>
+<th align="right">N</th>
+<th align="right">DA</th>
+<th align="right">DR</th>
+<th align="right">FA</th>
+<th align="right">FR</th>
+<th align="right">DoA</th>
+<th align="right">DoR</th>
+<th align="right">IVI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Leptolobium elegans</td>
+<td align="right">61</td>
+<td align="right">210.3</td>
+<td align="right">11.3</td>
+<td align="right">65.5</td>
+<td align="right">6.5</td>
+<td align="right">1.7</td>
+<td align="right">9.2</td>
+<td align="right">27.0</td>
+</tr>
+<tr class="even">
+<td align="left">Qualea grandiflora</td>
+<td align="right">44</td>
+<td align="right">151.7</td>
+<td align="right">8.1</td>
+<td align="right">48.3</td>
+<td align="right">4.8</td>
+<td align="right">1.8</td>
+<td align="right">10.0</td>
+<td align="right">22.9</td>
+</tr>
+<tr class="odd">
+<td align="left">Qualea parviflora</td>
+<td align="right">29</td>
+<td align="right">100.0</td>
+<td align="right">5.4</td>
+<td align="right">51.7</td>
+<td align="right">5.1</td>
+<td align="right">2.1</td>
+<td align="right">11.6</td>
+<td align="right">22.1</td>
+</tr>
+<tr class="even">
+<td align="left">Pouteria torta</td>
+<td align="right">35</td>
+<td align="right">120.7</td>
+<td align="right">6.5</td>
+<td align="right">51.7</td>
+<td align="right">5.1</td>
+<td align="right">1.7</td>
+<td align="right">9.1</td>
+<td align="right">20.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Myrcia sp1</td>
+<td align="right">41</td>
+<td align="right">141.4</td>
+<td align="right">7.6</td>
+<td align="right">65.5</td>
+<td align="right">6.5</td>
+<td align="right">0.8</td>
+<td align="right">4.5</td>
+<td align="right">18.5</td>
+</tr>
+<tr class="even">
+<td align="left">Curatella americana</td>
+<td align="right">21</td>
+<td align="right">72.4</td>
+<td align="right">3.9</td>
+<td align="right">31.0</td>
+<td align="right">3.1</td>
+<td align="right">1.0</td>
+<td align="right">5.4</td>
+<td align="right">12.3</td>
+</tr>
+<tr class="odd">
+<td align="left">Anadenanthera falcata</td>
+<td align="right">11</td>
+<td align="right">37.9</td>
+<td align="right">2.0</td>
+<td align="right">20.7</td>
+<td align="right">2.0</td>
+<td align="right">1.1</td>
+<td align="right">6.2</td>
+<td align="right">10.3</td>
+</tr>
+<tr class="even">
+<td align="left">Miconia sp1</td>
+<td align="right">28</td>
+<td align="right">96.6</td>
+<td align="right">5.2</td>
+<td align="right">34.5</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">1.7</td>
+<td align="right">10.3</td>
+</tr>
+<tr class="odd">
+<td align="left">Diospyros hispida</td>
+<td align="right">20</td>
+<td align="right">69.0</td>
+<td align="right">3.7</td>
+<td align="right">34.5</td>
+<td align="right">3.4</td>
+<td align="right">0.5</td>
+<td align="right">2.5</td>
+<td align="right">9.6</td>
+</tr>
+<tr class="even">
+<td align="left">Alibertia edulis</td>
+<td align="right">19</td>
+<td align="right">65.5</td>
+<td align="right">3.5</td>
+<td align="right">37.9</td>
+<td align="right">3.7</td>
+<td align="right">0.2</td>
+<td align="right">1.2</td>
+<td align="right">8.5</td>
+</tr>
+<tr class="odd">
+<td align="left">Matayba elaegnoides</td>
+<td align="right">18</td>
+<td align="right">62.1</td>
+<td align="right">3.3</td>
+<td align="right">27.6</td>
+<td align="right">2.7</td>
+<td align="right">0.3</td>
+<td align="right">1.4</td>
+<td align="right">7.5</td>
+</tr>
+<tr class="even">
+<td align="left">Annona coriacea</td>
+<td align="right">11</td>
+<td align="right">37.9</td>
+<td align="right">2.0</td>
+<td align="right">34.5</td>
+<td align="right">3.4</td>
+<td align="right">0.2</td>
+<td align="right">1.2</td>
+<td align="right">6.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Tabebuia aurea</td>
+<td align="right">11</td>
+<td align="right">37.9</td>
+<td align="right">2.0</td>
+<td align="right">27.6</td>
+<td align="right">2.7</td>
+<td align="right">0.3</td>
+<td align="right">1.6</td>
+<td align="right">6.4</td>
+</tr>
+<tr class="even">
+<td align="left">Byrsonima coccolobifolia</td>
+<td align="right">12</td>
+<td align="right">41.4</td>
+<td align="right">2.2</td>
+<td align="right">27.6</td>
+<td align="right">2.7</td>
+<td align="right">0.2</td>
+<td align="right">1.2</td>
+<td align="right">6.2</td>
+</tr>
+<tr class="odd">
+<td align="left">Copaifera langsdorfii</td>
+<td align="right">5</td>
+<td align="right">17.2</td>
+<td align="right">0.9</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.6</td>
+<td align="right">3.4</td>
+<td align="right">5.7</td>
+</tr>
+<tr class="even">
+<td align="left">Tapirira guianensis</td>
+<td align="right">6</td>
+<td align="right">20.7</td>
+<td align="right">1.1</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.7</td>
+<td align="right">3.9</td>
+<td align="right">5.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Vochysia cinnamomea</td>
+<td align="right">6</td>
+<td align="right">20.7</td>
+<td align="right">1.1</td>
+<td align="right">17.2</td>
+<td align="right">1.7</td>
+<td align="right">0.4</td>
+<td align="right">2.4</td>
+<td align="right">5.2</td>
+</tr>
+<tr class="even">
+<td align="left">Lafoensia pacari</td>
+<td align="right">9</td>
+<td align="right">31.0</td>
+<td align="right">1.7</td>
+<td align="right">20.7</td>
+<td align="right">2.0</td>
+<td align="right">0.2</td>
+<td align="right">1.3</td>
+<td align="right">5.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Byrsonima verbascifolia</td>
+<td align="right">8</td>
+<td align="right">27.6</td>
+<td align="right">1.5</td>
+<td align="right">24.1</td>
+<td align="right">2.4</td>
+<td align="right">0.2</td>
+<td align="right">1.0</td>
+<td align="right">4.9</td>
+</tr>
+<tr class="even">
+<td align="left">Eriotheca gracilipes</td>
+<td align="right">7</td>
+<td align="right">24.1</td>
+<td align="right">1.3</td>
+<td align="right">20.7</td>
+<td align="right">2.0</td>
+<td align="right">0.3</td>
+<td align="right">1.5</td>
+<td align="right">4.8</td>
+</tr>
+<tr class="odd">
+<td align="left">Byrsonima pachyphylla</td>
+<td align="right">7</td>
+<td align="right">24.1</td>
+<td align="right">1.3</td>
+<td align="right">17.2</td>
+<td align="right">1.7</td>
+<td align="right">0.3</td>
+<td align="right">1.4</td>
+<td align="right">4.4</td>
+</tr>
+<tr class="even">
+<td align="left">Dimorphandra mollis</td>
+<td align="right">6</td>
+<td align="right">20.7</td>
+<td align="right">1.1</td>
+<td align="right">17.2</td>
+<td align="right">1.7</td>
+<td align="right">0.3</td>
+<td align="right">1.5</td>
+<td align="right">4.3</td>
+</tr>
+<tr class="odd">
+<td align="left">Tachigali aurea</td>
+<td align="right">7</td>
+<td align="right">24.1</td>
+<td align="right">1.3</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.3</td>
+<td align="right">1.5</td>
+<td align="right">4.1</td>
+</tr>
+<tr class="even">
+<td align="left">Terminalia argentea</td>
+<td align="right">5</td>
+<td align="right">17.2</td>
+<td align="right">0.9</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.3</td>
+<td align="right">1.8</td>
+<td align="right">4.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Connarus suberosus</td>
+<td align="right">9</td>
+<td align="right">31.0</td>
+<td align="right">1.7</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.1</td>
+<td align="right">0.8</td>
+<td align="right">3.8</td>
+</tr>
+<tr class="even">
+<td align="left">Pouteria ramiflora</td>
+<td align="right">7</td>
+<td align="right">24.1</td>
+<td align="right">1.3</td>
+<td align="right">20.7</td>
+<td align="right">2.0</td>
+<td align="right">0.1</td>
+<td align="right">0.5</td>
+<td align="right">3.8</td>
+</tr>
+<tr class="odd">
+<td align="left">Handroanthus albus</td>
+<td align="right">7</td>
+<td align="right">24.1</td>
+<td align="right">1.3</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.1</td>
+<td align="right">0.5</td>
+<td align="right">3.1</td>
+</tr>
+<tr class="even">
+<td align="left">Ocotea minarum</td>
+<td align="right">7</td>
+<td align="right">24.1</td>
+<td align="right">1.3</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.1</td>
+<td align="right">0.4</td>
+<td align="right">3.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Machaerium acutifoium</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.2</td>
+<td align="right">1.0</td>
+<td align="right">2.8</td>
+</tr>
+<tr class="even">
+<td align="left">Annona crassiflora</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.1</td>
+<td align="right">0.6</td>
+<td align="right">2.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Bauhinia ungulata</td>
+<td align="right">5</td>
+<td align="right">17.2</td>
+<td align="right">0.9</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">2.6</td>
+</tr>
+<tr class="even">
+<td align="left">Psidium laruotteanum</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.1</td>
+<td align="right">0.5</td>
+<td align="right">2.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Campomanesia adamantium</td>
+<td align="right">6</td>
+<td align="right">20.7</td>
+<td align="right">1.1</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">2.5</td>
+</tr>
+<tr class="even">
+<td align="left">Caryocar brasiliense</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.1</td>
+<td align="right">0.7</td>
+<td align="right">2.5</td>
+</tr>
+<tr class="odd">
+<td align="left">Buchenavia tomentosa</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.1</td>
+<td align="right">0.5</td>
+<td align="right">2.3</td>
+</tr>
+<tr class="even">
+<td align="left">Xylopia aromatica</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">13.8</td>
+<td align="right">1.4</td>
+<td align="right">0.0</td>
+<td align="right">0.2</td>
+<td align="right">2.3</td>
+</tr>
+<tr class="odd">
+<td align="left">Magonia pubescens</td>
+<td align="right">5</td>
+<td align="right">17.2</td>
+<td align="right">0.9</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.1</td>
+<td align="right">0.5</td>
+<td align="right">2.1</td>
+</tr>
+<tr class="even">
+<td align="left">Ouratea hexasperma</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">2.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Roupala montana</td>
+<td align="right">4</td>
+<td align="right">13.8</td>
+<td align="right">0.7</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.1</td>
+<td align="right">0.4</td>
+<td align="right">2.1</td>
+</tr>
+<tr class="even">
+<td align="left">Andira cuiabensis</td>
+<td align="right">3</td>
+<td align="right">10.3</td>
+<td align="right">0.6</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.1</td>
+<td align="right">0.8</td>
+<td align="right">2.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Byrsonima basiloba</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.2</td>
+<td align="right">0.8</td>
+<td align="right">1.9</td>
+</tr>
+<tr class="even">
+<td align="left">Kielmeyera coriacea</td>
+<td align="right">3</td>
+<td align="right">10.3</td>
+<td align="right">0.6</td>
+<td align="right">10.3</td>
+<td align="right">1.0</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">1.9</td>
+</tr>
+<tr class="odd">
+<td align="left">Indeterminada 1</td>
+<td align="right">3</td>
+<td align="right">10.3</td>
+<td align="right">0.6</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.1</td>
+<td align="right">0.8</td>
+<td align="right">1.7</td>
+</tr>
+<tr class="even">
+<td align="left">Schefflera macrocarpa</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.1</td>
+<td align="right">0.6</td>
+<td align="right">1.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Vatairea macrocarpa</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.1</td>
+<td align="right">0.4</td>
+<td align="right">1.4</td>
+</tr>
+<tr class="even">
+<td align="left">Erythroxylum suberosum</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.0</td>
+<td align="right">0.2</td>
+<td align="right">1.3</td>
+</tr>
+<tr class="odd">
+<td align="left">Syagrus flexuosa</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.0</td>
+<td align="right">0.2</td>
+<td align="right">1.3</td>
+</tr>
+<tr class="even">
+<td align="left">Bauhinia rufa</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.0</td>
+<td align="right">0.1</td>
+<td align="right">1.2</td>
+</tr>
+<tr class="odd">
+<td align="left">Couepia grandiflora</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.1</td>
+<td align="right">0.5</td>
+<td align="right">1.2</td>
+</tr>
+<tr class="even">
+<td align="left">Eugenia punicifolia</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.0</td>
+<td align="right">0.1</td>
+<td align="right">1.2</td>
+</tr>
+<tr class="odd">
+<td align="left">Ouratea spectabilis</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">6.9</td>
+<td align="right">0.7</td>
+<td align="right">0.0</td>
+<td align="right">0.1</td>
+<td align="right">1.2</td>
+</tr>
+<tr class="even">
+<td align="left">Eugenia aurata</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.0</td>
+<td align="right">0.3</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Calliandra sp1</td>
+<td align="right">2</td>
+<td align="right">6.9</td>
+<td align="right">0.4</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.0</td>
+<td align="right">0.1</td>
+<td align="right">0.8</td>
+</tr>
+<tr class="even">
+<td align="left">Indeterminada 2</td>
+<td align="right">1</td>
+<td align="right">3.4</td>
+<td align="right">0.2</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">0.8</td>
+</tr>
+<tr class="odd">
+<td align="left">Dipteryx alata</td>
+<td align="right">1</td>
+<td align="right">3.4</td>
+<td align="right">0.2</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.0</td>
+<td align="right">0.2</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Himenaea courbaril</td>
+<td align="right">1</td>
+<td align="right">3.4</td>
+<td align="right">0.2</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.0</td>
+<td align="right">0.1</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Casearia sylvestris</td>
+<td align="right">1</td>
+<td align="right">3.4</td>
+<td align="right">0.2</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.6</td>
+</tr>
+<tr class="even">
+<td align="left">Rhamnidium elaeocarpum</td>
+<td align="right">1</td>
+<td align="right">3.4</td>
+<td align="right">0.2</td>
+<td align="right">3.4</td>
+<td align="right">0.3</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.6</td>
+</tr>
+</tbody>
+</table>
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
