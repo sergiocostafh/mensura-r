@@ -22,7 +22,7 @@ projects: []
 
 
 
-<p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, no entanto há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comuniade vegetal.<br />
+<p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, mas há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comunidade vegetal.<br />
 Uma ferramenta bastante utilizada para esta finalidade é a curva de acumulação de espécies, também conhecida como curva do coletor, que relaciona o número de novas espécies encontradas a medida em que se aumenta o número de amostras ou a área amostral.<br />
 Um problema encontrado na construção da curva do coletor é a arbitrariedade na ordem de entrada das unidades amostrais, já que cada possível ordenação das unidades amostrais pode gerar uma curva diferente, invalidando qualquer interpretação com base em sua forma.<br />
 Para contornar esse problema devemos utilizar uma curva suavizada, que consiste em uma curva média obtida a partir da construção de um grande número de curvas obtidas por procedimentos de aleatorização das unidades amostrais.<br />
@@ -218,7 +218,7 @@ plot(curva_acum,
      main=&quot;Curva de acumulação de espécies&quot;)</code></pre>
 <p><img src="/post/2019-10-13-fitossociologia-curvas-de-rarefacao-e-acumulacao-de-especies_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>A interpretação mais trivial para a curva do coletor é que quando esta se estabiliza, formando um patamar, foi atingida a suficiência amostral para a comunidade em questão.<br />
-A riqueza representada em uma amostragem depende do esforço amostral, mais especificamente do número de indivíduos amostrados, que varia entre unidades amostrais, sendo inadequada a comparação da riqueza de dois locais cujo o número de indivíduos amostrados é diferente. Deste modo, para que possamos comaparar a riqueza, precisamos utilizar um mesmo denominador comum, que deve ser um número igual ou menor que o número de indivíduos amostrados nos locais. Este procedimento é conhecido como <strong>rarefação</strong>, que sumariamente gera uma relação entre o número de espécies e o número de indivíduos em uma ou mais amostras.<br />
+A riqueza representada em uma amostragem depende do esforço amostral, mais especificamente do número de indivíduos amostrados, que varia entre unidades amostrais. Por isso, a comparação da riqueza de dois locais cujo o número de indivíduos amostrados é diferente é uma abordagem inadequada. Deste modo, para que possamos comparar a riqueza é necessária a utilização de um mesmo denominador comum, que deve ser um número igual ou menor que o número de indivíduos amostrados nos locais. Este procedimento é conhecido como <strong>rarefação</strong>, que sumariamente consiste em gerar uma relação entre o número de espécies e o número de indivíduos em uma ou mais amostras.<br />
 A função <code>rarecurve</code> do <code>vegan</code> retorna a riqueza esperada para um mesmo número de indivíduos, conforme o procedimento a seguir.</p>
 <pre class="r"><code># Curva de rarefação
 rarecurve(matriz_freq,
