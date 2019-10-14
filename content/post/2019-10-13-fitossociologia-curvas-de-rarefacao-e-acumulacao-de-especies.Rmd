@@ -51,7 +51,7 @@ plot(curva_acum,
 ```
 
 A interpretação mais trivial para a curva do coletor é que quando esta se estabiliza, formando um patamar, foi atingida a suficiência amostral para a comunidade em questão.  
-A riqueza representada em uma amostragem depende do esforço amostral, mais especificamente do número de indivíduos amostrados, que varia entre unidades amostrais. Por isso, a comparação da riqueza de dois locais cujo o número de indivíduos amostrados é diferente é uma abordagem inadequada. Deste modo, para que possamos comparar a riqueza é necessária a utilização de um mesmo denominador comum, que deve ser um número igual ou menor que o número de indivíduos amostrados nos locais. Este procedimento é conhecido como **rarefação**, que sumariamente consiste em gerar uma relação entre o número de espécies e o número de indivíduos em uma ou mais amostras.  
+A riqueza representada em uma amostragem depende do esforço amostral, mais especificamente do número de indivíduos amostrados, que varia entre unidades amostrais. Por isso, a comparação da riqueza de dois locais cujo o número de indivíduos amostrados é diferente é uma abordagem inadequada. Deste modo, para que possamos comparar a riqueza é necessária a utilização de um mesmo denominador comum, que deve ser um número igual ou menor que o número de indivíduos amostrados nos locais. Este procedimento é conhecido como **rarefação**, que sumariamente consiste em gerar uma relação entre o número esperado de espécies para uma certa quantidade de indivíduos em uma ou mais amostras.  
 A função `rarecurve` do `vegan` retorna a riqueza esperada para um mesmo número de indivíduos, conforme o procedimento a seguir.
 ```{r}
 # Curva de rarefação
