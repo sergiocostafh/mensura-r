@@ -76,7 +76,7 @@ plot(HDOM~IDADE, data = dados,
      xlab = 'Idade (anos)', ylab = 'Hdom (m)')+
 lines(HDOM~IDADE,curva_guia)
 # Plotar dispersão dos resíduos
-plot(dados$HDOM,residuals(chapman_richards),
+plot(dados$IDADE,residuals(chapman_richards),
      xlab = 'Idade (anos)', ylab = 'Hdom (m)')+
   lines(c(0,35),c(0,0))
 

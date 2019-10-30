@@ -92,7 +92,7 @@ plot(HDOM~IDADE, data = dados,
 lines(HDOM~IDADE,curva_guia)</code></pre>
 <p><img src="/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Plotar dispersão dos resíduos
-plot(dados$HDOM,residuals(chapman_richards),
+plot(dados$IDADE,residuals(chapman_richards),
      xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)+
   lines(c(0,35),c(0,0))</code></pre>
 <p><img src="/post/2019-04-17-classificacão-de-sitios-florestais_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>

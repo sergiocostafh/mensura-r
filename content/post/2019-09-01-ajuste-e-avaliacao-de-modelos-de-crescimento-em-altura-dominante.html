@@ -149,7 +149,7 @@ graficos = syms(names(modelos)) %&gt;% set_names() %&gt;%
            geom_hline(yintercept=0) +
            scale_x_continuous(expand=expand_scale(mult=c(0,0.01))) +
            scale_y_continuous(expand=c(0,0), limits = c(-50,50)) +
-           labs(x=&#39;Hdom estimada (m)&#39;, y=&#39;Desvio (%)&#39;)+
+           labs(x=&#39;Idade (anos)&#39;, y=&#39;Desvio (%)&#39;)+
            geom_line(stat = &#39;smooth&#39;, method = &#39;loess&#39;, aes(x, y), color = &#39;red&#39;, alpha = .8,
                      size = 1, linetype =&quot;dashed&quot;,)+
            theme_light(),
