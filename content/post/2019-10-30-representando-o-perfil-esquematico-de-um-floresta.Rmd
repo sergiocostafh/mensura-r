@@ -1,0 +1,138 @@
+---
+title: Representando o perfil esquemático de um floresta
+author: Sérgio Costa
+date: '2019-10-30'
+slug: representando-o-perfil-esquematico-de-um-floresta
+categories:
+  - Fitossociologia
+tags:
+  - Ecologia
+  - Fitossociologia
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2019-10-30T20:40:54-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+draft: true
+---
+Para caracterização da tipologia, do estado de conservação e do estágio sucessional de comunidades florestais, são utilizados diversos parâmetros fitossociológicos como densidade, frequência, dominância, valor de importãncia e índices de diversidade. Tais indicadores permitem descrever detalhadamente a fitofisionomia dos locais de estudo, conforme demonstrado em [postagens anteriores sobre este tema](https://mensura-r.netlify.com/categories/fitossociologia/).  
+Ainda que a utilização de todos estes parâmetros permita uma adequada descrição, estes não passam de abstrações teóricas que buscam representar as comunidades vegetais por meio de números, tabelas e gráficos. 
+Buscando uma representação mais fiel à realidade do observador (i.e. aquele que realiza o levantamento em campo), alguns ecólogos e estudiosos da fitossociologia buscam representar o perfil esquemático das florestas por meio de ilustrações feitas à mão - habilidade restrita àqueles que possuem este talento.  
+Nesta postagem ofereço um código que permite representar o perfil esquemático de uma comunidade florestal utilizando recursos do pacote `ggplot`. O mais interessante é que o procedimento aloca as árvores no perfil de maneira probabilística, em função dos dados coletados em campo.  
+Vou explicar. Começamos importando os dados.
+
+```{r}
+# Importar base de dados
+dados <- readxl::read_excel("dados_levantamento_fitossociologico.xlsx")
+head(dados)
+```
+
+Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.  
+O procedimento basicamente se dá nos seguintes passos:  
+1. Obter altura e DAP médios para cada espécie em cada estrato;
+2. Contabilizar número de ocorrências de cada espécie em cada estrato;
+3. Contabilizar proporção de indivíduos em cada estrato;  
+4. Gerar indivíduos a serem ilustrados sorteando a espécie e o estrato, com base em probabilidades geradas a partir dos dados coletados;  
+5. Plotar os indivíduos sorteados considerando os valores de altura e diâmetro médios de cada espécie em cada estrato.  
+
+Traduzindo para o R, o procedimento é o seguinte.  
+```{r, warning=FALSE}
+# Função para geração do perfil esquemático probabilístico
+perfil_esquematico <- function(narv){
+# Obter altura média para cada espécie em cada estrato vertical
+dados_perfil <- aggregate(dados$H, list(dados$`Estrato vertical`,dados$Gen_esp_abv), mean)
+# Renomear colunas
+colnames(dados_perfil) <- c('estrato','especie','h.med')
+# Obter DAP médio para cada espécie em cada estrato vertical
+dados_perfil$dap <- aggregate(dados$DAP, list(dados$`Estrato vertical`,dados$Gen_esp_abv), mean)[,3]
+# Obter abundância para cada espécie em cada estrato vertical
+dados_perfil$ab <- aggregate(dados$Gen_esp_abv, list(dados$`Estrato vertical`,dados$Gen_esp_abv), length)[,3]
+# Separar dados por estrato
+emergente <- subset(dados_perfil,dados_perfil$estrato=="Emergente")
+subbosque <- subset(dados_perfil,dados_perfil$estrato=="Sub-bosque")
+superior <- subset(dados_perfil,dados_perfil$estrato=="Superior")
+intermediario <- subset(dados_perfil,dados_perfil$estrato=="Intermediário")
+# Contar árvores por estrato
+narv_estrato <- round(table(dados$`Estrato vertical`)/sum(table(dados$`Estrato vertical`))*narv,0)
+# Probabilidade de ocorrência das espécies em cada estrato
+emergente$prob <- emergente$ab/sum(emergente$ab)
+subbosque$prob <- subbosque$ab/sum(subbosque$ab)
+superior$prob <- superior$ab/sum(superior$ab)
+intermediario$prob <- intermediario$ab/sum(intermediario$ab)
+# Sortear árvores por estrato
+sample_eme <- sample(1:nrow(emergente), narv_estrato[1], replace = TRUE, emergente$prob)
+sample_int <- sample(1:nrow(intermediario), narv_estrato[2], replace = TRUE, intermediario$prob)
+sample_sub <- sample(1:nrow(subbosque), narv_estrato[3], replace = TRUE, subbosque$prob)
+sample_sup <- sample(1:nrow(superior), narv_estrato[4], replace = TRUE, superior$prob)
+sample_eme <- emergente[sample_eme,]
+sample_int <- intermediario[sample_int,]
+sample_sub <- subbosque[sample_sub,]
+sample_sup <- superior[sample_sup,]
+# Unir estratos da floresta simulada
+sample <- dplyr::bind_rows(sample_eme,sample_int,sample_sub,sample_sup)
+sample$dap01 <- (sample$dap-min(sample$dap))/(max(sample$dap)-min(sample$dap))*(.6-.1)+.1
+# Atribuir identificadores
+sample$id <- sample(1:narv,narv)
+id_sp <- unique(sample$especie)
+sample$id_sp <- match(sample$especie,id_sp)
+
+library(ggplot2)
+library(ggforce)
+library(ggrepel)
+# Plotar floresta
+perfil <- ggplot(sample)+
+  geom_bar(aes(x=id,y=h.med, width=dap01),stat = 'identity', color = 'black', fill = 'burlywood4')+
+  geom_ellipse(aes(x0=id, y0=h.med, a=1+3*dap01*h.med/15,b=1,angle=0), fill = 'darkgreen')+
+  geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = 'y', fontface = 'bold',  size = 3, alpha=.8, segment.alpha = 0)+
+  scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
+  scale_y_continuous(expand=c(0,0), limits = c(0,30))+
+  xlab('')+
+  ylab('Altura (m)')+
+  theme_bw()+
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+return(perfil)
+}
+```
+A função acima possui como único parâmetro o número de árvores a serem apresentadas. Vamos definir uma quantidade, e executar a função.
+```{r, warning=F}
+# Número de árvores a serem representadas plotar
+quantidade_de_arvores <- 30
+# Executar função
+perfil_esquematico(quantidade_de_arvores)
+```
+Como a ilustração é criada em função de probabilidades de ocorrência das espécies em cada estrato, se executarmos a função novamente utilizando o mesmo parâmetro, teremos uma nova representação.
+```{r, warning=F}
+# Executar função
+perfil_esquematico(quantidade_de_arvores)
+```
+Podemos também variar a quantidade de indivíduos.
+```{r, warning=F}
+# Executar função
+perfil_esquematico(22)
+```
+A partir daqui são inúmeras possibilidades de customização. Utilizei uma função genérica para representar o tamanho das copas pois não possuo esses registros na base de dados utilizada nesse exemplo, no entanto a altura e o diâmetro de copa, se coletados, podem ser utilizados para dimensionar os círculos que ilustram as copas das árvores. 
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
