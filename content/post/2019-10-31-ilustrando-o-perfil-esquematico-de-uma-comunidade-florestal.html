@@ -1,8 +1,8 @@
 ---
-title: Representando o perfil esquemático de uma comunidade florestal
+title: Ilustrando o perfil esquemático de uma comunidade florestal
 author: Sérgio Costa
-date: '2019-10-30'
-slug: representando-o-perfil-esquematico-de-um-floresta
+date: '2019-10-31'
+slug: ilustrando-o-perfil-esquematico-de-uma-floresta
 categories:
   - Fitossociologia
 tags:
@@ -118,15 +118,15 @@ return(perfil)
 quantidade_de_arvores &lt;- 30
 # Executar função
 perfil_esquematico(quantidade_de_arvores)</code></pre>
-<p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<p><img src="/post/2019-10-31-ilustrando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 Como a ilustração é criada em função de probabilidades de ocorrência das espécies em cada estrato, se executarmos a função novamente utilizando o mesmo parâmetro, teremos uma nova representação.</p>
 <pre class="r"><code># Executar função
 perfil_esquematico(quantidade_de_arvores)</code></pre>
-<p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<p><img src="/post/2019-10-31-ilustrando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 Podemos também variar a quantidade de indivíduos.</p>
 <pre class="r"><code># Executar função
 perfil_esquematico(20)</code></pre>
-<p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<p><img src="/post/2019-10-31-ilustrando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 Como o procedimento de sorteio arredonda o número de árvores a serem sorteadas em cada estrato vertical (afinal não temos como sortear 1,5 árvores) a função pode retornar um erro caso quantidade total de árvores sorteadas seja inferior ao número declarado na função.
 A função pode ser customizada de inúmeras maneiras. Utilizei um cálculo genérico para gerar o diâmetro das copas pois não possuo esses registros na base de dados utilizada nesse exemplo, no entanto, altura e diâmetro de copa, se coletados, podem ser utilizados para dimensionar as elipses que representam as copas das árvores. A função <code>geom_ellipse</code> que plota as elipses está implementada no pacote <code>ggforce</code>.<br />
 Os nomes científicos são apresentados no gráfico via função <code>geom_label_repel</code> do pacote <code>ggrepel</code>. A diferença entre esta função e a <code>geom_label</code> do <code>ggplot</code> é que a primeira não permite a sobreposição dos labels, facilitando a visualização. Outra opção é plotar um número de identificação ao invés do nome, diminuindo a quantidade de textos no gráfico. Neste caso, seria necessário apresentar, na sequência do gráfico, uma tabela que vincula os números às espécies.</p>

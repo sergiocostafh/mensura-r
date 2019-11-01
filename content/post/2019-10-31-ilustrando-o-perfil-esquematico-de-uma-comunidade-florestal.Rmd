@@ -1,8 +1,8 @@
 ---
-title: Representando o perfil esquemático de uma comunidade florestal
+title: Ilustrando o perfil esquemático de uma comunidade florestal
 author: Sérgio Costa
-date: '2019-10-30'
-slug: representando-o-perfil-esquematico-de-um-floresta
+date: '2019-10-31'
+slug: ilustrando-o-perfil-esquematico-de-uma-floresta
 categories:
   - Fitossociologia
 tags:
