@@ -110,19 +110,19 @@ return(perfil)
 }
 ```
 A função acima possui como único parâmetro o número de árvores a serem apresentadas. Vamos definir uma quantidade, e executar a função.
-```{r, warning=F}
+```{r, warning=F, fig.height=4,fig.width=8}
 # Número de árvores a serem representadas plotar
 quantidade_de_arvores <- 30
 # Executar função
 perfil_esquematico(quantidade_de_arvores)
 ```
 Como a ilustração é criada em função de probabilidades de ocorrência das espécies em cada estrato, se executarmos a função novamente utilizando o mesmo parâmetro, teremos uma nova representação.
-```{r, warning=F}
+```{r, warning=F, fig.height=4,fig.width=8}
 # Executar função
 perfil_esquematico(quantidade_de_arvores)
 ```
 Podemos também variar a quantidade de indivíduos.
-```{r, warning=F}
+```{r, warning=F, fig.height=4,fig.width=8}
 # Executar função
 perfil_esquematico(20)
 ```
