@@ -18,7 +18,6 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
 
 ---
 
@@ -43,10 +42,10 @@ head(dados)</code></pre>
 ## 4       1 Myrcia s~ M. splendens Myrtac~  18.5  5.89     7 Sub-bosque      
 ## 5       1 Myrcia s~ M. splendens Myrtac~  21    6.68     9 Intermediário   
 ## 6       1 Maytenus~ M. evonymoi~ Celast~  46   14.6     10 Intermediário</code></pre>
-<p>Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.<br />
-O procedimento basicamente se dá nos seguintes passos:<br />
-1. Obter altura e DAP médios para cada espécie em cada estrato;
-2. Contabilizar número de ocorrências de cada espécie em cada estrato;
+<p>Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.</p>
+<p>O procedimento basicamente se dá nos seguintes passos:<br />
+1. Obter altura e DAP médios para cada espécie em cada estrato;<br />
+2. Contabilizar número de ocorrências de cada espécie em cada estrato;<br />
 3. Contabilizar proporção de indivíduos em cada estrato;<br />
 4. Gerar indivíduos a serem ilustrados sorteando a espécie e o estrato, com base em probabilidades geradas a partir dos dados coletados;<br />
 5. Plotar os indivíduos sorteados considerando os valores de altura e diâmetro médios de cada espécie em cada estrato.</p>
@@ -93,7 +92,7 @@ sample$dap01 &lt;- (sample$dap-min(sample$dap))/(max(sample$dap)-min(sample$dap)
 sample$id &lt;- sample(1:narv,narv)
 id_sp &lt;- unique(sample$especie)
 sample$id_sp &lt;- match(sample$especie,id_sp)
-
+# Carregar pacotes necessários
 library(ggplot2)
 library(ggforce)
 library(ggrepel)
@@ -105,7 +104,7 @@ perfil &lt;- ggplot(sample)+
                    b=1,angle=0), fill = &#39;darkgreen&#39;)+
   geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = &#39;y&#39;, fontface = &#39;bold&#39;,  size = 2, alpha=.8, segment.alpha = 0)+
   scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
-  scale_y_continuous(expand=c(0,0), limits = c(0,30))+
+  scale_y_continuous(expand=c(0,0), limits = c(0,max(sample$h.med)+5))+
   xlab(&#39;&#39;)+
   ylab(&#39;Altura (m)&#39;)+
   theme_bw()+
@@ -126,10 +125,8 @@ perfil_esquematico(quantidade_de_arvores)</code></pre>
 <p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 Podemos também variar a quantidade de indivíduos.</p>
 <pre class="r"><code># Executar função
-perfil_esquematico(45)</code></pre>
-<p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<pre class="r"><code>perfil_esquematico(15)</code></pre>
-<p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-5-2.png" width="672" />
+perfil_esquematico(20)</code></pre>
+<p><img src="/post/2019-10-31-representando-o-perfil-esquematico-de-uma-comunidade-florestal_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 Como o procedimento de sorteio arredonda o número de árvores a serem sorteadas em cada estrato vertical (afinal não temos como sortear 1,5 árvores) a função pode retornar um erro caso quantidade total de árvores sorteadas seja inferior ao número declarado na função.
 A função pode ser customizada de inúmeras maneiras. Utilizei um cálculo genérico para gerar o diâmetro das copas pois não possuo esses registros na base de dados utilizada nesse exemplo, no entanto, altura e diâmetro de copa, se coletados, podem ser utilizados para dimensionar as elipses que representam as copas das árvores. A função <code>geom_ellipse</code> que plota as elipses está implementada no pacote <code>ggforce</code>.<br />
 Os nomes científicos são apresentados no gráfico via função <code>geom_label_repel</code> do pacote <code>ggrepel</code>. A diferença entre esta função e a <code>geom_label</code> do <code>ggplot</code> é que a primeira não permite a sobreposição dos labels, facilitando a visualização. Outra opção é plotar um número de identificação ao invés do nome, diminuindo a quantidade de textos no gráfico. Neste caso, seria necessário apresentar, na sequência do gráfico, uma tabela que vincula os números às espécies.</p>

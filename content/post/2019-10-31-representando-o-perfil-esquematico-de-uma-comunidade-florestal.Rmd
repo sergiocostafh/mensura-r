@@ -18,7 +18,6 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
-draft: true
 
 ---
 Para caracterização da tipologia, do estado de conservação e do estágio sucessional de comunidades florestais, são utilizados diversos parâmetros fitossociológicos como densidade, frequência, dominância, valor de importãncia e índices de diversidade. Tais indicadores permitem descrever detalhadamente a fitofisionomia dos locais de estudo, conforme demonstrado em [postagens anteriores sobre este tema](https://mensura-r.netlify.com/categories/fitossociologia/).  
@@ -36,9 +35,10 @@ head(dados)
 ```
 
 Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.  
+  
 O procedimento basicamente se dá nos seguintes passos:  
-1. Obter altura e DAP médios para cada espécie em cada estrato;
-2. Contabilizar número de ocorrências de cada espécie em cada estrato;
+1. Obter altura e DAP médios para cada espécie em cada estrato;  
+2. Contabilizar número de ocorrências de cada espécie em cada estrato;  
 3. Contabilizar proporção de indivíduos em cada estrato;  
 4. Gerar indivíduos a serem ilustrados sorteando a espécie e o estrato, com base em probabilidades geradas a partir dos dados coletados;  
 5. Plotar os indivíduos sorteados considerando os valores de altura e diâmetro médios de cada espécie em cada estrato.  
@@ -87,7 +87,7 @@ sample$dap01 <- (sample$dap-min(sample$dap))/(max(sample$dap)-min(sample$dap))*(
 sample$id <- sample(1:narv,narv)
 id_sp <- unique(sample$especie)
 sample$id_sp <- match(sample$especie,id_sp)
-
+# Carregar pacotes necessários
 library(ggplot2)
 library(ggforce)
 library(ggrepel)
@@ -99,7 +99,7 @@ perfil <- ggplot(sample)+
                    b=1,angle=0), fill = 'darkgreen')+
   geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = 'y', fontface = 'bold',  size = 2, alpha=.8, segment.alpha = 0)+
   scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
-  scale_y_continuous(expand=c(0,0), limits = c(0,30))+
+  scale_y_continuous(expand=c(0,0), limits = c(0,max(sample$h.med)+5))+
   xlab('')+
   ylab('Altura (m)')+
   theme_bw()+
@@ -124,8 +124,7 @@ perfil_esquematico(quantidade_de_arvores)
 Podemos também variar a quantidade de indivíduos.
 ```{r, warning=F}
 # Executar função
-perfil_esquematico(45)
-perfil_esquematico(15)
+perfil_esquematico(20)
 ```
 Como o procedimento de sorteio arredonda o número de árvores a serem sorteadas em cada estrato vertical (afinal não temos como sortear 1,5 árvores) a função pode retornar um erro caso quantidade total de árvores sorteadas seja inferior ao número declarado na função.
 A função pode ser customizada de inúmeras maneiras. Utilizei um cálculo genérico para gerar o diâmetro das copas pois não possuo esses registros na base de dados utilizada nesse exemplo, no entanto, altura e diâmetro de copa, se coletados, podem ser utilizados para dimensionar as elipses que representam as copas das árvores. A função `geom_ellipse` que plota as elipses está implementada no pacote `ggforce`.  
