@@ -9,7 +9,7 @@ tags:
   - Ecologia
   - Fitossociologia
 subtitle: ''
-summary: ''
+summary: 'Essa postagem apresenta um procedimento para ilustração do perfil esquemático de uma comunidade florestal de maneira probabilística.'
 authors: []
 lastmod: '2019-10-30T20:40:54-03:00'
 featured: no
