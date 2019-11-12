@@ -11,19 +11,10 @@ title = "Mensura-R - Ciência Florestal em linguagem R"
 # End your URL with a `/` trailing slash, e.g. `https://example.com/`.
 baseurl = "https://mensura-r.netlify.com/"
 
-# Set to true to disable code folding
-#disable_codefolding = true
-# Set to "hide" or "show" all codes by default
-#codefolding_show = "show"
-# Set to true to exclude the "Show/hide all" button
-#codefolding_nobutton = true
-
 # Enter a copyright notice to display in the site footer.
 # To display a copyright symbol, type `&copy;`. For current year, type `{year}`.
 copyright = "&copy; Mensura-R, {year}"
 
-# Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = "UA-148593204-1"
 ############################
 ## Advanced options below ##
 ############################
@@ -35,12 +26,12 @@ theme = "hugo-academic"
 enableGitInfo = false
 
 # Default language to use (if you setup multilingual support)
-defaultContentLanguage = "en"
+defaultContentLanguage = "pt"
 hasCJKLanguage = false  # Set `true` for Chinese/Japanese/Korean languages.
 defaultContentLanguageInSubdir = false
 removePathAccents = true  # Workaround for https://github.com/gohugoio/hugo/issues/5687
 
-paginate = 10  # Number of items per page in paginated lists.
+paginate = 20  # Number of items per page in paginated lists.
 enableEmoji = true
 footnotereturnlinkcontents = "<sup>^</sup>"
 ignoreFiles = ["\\.ipynb$", ".ipynb_checkpoints$", "\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
@@ -74,7 +65,7 @@ ignoreFiles = ["\\.ipynb$", ".ipynb_checkpoints$", "\\.Rmd$", "\\.Rmarkdown$", "
   tag = "tags"
   category = "categories"
   publication_type = "publication_types"
-  author = "autores"
-  
-enableRobotsTXT = true
-canonifyURLs = true
+  author = "authors"
+
+# Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = "UA-148593204-1"

@@ -1,130 +1,225 @@
+# Navigation
+
 - id: toggle_navigation
-  translation: Alterar navegação
+  translation: Toggle navigation
+
 - id: table_of_contents
-  translation: Lista de Conteúdos
+  translation: Table of Contents
+
 - id: on_this_page
-  translation: Nesta página
+  translation: Contents
+
 - id: back_to_top
-  translation: Voltar para o topo
+  translation: Back to top
+
+# General
+
 - id: related
-  translation: Relacionados
+  translation: Related
+
 - id: minute_read
-  translation: minutos de leitura
+  translation: min read
+
 - id: previous
-  translation: Anterior
+  translation: Previous
+
 - id: next
-  translation: Próximo
+  translation: Next
+
 - id: figure
-  translation: 'Figura %d:'
+  translation: "Figure %d:"
+
+- id: edit_page
+  translation: Edit this page
+
+# Buttons
+
 - id: btn_preprint
-  translation: Pré-impressão
+  translation: Preprint
+
 - id: btn_pdf
   translation: PDF
+
 - id: btn_cite
-  translation: Citação
+  translation: Cite
+
 - id: btn_slides
   translation: Slides
+
 - id: btn_video
-  translation: Vídeo
+  translation: Video
+
 - id: btn_code
-  translation: Código
+  translation: Code
+
 - id: btn_dataset
-  translation: Dados
+  translation: Dataset
+
 - id: btn_project
-  translation: Projeto
+  translation: Project
+
 - id: btn_poster
-  translation: Pôster
+  translation: Poster
+
 - id: btn_source
-  translation: Documento Fonte
+  translation: Source Document
+
 - id: btn_copy
-  translation: Copiar
+  translation: Copy
+
 - id: btn_download
   translation: Download
+
+# About widget
+
 - id: interests
-  translation: Interesses
+  translation: Interests
+
 - id: education
-  translation: Formação
+  translation: Education
+
 - id: user_profile_latest
-  translation: Recentes
+  translation: Latest
+
+# Accomplishments widget
+
 - id: see_certificate
-  translation: Ver certificado
+  translation: See certificate
+
+# Experience widget
+
 - id: present
-  translation: Presente
+  translation: Present
+
+# Pages widget
+
 - id: more_pages
-  translation: Ver todas
+  translation: See all
+
 - id: more_posts
-  translation: Mais Posts
+  translation: See all posts
+
 - id: more_talks
-  translation: Mais Palestras
+  translation: See all talks
+
 - id: more_publications
-  translation: Mais Publicações
+  translation: See all publications
+
+# Contact widget
+
 - id: contact_name
-  translation: Nome
+  translation: Name
+
 - id: contact_email
   translation: Email
+
 - id: contact_message
-  translation: Mensagem
+  translation: Message
+
 - id: contact_send
-  translation: Enviar
+  translation: Send
+
 - id: book_appointment
-  translation: Agendar um horário
+  translation: Book an appointment
+
+# Publication/Talk details
+
 - id: abstract
-  translation: Resumo
+  translation: Abstract
+
 - id: publication
-  translation: Publicação
+  translation: Publication
+
 - id: publication_type
-  translation: Tipo
+  translation: Type
+
 - id: date
-  translation: Data
+  translation: Date
+
 - id: last_updated
-  translation: Última atualização em
+  translation: Last updated on
+
 - id: event
-  translation: Evento
+  translation: Event
+
 - id: location
-  translation: Local
+  translation: Location
+
 - id: pub_uncat
-  translation: Sem categoria
+  translation: Uncategorized
+
 - id: pub_conf
-  translation: Artigo de conferência
+  translation: Conference paper
+
 - id: pub_journal
-  translation: Artigo de revista
+  translation: Journal article
+
 - id: pub_preprint
-  translation: Pré-impressão
+  translation: Preprint
+
 - id: pub_report
-  translation: Relatório
+  translation: Report
+
 - id: pub_book
-  translation: Livro
+  translation: Book
+
 - id: pub_book_section
-  translation: Seção de livro
+  translation: Book section
+
 - id: pub_thesis
-  translation: Tese
+  translation: Thesis
+
 - id: pub_patent
-  translation: Patente
+  translation: Patent
+
+# Project details
+
 - id: open_project_site
-  translation: Ir para o site do projeto
+  translation: Go to Project Site
+
+# Default titles for archive pages
+
 - id: posts
   translation: Posts
+
 - id: publications
-  translation: Publicações
+  translation: Publications
+
 - id: talks
-  translation: Palestras
+  translation: Talks
+
 - id: projects
-  translation: Projetos
+  translation: Projects
+
+# Search
+
 - id: search
-  translation: Pesquisar
+  translation: Search
+
 - id: search_placeholder
-  translation: Pesquisar...
+  translation: Search...
+
 - id: search_results
-  translation: Resultados encontrados
+  translation: results found
+
 - id: search_no_results
-  translation: Sem resultados
+  translation: No results found
+
+# Error 404
+
 - id: page_not_found
-  translation: Página não encontrada
+  translation: Page not found
+
 - id: 404_recommendations
-  translation: Você está procurando por um desses?
+  translation: Perhaps you were looking for one of these?
+
+# Cookie consent
+
 - id: cookie_message
-  translation: Este site contém cookies para garantir que você tenha a melhor experência.
+  translation: This website uses cookies to ensure you get the best experience on our website.
+
 - id: cookie_dismiss
-  translation: Entendi!
+  translation: Got it!
+
 - id: cookie_learn
-  translation: Saiba mais
+  translation: Learn more

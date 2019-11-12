@@ -65,6 +65,7 @@ email: ""
 user_groups: []
 ---
 
-Sou formado em Engenharia Florestal pela Universidade Federal do Paraná, possuo mestrado em Engenharia Florestal pela mesma universidade e atualmente atuo como Especialista em Modelagem de Dados na Arauco Forest. 
+Sou Engenheiro Florestal, mestre na área de manejo florestal, e atualmente trabalho com modelagem de dados na Arauco Forest Brasil. Meu trabalho é dar suporte às áreas técnicas por meio da aplicação de técnicas de extração e interpretação de padrões existentes em bases de dados extensas, análises estatísticas, modelagens geoespaciais, prognoses de produção e outros estudos relacionados às áreas de biometria, planejamento, pesquisa, silvicultura e colheita, subsidiando decisões a nível estratégico, tático e operacional.
+  
+Atuei anteriormente no ramo da consultoria e participei de projetos diversos, entre eles: inventários florestais e levantamentos florísticos/fitossociológicos para fins de licenciamento ambiental e monitoramento ecológico; planos de restauração florestal e de recuperação de áreas degradadas; avaliação de ativos florestais e planejamento da produção de madeira em empreendimentos florestais. 
 
-Possuo experiência nas áreas de inventário/mensuração e planejamento da produção florestal, agroclimatologia, taxonomia vegetal, fitossociologia e restauração florestal. Desde 2016 meu trabalho envolve a aplicação de ciência de dados às ciências florestais. 

@@ -1,0 +1,202 @@
+---
+title: Classificação de sítios florestais
+author: Sérgio Costa
+date: '2019-04-17'
+slug: classificacão-de-sitios-florestais
+categories:
+  - Biometria
+tags:
+  - Biometria
+  - Crescimento e Produção
+  - Classificação de sítios
+subtitle: ''
+summary: 'Ajuste do modelo de Chapman-Richards para classificação de sítio pelo método da curva guia.'
+authors: []
+lastmod: '2019-05-02T12:09:05-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>O índice de sítio é a medida que representa a capacidade produtiva de um local. Geralmente este atributo é representado pela altura dominante em uma idade de referência, que costuma ser a idade de rotação do povoamento (<em>e.g.</em> 7 anos para eucaliptos). Por sua vez, a altura dominante geralmente é representada pela média da altura das 100 árvores de maior diâmetro por hectare, mas outros conceitos também podem ser utilizados (<em>e.g.</em> altura média das 100 árvores de maior altura).</p>
+<p>Neste post, iremos praticar o ajuste do modelo de crescimento em altura dominante e a geração de curvas de sítio pelo método da curva guia. Vamos começar importando um conjunto de dados de parcelas de inventário florestal.</p>
+<pre class="r"><code># Importar dados
+library(readxl)
+dados &lt;- read_excel(&#39;dados_processados.xlsx&#39;)
+dados</code></pre>
+<pre><code>## # A tibble: 813 x 9
+##    PARCELA ESPÉCIE     IDADE   DAP ALTURA     N  HDOM     G VOLTOT
+##      &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+##  1       1 PINUS TAEDA  19.8  24.1   23.6  927.  25.5  44.5   509.
+##  2       2 PINUS TAEDA  19.8  25.1   24.0  748.  25.6  38.1   436.
+##  3       3 PINUS TAEDA  24.2  28.0   26.6  700   26.3  44.6   563.
+##  4       4 PINUS TAEDA  24.2  30.3   25.9  600.  29.9  44.9   551.
+##  5       5 PINUS TAEDA  24.2  32.0   27.9  600   31.3  49.4   655.
+##  6       6 PINUS TAEDA  24.2  30.7   27.4  650   29.5  50.1   657.
+##  7       7 PINUS TAEDA  24.2  30.8   25.3  583.  27.2  44.5   532.
+##  8       8 PINUS TAEDA  24.2  30.0   26.2  640.  30.3  46.7   579.
+##  9       9 PINUS TAEDA  24.2  30.4   26.4  633.  31.1  47.2   594.
+## 10      10 PINUS TAEDA  24.2  28.2   26.4  620.  29.2  40.1   507.
+## # ... with 803 more rows</code></pre>
+<p>Cada linha representa uma unidade amostral processada, totalizando 819 parcelas. Agora vamos visualizar a dispersão da altura dominante em relação à idade.</p>
+<pre class="r"><code># Visualizar a dispersão dos pares de dados Idade x Hdom
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)</code></pre>
+<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>O crescimento em altura dominante usualmente é representado por modelos biológicos como o de Chapman-Richards, que possui a seguinte expressão matemática:</p>
+<p><span class="math inline">\(Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}\)</span></p>
+<p>Para o ajuste de funções não lineares, utilizamos a função <code>nls</code>. Para tal, devemos especificar os valores iniciais de busca para cada um dos três parâmetros, no argumento <code>start</code>.</p>
+<pre class="r"><code># Ajuste do modelo de Chapman-Richards
+chapman_richards &lt;- nls(HDOM ~ b0*(1-exp(-b1*IDADE))^b2,
+                    start=list(b0=30,b1=0.1,b2=1),
+                    data = dados)
+summary(chapman_richards)</code></pre>
+<pre><code>## 
+## Formula: HDOM ~ b0 * (1 - exp(-b1 * IDADE))^b2
+## 
+## Parameters:
+##     Estimate Std. Error t value Pr(&gt;|t|)    
+## b0 29.457221   0.641201   45.94   &lt;2e-16 ***
+## b1  0.109695   0.009308   11.79   &lt;2e-16 ***
+## b2  1.193787   0.088648   13.47   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.706 on 810 degrees of freedom
+## 
+## Number of iterations to convergence: 4 
+## Achieved convergence tolerance: 3.513e-06</code></pre>
+<p>Alguns indicadores de ajuste podem ser acessadas diretamente da seguinte maneira:</p>
+<pre class="r"><code># Erro padrão das estimativas
+summary(chapman_richards)$sigma</code></pre>
+<pre><code>## [1] 1.706423</code></pre>
+<pre class="r"><code># Coeficientes do modelo ajustado
+coef(chapman_richards)</code></pre>
+<pre><code>##         b0         b1         b2 
+## 29.4572212  0.1096947  1.1937874</code></pre>
+<pre class="r"><code># Definir range da projeção
+idade_inicial &lt;- 0; idade_final &lt;- 30; intervalo_projecao &lt;- 1
+# Gerar curva guia
+curva_guia &lt;- data.frame(IDADE = seq(from = idade_inicial, to = idade_final,by = intervalo_projecao))
+curva_guia$HDOM = predict(chapman_richards,curva_guia)
+# Plotar curva guia
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)+
+lines(HDOM~IDADE,curva_guia)</code></pre>
+<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plotar dispersão dos resíduos
+plot(dados$IDADE,residuals(chapman_richards),
+     xlab = &#39;Idade (anos)&#39;, ylab = &#39;Resíduo (m)&#39;)+
+  lines(c(0,35),c(0,0))</code></pre>
+<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Realizados os procedimentos de ajuste e avaliação do modelo, partimos para a geração de curvas de sítio. Empregaremos o método da diferença algébrica para projetar todas as observações para uma idade de referência. Por estarmos trabalhando com dados de <em>Pinus taeda</em>, adotaremos a idade de 15 anos como referência.<br />
+O método da diferença algébrica exige a aplicação de uma forma diferencial do modelo de crescimento, em que partimos de uma idade e altura dominante conhecida. Utilizaremos a forma que deriva a equação em função do parâmetro <span class="math inline">\(\beta_0\)</span>, permitindo a construção de curvas anamórficas.</p>
+<p><span class="math inline">\(Hdom_2 = Hdom_1\frac{(1-exp^{\beta_1*Idade_2})^{\beta_2}}{(1-exp^{\beta_1*Idade_1})^{\beta_2}}\)</span></p>
+<p>Agora vamos criar uma função para projetar as alturas dominantes utilizando a equação diferencial.</p>
+<pre class="r"><code># Equação diferencial de Chapman-Richards
+chapman_richards_proj &lt;-function(hdom1,id2,id1){
+  hdom1*
+    ((1-exp(-coef(chapman_richards)[2]*id2))/(1-exp(-coef(chapman_richards)[2]*id1)))^
+    coef(chapman_richards)[3]}
+# Projeção da altura dominante para a idade de 15 anos
+dados$sitio &lt;- chapman_richards_proj(hdom1=dados$HDOM,id2=15,id1=dados$IDADE)
+summary(dados$sitio)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   16.90   21.55   22.93   22.79   23.98   31.13</code></pre>
+<p>O próximo passo será criar a classes de sítio. Neste exercício, vamos criar 5 classes dimensionadas em função de limites mínimos e máximos.</p>
+<pre class="r"><code>#Definir o número de classes
+nclasses &lt;- 5
+# Identificar a amplitude das classes de sitio
+amplitude &lt;- round(max(dados$sitio),0) - round(min(dados$sitio),0)
+# Aqui diminuo a amplitude para reduzir o efeito dos extremos
+amplitude &lt;- amplitude-4
+# Definir o intervalo de classe
+ic &lt;- amplitude/nclasses
+ic</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code># Limite inferior
+li &lt;- mean(dados$sitio)-((nclasses-1)/2*ic)-ic/2
+# Definir as classes
+classes &lt;- rep(NA,nclasses)
+for(i in 1:nclasses){
+classes[i] &lt;-  li+i*ic-ic/2
+}
+classes &lt;- round(classes,1)
+classes</code></pre>
+<pre><code>## [1] 18.8 20.8 22.8 24.8 26.8</code></pre>
+<pre class="r"><code># Criar data.frame para armazenar as curvas das classes
+curvas_classes &lt;- data.frame(Sitio = rep(classes, each = nrow(curva_guia)),
+                             Idade = rep(curva_guia$IDADE,times = nclasses))
+# Projetar curvas para as classes
+curvas_classes$Hdom &lt;- chapman_richards_proj(hdom1=curvas_classes$Sitio,id2=curvas_classes$Idade,id1=rep(15, nrow(curvas_classes)))
+# Plotar gráfico
+plot(HDOM~IDADE, data = dados,
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)+
+  for(j in classes){
+  lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}</code></pre>
+<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre><code>## integer(0)</code></pre>
+<p>Para agregar mais informações ao nosso gráfico, vamos gerar curvas para os limites de classe.</p>
+<pre class="r"><code># Definir os limites de classes
+limites &lt;- rep(NA,nclasses+1)
+for(i in 1:(nclasses+1)){
+limites[i] &lt;-  li+(i-1)*ic
+}
+limites
+# Criar data.frame para armazenar as curvas dos limites de classes
+curvas_limites &lt;-  data.frame(Sitio = rep(limites, each = nrow(curva_guia)),
+                              Idade = rep(curva_guia$IDADE,times = nclasses+1))
+# Projetar curvas para os limites de classes
+curvas_limites$Hdom &lt;- chapman_richards_proj(hdom1=curvas_limites$Sitio,id2=curvas_limites$Idade,id1=rep(15, nrow(curvas_limites)))
+# Plotar gráfico
+plot(HDOM~IDADE, data = dados, 
+     col= rgb(red = 0, green = 0, blue = 0, alpha = 0.5), # Adicionar transparência
+     xlim = c(0,30), ylim = c(0,35),
+     xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)+
+  for(j in classes){
+  lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}+
+  for(k in limites){
+  lines(Hdom~Idade,subset(curvas_limites, curvas_limites$Sitio==k), lty=2)}</code></pre>
+<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+Para finalizar, vamos definir a qual classe de sitio cada parcela pertence. Para facilitar nosso trabalho, vamos utilizar função ´cut´.</p>
+<pre class="r"><code># Classificação de sitio
+dados$classe_sitio &lt;- cut(dados$sitio,
+                          breaks = c(-Inf,limites[-c(1,nclasses+1)],Inf),
+                          labels = classes)
+# Resumo das classes
+table(dados$classe_sitio)</code></pre>
+<pre><code>## 
+## 18.8 20.8 22.8 24.8 26.8 
+##   53  180  339  205   36</code></pre>
+<p>A função <code>table</code> conta o número de casos para cada classe. Podemos também visualizar a distribuição de parcelas nas classes por meio de um histograma.</p>
+<pre class="r"><code>text(barplot(table(dados$classe_sitio),
+             xlab = &#39;Classe de sítio&#39;, ylab = &#39;Número de parcelas&#39;,
+             ylim = c(0,max(table(dados$classe_sitio))*1.1)),table(dados$classe_sitio)+20,
+       labels=table(dados$classe_sitio))</code></pre>
+<img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
