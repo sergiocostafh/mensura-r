@@ -66,6 +66,3 @@ ignoreFiles = ["\\.ipynb$", ".ipynb_checkpoints$", "\\.Rmd$", "\\.Rmarkdown$", "
   category = "categories"
   publication_type = "publication_types"
   author = "authors"
-
-# Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = "UA-148593204-1"
