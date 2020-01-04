@@ -87,7 +87,7 @@ dados$classe_sitio &lt;- cut(dados$sitio,
 <pre class="r"><code>plot_vol &lt;- ggplot()+
   geom_point(aes(x=IDADE, y=VOLTOT, color=factor(classe_sitio)), data = dados, alpha = 0.8)+
   xlab(&#39;Idade (anos)&#39;)+
-  ylab(&#39;Volume total (m³)&#39;)+
+  ylab(&#39;Volume total (m³/ha)&#39;)+
   scale_x_continuous(expand = c(0,0), limits = c(0,30), breaks = seq(0,30,5))+
   scale_y_continuous(expand = c(0,0), limits = c(0,800))+
   scale_color_brewer(name=&#39;Classes de sítio&#39;, palette = &#39;YlOrRd&#39;)+
@@ -145,10 +145,10 @@ colnames(tabela_prod) &lt;- c(&#39;Idade&#39;,
                            paste0(&#39;Sítio &#39;,classes[5]))
 
 library(dplyr)
-knitr::kable(tabela_prod, row.names = F, caption = &#39;Tabela de produção em volume total (m³)&#39;)%&gt;%
+knitr::kable(tabela_prod, row.names = F, caption = &#39;Tabela de produção em volume total (m³/ha)&#39;)%&gt;%
   kableExtra::kable_styling(full_width = F, position = &quot;center&quot;)</code></pre>
 <table>
-<caption><span id="tab:unnamed-chunk-5">Table 1: </span>Tabela de produção em volume total (m³)</caption>
+<caption><span id="tab:unnamed-chunk-5">Table 1: </span>Tabela de produção em volume total (m³/ha)</caption>
 <thead>
 <tr class="header">
 <th align="right">Idade</th>

@@ -91,7 +91,7 @@ Após a classificação de sítio, podemos visualizar como esta variável se rel
 plot_vol <- ggplot()+
   geom_point(aes(x=IDADE, y=VOLTOT, color=factor(classe_sitio)), data = dados, alpha = 0.8)+
   xlab('Idade (anos)')+
-  ylab('Volume total (m³)')+
+  ylab('Volume total (m³/ha)')+
   scale_x_continuous(expand = c(0,0), limits = c(0,30), breaks = seq(0,30,5))+
   scale_y_continuous(expand = c(0,0), limits = c(0,800))+
   scale_color_brewer(name='Classes de sítio', palette = 'YlOrRd')+
@@ -151,7 +151,7 @@ colnames(tabela_prod) <- c('Idade',
                            paste0('Sítio ',classes[5]))
 
 library(dplyr)
-knitr::kable(tabela_prod, row.names = F, caption = 'Tabela de produção em volume total (m³)')%>%
+knitr::kable(tabela_prod, row.names = F, caption = 'Tabela de produção em volume total (m³/ha)')%>%
   kableExtra::kable_styling(full_width = F, position = "center")
 ```
 
