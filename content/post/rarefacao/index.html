@@ -20,6 +20,7 @@ image:
 projects: []
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, mas há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comunidade vegetal.<br />
@@ -27,7 +28,7 @@ Uma ferramenta bastante utilizada para esta finalidade é a curva de acumulaçã
 Um problema encontrado na construção da curva do coletor é a arbitrariedade na ordem de entrada das unidades amostrais, já que cada possível ordenação pode gerar uma curva diferente, invalidando qualquer interpretação com base em sua forma.<br />
 Para contornar esse problema devemos utilizar uma curva suavizada, que consiste em uma curva média obtida a partir de um grande número de curvas geradas por procedimentos de aleatorização das unidades amostrais.<br />
 A função <code>specaccum</code>, implementada no pacote <code>vegan</code> do R, é capaz de gerar uma curva de acumulação de espécies suavizada do modo descrito acima, conforme o procedimento a seguir.<br />
-Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/blob/master/content/post/dados_fitossociologia.xlsx?raw=true">aqui</a>.</p>
+Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/blob/master/content/post/rarefacao/dados_fitossociologia.xlsx?raw=true">aqui</a>.</p>
 <pre class="r"><code># Importar dados
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados
@@ -125,85 +126,77 @@ head(matriz_freq)</code></pre>
 ##       5              0                   0                  0
 ##       6              0                   0                  0
 ##        Espécie
-## Parcela Himenaea courbaril Indeterminada 1 Indeterminada 2
-##       1                  0               0               0
-##       2                  0               0               0
-##       3                  0               0               1
-##       4                  0               0               0
-##       5                  0               3               0
-##       6                  0               0               0
+## Parcela Himenaea courbaril Indeterminada 1 Indeterminada 2 Kielmeyera coriacea
+##       1                  0               0               0                   0
+##       2                  0               0               0                   0
+##       3                  0               0               1                   0
+##       4                  0               0               0                   0
+##       5                  0               3               0                   0
+##       6                  0               0               0                   0
 ##        Espécie
-## Parcela Kielmeyera coriacea Lafoensia pacari Leptolobium elegans
-##       1                   0                0                   0
-##       2                   0                0                   0
-##       3                   0                0                   1
-##       4                   0                0                   0
-##       5                   0                0                   0
-##       6                   0                0                   0
+## Parcela Lafoensia pacari Leptolobium elegans Machaerium acutifoium
+##       1                0                   0                     0
+##       2                0                   0                     0
+##       3                0                   1                     0
+##       4                0                   0                     0
+##       5                0                   0                     0
+##       6                0                   0                     0
 ##        Espécie
-## Parcela Machaerium acutifoium Magonia pubescens Matayba elaegnoides
-##       1                     0                 0                   1
-##       2                     0                 0                   0
-##       3                     0                 0                   0
-##       4                     0                 0                   0
-##       5                     0                 0                   0
-##       6                     0                 0                   1
+## Parcela Magonia pubescens Matayba elaegnoides Miconia sp1 Myrcia sp1
+##       1                 0                   1           4          0
+##       2                 0                   0           1          0
+##       3                 0                   0           4          1
+##       4                 0                   0           4          0
+##       5                 0                   0           1          0
+##       6                 0                   1           7          0
 ##        Espécie
-## Parcela Miconia sp1 Myrcia sp1 Ocotea minarum Ouratea hexasperma
-##       1           4          0              3                  0
-##       2           1          0              2                  0
-##       3           4          1              0                  0
-##       4           4          0              0                  0
-##       5           1          0              1                  0
-##       6           7          0              1                  0
+## Parcela Ocotea minarum Ouratea hexasperma Ouratea spectabilis
+##       1              3                  0                   0
+##       2              2                  0                   0
+##       3              0                  0                   0
+##       4              0                  0                   0
+##       5              1                  0                   0
+##       6              1                  0                   0
 ##        Espécie
-## Parcela Ouratea spectabilis Pouteria ramiflora Pouteria torta
-##       1                   0                  0              2
-##       2                   0                  0              4
-##       3                   0                  0              1
-##       4                   0                  0              1
-##       5                   0                  0              4
-##       6                   0                  0              2
+## Parcela Pouteria ramiflora Pouteria torta Psidium laruotteanum
+##       1                  0              2                    0
+##       2                  0              4                    0
+##       3                  0              1                    0
+##       4                  0              1                    1
+##       5                  0              4                    0
+##       6                  0              2                    0
 ##        Espécie
-## Parcela Psidium laruotteanum Qualea grandiflora Qualea parviflora
-##       1                    0                  0                 0
-##       2                    0                  1                 0
-##       3                    0                  1                 0
-##       4                    1                  0                 0
-##       5                    0                  0                 0
-##       6                    0                  0                 0
+## Parcela Qualea grandiflora Qualea parviflora Rhamnidium elaeocarpum
+##       1                  0                 0                      0
+##       2                  1                 0                      0
+##       3                  1                 0                      0
+##       4                  0                 0                      0
+##       5                  0                 0                      0
+##       6                  0                 0                      0
 ##        Espécie
-## Parcela Rhamnidium elaeocarpum Roupala montana Schefflera macrocarpa
-##       1                      0               0                     0
-##       2                      0               0                     0
-##       3                      0               0                     0
-##       4                      0               0                     0
-##       5                      0               0                     0
-##       6                      0               0                     0
+## Parcela Roupala montana Schefflera macrocarpa Syagrus flexuosa Tabebuia aurea
+##       1               0                     0                0              0
+##       2               0                     0                0              0
+##       3               0                     0                0              0
+##       4               0                     0                0              0
+##       5               0                     0                0              1
+##       6               0                     0                0              0
 ##        Espécie
-## Parcela Syagrus flexuosa Tabebuia aurea Tachigali aurea
-##       1                0              0               0
-##       2                0              0               0
-##       3                0              0               0
-##       4                0              0               0
-##       5                0              1               0
-##       6                0              0               1
+## Parcela Tachigali aurea Tapirira guianensis Terminalia argentea
+##       1               0                   0                   0
+##       2               0                   0                   0
+##       3               0                   0                   1
+##       4               0                   0                   0
+##       5               0                   0                   0
+##       6               1                   0                   0
 ##        Espécie
-## Parcela Tapirira guianensis Terminalia argentea Vatairea macrocarpa
-##       1                   0                   0                   0
-##       2                   0                   0                   0
-##       3                   0                   1                   0
-##       4                   0                   0                   0
-##       5                   0                   0                   0
-##       6                   0                   0                   0
-##        Espécie
-## Parcela Vochysia cinnamomea Xylopia aromatica
-##       1                   0                 0
-##       2                   0                 0
-##       3                   0                 0
-##       4                   0                 1
-##       5                   0                 1
-##       6                   0                 0</code></pre>
+## Parcela Vatairea macrocarpa Vochysia cinnamomea Xylopia aromatica
+##       1                   0                   0                 0
+##       2                   0                   0                 0
+##       3                   0                   0                 0
+##       4                   0                   0                 1
+##       5                   0                   0                 1
+##       6                   0                   0                 0</code></pre>
 <pre class="r"><code># Curva acumulação de espécies
 par(mfrow=c(1,1),mar=c(4,4,2,2))
 curva_acum &lt;- specaccum(matriz_freq)
