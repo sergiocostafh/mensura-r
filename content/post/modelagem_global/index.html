@@ -20,6 +20,7 @@ image:
 projects: []
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. A geração dessa informação a partir de uma base de dados pré existente exige o uso de ferramentas de modelagem estatística, que permitam simular o crescimento e a produção de povoamentos para diferentes classes de produtividade.<br />
@@ -146,7 +147,7 @@ colnames(tabela_prod) &lt;- c(&#39;Idade&#39;,
 
 library(dplyr)
 knitr::kable(tabela_prod, row.names = F, caption = &#39;Tabela de produção em volume total (m³/ha)&#39;)%&gt;%
-  kableExtra::kable_styling(full_width = F, position = &quot;center&quot;)</code></pre>
+  kableExtra::kable_styling(full_width = TRUE, position = &quot;center&quot;,fixed_thead = T)</code></pre>
 <table>
 <caption><span id="tab:unnamed-chunk-5">Table 1: </span>Tabela de produção em volume total (m³/ha)</caption>
 <thead>

@@ -22,9 +22,10 @@ output:
    code_folding: hide
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<div id="introducao" class="section level2">
+<div id="introdução" class="section level2">
 <h2>Introdução</h2>
 <p>Recentemente os principais jornais do Brasil e do mundo noticiaram um aumento nas taxas de desmatamento na Amazônia a partir de dados divulgados pelo INPE (Instituto Nacional de Pesquisas Espaciais). O tema gerou polêmicas envolvendo o atual presidente Jair Bolsonaro, o Ministro do Meio Ambiente Ricardo Salles e o agora ex-diretor do órgão, Ricardo Galvão. Os governistas questionaram a veracidade das informações, incendiando a discussão que culminou na demissão de Galvão.<br />
 Não somente o INPE, mas outras insituições que monitoram a perda de cobertura vegetal na Amazônia brasileira dispararam alertas para a elevação nas taxas de desmatamento - como o Imazon e a Nasa - e a discussão em torno do assunto prosseguiu para além do território brasileiro.</p>
@@ -44,7 +45,7 @@ Apesar do <em>dashboard</em> disponível na plataforma <a href="http://terrabras
 <p>O Imazon é uma instituição de pesquisas sem fins lucrativos, qualificada pelo Ministério da Justiça, e que realiza o monitoramento da Amazônia Legal pelo uso de imagens de satélites que reportam mensalmente o ritmo do desmatamento e da degradação florestal na região por meio do Sistema de Alerta de Desmatamento (SAD).
 No site <a href="https://imazongeo.org.br/#/">ImazonGeo</a> estão disponíveis os dados mensais de desmatamento e degradação florestal desde 2008. É importante salientar que o SAD somente detecta áreas de desmatamento superiores a 1 hectare e que apesar de ambos monitorarem o desmatamento na Amazônia, os dados do SAD não são comparáveis aos do DETER, devido a diferenças metodológicas. As detecções do SAD são realizadas somente para áreas de floresta primária, ou seja, florestas que nunca sofreram perturbações significativas, enquanto o DETER é um sistema de alertas que avalia alterações na cobertura florestal, servindo de suporte para órgãos de fiscalização ambiental. Maiores informações sobre o método adotado no SAD podem ser obtidos <a href="https://imazon.org.br/publicacoes/faq-sad/">aqui</a>.</p>
 </div>
-<div id="obtendo-dados-climaticos-da-amazonia-legal" class="section level3">
+<div id="obtendo-dados-climáticos-da-amazônia-legal" class="section level3">
 <h3>Obtendo dados climáticos da Amazônia Legal</h3>
 <p>Para complementar a análise, consolidei dados de estações meteorológicas do Banco de Dados Meteorológicos para Ensino e Pesquisa (BDMEP) do Instituto Nacional de Meteorologia (INMET). O banco abriga dados meteorológicos diários em forma digital, coletados por meio das estações meteorológicas convencionais da rede de estações do INMET, de acordo com as normas técnicas internacionais da Organização Meteorológica Mundial [6].
 O procedimento de consolidação dos dados foi simples: a partir dos registros diários das estações instaladas nos Estados do Acre, Amazonas, Amapá, Pará, Roraima e Rondônia (somando 47 estações) foi obtida a precipitação mensal média para cada mês-ano, considerando os dados de todas as estações. O procedimento de obtenção dos dados pode ser acessado <a href="https://github.com/sergiocostafh/desmatamento_sad_imazon">aqui</a>.</p>
@@ -68,9 +69,10 @@ dados_desmatamento$`MES ANO`=as.Date(paste(dados_desmatamento$ANO,&#39;-&#39;,da
 # round(1-dados_desmatamento$AREA[118]/dados_desmatamento$AREA[106], 3)*-1
 # Carregar pacotes necessário para geração dos gráficos
 library(ggplot2)
+library(cowplot)
 # Plotar série histórica de desmatamento mensal
 ggplot()+
-  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = &#39;Desmatamento&#39;))+
+  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = &#39;Desmatamento&#39;),size=.7)+
   geom_bar(aes(x=dados_precipitacao$date, y=dados_precipitacao$prec*2,
             fill = &#39;Precipitação&#39;),stat = &#39;identity&#39;, alpha = .3, color = NA)+
     scale_x_date(expand = c(0,0), limits = c(as.Date(&#39;2009/01/01&#39;),as.Date(&#39;2019/12/31&#39;)) ,breaks = &#39;year&#39;,
@@ -79,17 +81,14 @@ ggplot()+
                      breaks = seq(0,1500,250),
                      sec.axis = sec_axis(~./2, name = &#39;Precipitação acumulada (mm/mês)&#39;))+
   scale_color_manual(name = NULL ,values = c(&#39;black&#39;))+
-  scale_fill_manual(name = NULL ,values = c(&#39;blue&#39;))+
+  scale_fill_manual(name = NULL ,values = c(&#39;steelblue&#39;))+
   xlab(NULL)+
   ylab(&#39;Desmatamento detectado (km²)&#39;)+
   labs(title = &#39;Área desmatada na Amazônia Legal&#39;,
        subtitle = &#39;Acumulado mensal&#39;,
        caption = &#39;Fonte de dados: SAD - Imazon (2019) e BDMEP - Inmet (2019)&#39;)+
-  theme_light(base_size = 14)+
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
-        axis.text.x = element_text(hjust = -0.5),
-        legend.position = &#39;bottom&#39;)+
+  theme_cowplot()+
+  theme(legend.position = &#39;bottom&#39;)+
   annotate(geom=&#39;text&#39;, size = 3.5,
            x=dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],
            y=dados_desmatamento$AREA[c(1,13,21,39,49,59,72,82,95,106,119)]+50,
@@ -117,20 +116,18 @@ ggplot()+
   scale_y_continuous(expand=c(0,0),limits = c(0,8000), breaks = seq(0,8000,1000))+
   scale_linetype_manual(name = NULL, values = c(&#39;dashed&#39;,&#39;dotted&#39;,&#39;solid&#39;))+
   scale_shape_manual(name = NULL, values = c(1,2,3))+
-  scale_color_manual(name = NULL, values = c(&#39;darkgray&#39;,&#39;black&#39;,&#39;black&#39;))+
+  scale_color_manual(name = NULL, values = c(&#39;black&#39;,&#39;black&#39;,&#39;black&#39;))+
   xlab(NULL)+
   ylab(&#39;Desmatamento detectado (km²)&#39;)+
   labs(title = &#39;Área desmatada na Amazônia Legal&#39;,
        subtitle = &#39;Acumulado anual e de janeiro a julho&#39;,
        caption = &#39;Fonte de dados: SAD - Imazon (2019) e PRODES - Inpe (2019)&#39;)+
-  theme_light()+
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
-        legend.position = &#39;bottom&#39;)</code></pre>
+  theme_cowplot()+
+  theme(legend.position = &#39;bottom&#39;)</code></pre>
 <p><img src="/post/desmatamento_imazon/index_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual. Em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. Essa análise permite inferir que em 2019 teremos uma taxa similar a 2018 ou mesmo maior, caso a tendência de julho do ano corrente - em que observou-se a máxima histórica do período sob análise - se mantenha para os próximos meses.</p>
 </div>
-<div id="conclusoes" class="section level2">
+<div id="conclusões" class="section level2">
 <h2>Conclusões</h2>
 <p>Esta breve análise, permite algumas conclusões:<br />
 <strong>1.</strong> Em julho de 2019 a série de desmatamento detectado pelo Sistema de Alertas de Desmatamento do Imazon alcançou sua máxima histórica, considerando a cobertura vegetal primária perdida no período de um mês.<br />
@@ -140,7 +137,7 @@ ggplot()+
 <strong>5.</strong> Apesar de não comparáveis diretamente, os dados do PRODES e do SAD apontam tendências similares.</p>
 <center>
 </div>
-<div id="referencias" class="section level2">
+<div id="referências" class="section level2">
 <h2>Referências</h2>
 <p>[1]<a href="http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/" class="uri">http://www.observatoriodoclima.eco.br/desmatamento-subiu-50-em-2019-indicam-alertas-inpe/</a></p>
 <p>[2]<a href="https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439" class="uri">https://epoca.globo.com/sociedade/dados-do-inpe-do-imazon-mostram-mais-queimadas-em-municipios-com-mais-desmatamento-23897439</a></p>

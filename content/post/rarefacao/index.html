@@ -21,6 +21,7 @@ projects: []
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
 <p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, mas há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comunidade vegetal.<br />
@@ -51,152 +52,1251 @@ dados</code></pre>
 library(vegan)
 # Gera matriz de frequência das espécies
 matriz_freq &lt;- xtabs(~Parcela+Espécie, dados)
-# Visualizar as 6 primeiras linhas (parcelas) da matriz de frequência gerada
-head(matriz_freq)</code></pre>
-<pre><code>##        Espécie
-## Parcela Alibertia edulis Anadenanthera falcata Andira cuiabensis
-##       1                0                     0                 0
-##       2                2                     0                 0
-##       3                0                     0                 0
-##       4                0                     0                 2
-##       5                0                     0                 1
-##       6                0                     0                 0
-##        Espécie
-## Parcela Annona coriacea Annona crassiflora Bauhinia rufa Bauhinia ungulata
-##       1               1                  0             0                 0
-##       2               1                  0             0                 0
-##       3               1                  0             0                 0
-##       4               1                  1             0                 0
-##       5               2                  0             0                 0
-##       6               0                  0             0                 0
-##        Espécie
-## Parcela Buchenavia tomentosa Byrsonima basiloba Byrsonima coccolobifolia
-##       1                    0                  0                        0
-##       2                    0                  0                        0
-##       3                    0                  0                        0
-##       4                    0                  0                        0
-##       5                    0                  0                        0
-##       6                    0                  1                        0
-##        Espécie
-## Parcela Byrsonima pachyphylla Byrsonima verbascifolia Calliandra sp1
-##       1                     0                       0              0
-##       2                     0                       1              0
-##       3                     0                       0              0
-##       4                     0                       0              0
-##       5                     0                       0              0
-##       6                     0                       0              0
-##        Espécie
-## Parcela Campomanesia adamantium Caryocar brasiliense Casearia sylvestris
-##       1                       0                    0                   0
-##       2                       0                    0                   0
-##       3                       0                    0                   0
-##       4                       0                    0                   0
-##       5                       0                    0                   0
-##       6                       1                    0                   0
-##        Espécie
-## Parcela Connarus suberosus Copaifera langsdorfii Couepia grandiflora
-##       1                  0                     1                   0
-##       2                  0                     0                   0
-##       3                  0                     0                   0
-##       4                  1                     0                   0
-##       5                  0                     0                   0
-##       6                  0                     1                   0
-##        Espécie
-## Parcela Curatella americana Dimorphandra mollis Diospyros hispida
-##       1                   1                   0                 3
-##       2                   3                   0                 0
-##       3                   6                   0                 2
-##       4                   4                   0                 3
-##       5                   0                   1                 0
-##       6                   3                   0                 0
-##        Espécie
-## Parcela Dipteryx alata Eriotheca gracilipes Erythroxylum suberosum
-##       1              0                    0                      0
-##       2              0                    0                      0
-##       3              0                    0                      0
-##       4              0                    0                      0
-##       5              0                    0                      0
-##       6              0                    0                      0
-##        Espécie
-## Parcela Eugenia aurata Eugenia punicifolia Handroanthus albus
-##       1              0                   0                  0
-##       2              0                   0                  0
-##       3              0                   0                  0
-##       4              0                   0                  0
-##       5              0                   0                  0
-##       6              0                   0                  0
-##        Espécie
-## Parcela Himenaea courbaril Indeterminada 1 Indeterminada 2 Kielmeyera coriacea
-##       1                  0               0               0                   0
-##       2                  0               0               0                   0
-##       3                  0               0               1                   0
-##       4                  0               0               0                   0
-##       5                  0               3               0                   0
-##       6                  0               0               0                   0
-##        Espécie
-## Parcela Lafoensia pacari Leptolobium elegans Machaerium acutifoium
-##       1                0                   0                     0
-##       2                0                   0                     0
-##       3                0                   1                     0
-##       4                0                   0                     0
-##       5                0                   0                     0
-##       6                0                   0                     0
-##        Espécie
-## Parcela Magonia pubescens Matayba elaegnoides Miconia sp1 Myrcia sp1
-##       1                 0                   1           4          0
-##       2                 0                   0           1          0
-##       3                 0                   0           4          1
-##       4                 0                   0           4          0
-##       5                 0                   0           1          0
-##       6                 0                   1           7          0
-##        Espécie
-## Parcela Ocotea minarum Ouratea hexasperma Ouratea spectabilis
-##       1              3                  0                   0
-##       2              2                  0                   0
-##       3              0                  0                   0
-##       4              0                  0                   0
-##       5              1                  0                   0
-##       6              1                  0                   0
-##        Espécie
-## Parcela Pouteria ramiflora Pouteria torta Psidium laruotteanum
-##       1                  0              2                    0
-##       2                  0              4                    0
-##       3                  0              1                    0
-##       4                  0              1                    1
-##       5                  0              4                    0
-##       6                  0              2                    0
-##        Espécie
-## Parcela Qualea grandiflora Qualea parviflora Rhamnidium elaeocarpum
-##       1                  0                 0                      0
-##       2                  1                 0                      0
-##       3                  1                 0                      0
-##       4                  0                 0                      0
-##       5                  0                 0                      0
-##       6                  0                 0                      0
-##        Espécie
-## Parcela Roupala montana Schefflera macrocarpa Syagrus flexuosa Tabebuia aurea
-##       1               0                     0                0              0
-##       2               0                     0                0              0
-##       3               0                     0                0              0
-##       4               0                     0                0              0
-##       5               0                     0                0              1
-##       6               0                     0                0              0
-##        Espécie
-## Parcela Tachigali aurea Tapirira guianensis Terminalia argentea
-##       1               0                   0                   0
-##       2               0                   0                   0
-##       3               0                   0                   1
-##       4               0                   0                   0
-##       5               0                   0                   0
-##       6               1                   0                   0
-##        Espécie
-## Parcela Vatairea macrocarpa Vochysia cinnamomea Xylopia aromatica
-##       1                   0                   0                 0
-##       2                   0                   0                 0
-##       3                   0                   0                 0
-##       4                   0                   0                 1
-##       5                   0                   0                 1
-##       6                   0                   0                 0</code></pre>
+# Pacotes para geração da tabela em HTML
+library(knitr)
+library(kableExtra) 
+library(dplyr)
+# Visualizar 6 primeiras linhas (parcelas) da matriz de frequência
+kable(matriz_freq[1:6,])%&gt;%
+  kable_styling(fixed_thead = T)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Alibertia edulis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Anadenanthera falcata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Andira cuiabensis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Annona coriacea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Annona crassiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Bauhinia rufa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Bauhinia ungulata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Buchenavia tomentosa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima basiloba
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima coccolobifolia
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima pachyphylla
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima verbascifolia
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Calliandra sp1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Campomanesia adamantium
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Caryocar brasiliense
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Casearia sylvestris
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Connarus suberosus
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Copaifera langsdorfii
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Couepia grandiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Curatella americana
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Dimorphandra mollis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Diospyros hispida
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Dipteryx alata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Eriotheca gracilipes
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Erythroxylum suberosum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Eugenia aurata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Eugenia punicifolia
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Handroanthus albus
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Himenaea courbaril
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Indeterminada 1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Indeterminada 2
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Kielmeyera coriacea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Lafoensia pacari
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Leptolobium elegans
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Machaerium acutifoium
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Magonia pubescens
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Matayba elaegnoides
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Miconia sp1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Myrcia sp1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Ocotea minarum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Ouratea hexasperma
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Ouratea spectabilis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pouteria ramiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pouteria torta
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Psidium laruotteanum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Qualea grandiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Qualea parviflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Rhamnidium elaeocarpum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Roupala montana
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Schefflera macrocarpa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Syagrus flexuosa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Tabebuia aurea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Tachigali aurea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Tapirira guianensis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Terminalia argentea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Vatairea macrocarpa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Vochysia cinnamomea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Xylopia aromatica
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code># Curva acumulação de espécies
 par(mfrow=c(1,1),mar=c(4,4,2,2))
 curva_acum &lt;- specaccum(matriz_freq)

@@ -93,7 +93,7 @@ tabela_fito <- tabela_fito[order(tabela_fito$IVI,decreasing = T),]
 # Mostrar tabela
 library(dplyr)
 knitr::kable(tabela_fito, row.names = F)%>%
-  kableExtra::kable_styling(full_width = F, position = "center")
+  kableExtra::kable_styling(full_width = TRUE, position = "center",fixed_thead = T)
 
 ```
 

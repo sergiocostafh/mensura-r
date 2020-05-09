@@ -62,9 +62,10 @@ dados_desmatamento$`MES ANO`=as.Date(paste(dados_desmatamento$ANO,'-',dados_desm
 # round(1-dados_desmatamento$AREA[118]/dados_desmatamento$AREA[106], 3)*-1
 # Carregar pacotes necessário para geração dos gráficos
 library(ggplot2)
+library(cowplot)
 # Plotar série histórica de desmatamento mensal
 ggplot()+
-  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = 'Desmatamento'))+
+  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = 'Desmatamento'),size=.7)+
   geom_bar(aes(x=dados_precipitacao$date, y=dados_precipitacao$prec*2,
             fill = 'Precipitação'),stat = 'identity', alpha = .3, color = NA)+
     scale_x_date(expand = c(0,0), limits = c(as.Date('2009/01/01'),as.Date('2019/12/31')) ,breaks = 'year',
@@ -73,17 +74,14 @@ ggplot()+
                      breaks = seq(0,1500,250),
                      sec.axis = sec_axis(~./2, name = 'Precipitação acumulada (mm/mês)'))+
   scale_color_manual(name = NULL ,values = c('black'))+
-  scale_fill_manual(name = NULL ,values = c('blue'))+
+  scale_fill_manual(name = NULL ,values = c('steelblue'))+
   xlab(NULL)+
   ylab('Desmatamento detectado (km²)')+
   labs(title = 'Área desmatada na Amazônia Legal',
        subtitle = 'Acumulado mensal',
        caption = 'Fonte de dados: SAD - Imazon (2019) e BDMEP - Inmet (2019)')+
-  theme_light(base_size = 14)+
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
-        axis.text.x = element_text(hjust = -0.5),
-        legend.position = 'bottom')+
+  theme_cowplot()+
+  theme(legend.position = 'bottom')+
   annotate(geom='text', size = 3.5,
            x=dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],
            y=dados_desmatamento$AREA[c(1,13,21,39,49,59,72,82,95,106,119)]+50,
@@ -114,16 +112,14 @@ ggplot()+
   scale_y_continuous(expand=c(0,0),limits = c(0,8000), breaks = seq(0,8000,1000))+
   scale_linetype_manual(name = NULL, values = c('dashed','dotted','solid'))+
   scale_shape_manual(name = NULL, values = c(1,2,3))+
-  scale_color_manual(name = NULL, values = c('darkgray','black','black'))+
+  scale_color_manual(name = NULL, values = c('black','black','black'))+
   xlab(NULL)+
   ylab('Desmatamento detectado (km²)')+
   labs(title = 'Área desmatada na Amazônia Legal',
        subtitle = 'Acumulado anual e de janeiro a julho',
        caption = 'Fonte de dados: SAD - Imazon (2019) e PRODES - Inpe (2019)')+
-  theme_light()+
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
-        legend.position = 'bottom')
+  theme_cowplot()+
+  theme(legend.position = 'bottom')
 ````
 
 Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual. Em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. Essa análise permite inferir que em 2019 teremos uma taxa similar a 2018 ou mesmo maior, caso a tendência de julho do ano corrente - em que observou-se a máxima histórica do período sob análise - se mantenha para os próximos meses.

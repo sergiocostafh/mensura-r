@@ -21,6 +21,8 @@ image:
 projects: []
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
 <p>As análises fitossociológicas contemplam a utilização de índices ecológicos que exprimem a riqueza e a diversidade de comunidades vegetais, permitindo a comparação e o monitoramento dos recursos vegetais, além de fornecer subsídios ao seu manejo.<br />
@@ -87,160 +89,1251 @@ library(vegan)
 library(dplyr)
 # Gerar matriz de frequência das espécies
 matriz_freq &lt;- xtabs(~Parcela+Espécie, dados)
-# Visualizar as 6 primeiras linhas (parcelas) da matriz de frequência gerada
-head(matriz_freq)</code></pre>
-<pre><code>##        Espécie
-## Parcela Alibertia edulis Anadenanthera falcata Andira cuiabensis
-##       1                0                     0                 0
-##       2                2                     0                 0
-##       3                0                     0                 0
-##       4                0                     0                 2
-##       5                0                     0                 1
-##       6                0                     0                 0
-##        Espécie
-## Parcela Annona coriacea Annona crassiflora Bauhinia rufa Bauhinia ungulata
-##       1               1                  0             0                 0
-##       2               1                  0             0                 0
-##       3               1                  0             0                 0
-##       4               1                  1             0                 0
-##       5               2                  0             0                 0
-##       6               0                  0             0                 0
-##        Espécie
-## Parcela Buchenavia tomentosa Byrsonima basiloba Byrsonima coccolobifolia
-##       1                    0                  0                        0
-##       2                    0                  0                        0
-##       3                    0                  0                        0
-##       4                    0                  0                        0
-##       5                    0                  0                        0
-##       6                    0                  1                        0
-##        Espécie
-## Parcela Byrsonima pachyphylla Byrsonima verbascifolia Calliandra sp1
-##       1                     0                       0              0
-##       2                     0                       1              0
-##       3                     0                       0              0
-##       4                     0                       0              0
-##       5                     0                       0              0
-##       6                     0                       0              0
-##        Espécie
-## Parcela Campomanesia adamantium Caryocar brasiliense Casearia sylvestris
-##       1                       0                    0                   0
-##       2                       0                    0                   0
-##       3                       0                    0                   0
-##       4                       0                    0                   0
-##       5                       0                    0                   0
-##       6                       1                    0                   0
-##        Espécie
-## Parcela Connarus suberosus Copaifera langsdorfii Couepia grandiflora
-##       1                  0                     1                   0
-##       2                  0                     0                   0
-##       3                  0                     0                   0
-##       4                  1                     0                   0
-##       5                  0                     0                   0
-##       6                  0                     1                   0
-##        Espécie
-## Parcela Curatella americana Dimorphandra mollis Diospyros hispida
-##       1                   1                   0                 3
-##       2                   3                   0                 0
-##       3                   6                   0                 2
-##       4                   4                   0                 3
-##       5                   0                   1                 0
-##       6                   3                   0                 0
-##        Espécie
-## Parcela Dipteryx alata Eriotheca gracilipes Erythroxylum suberosum
-##       1              0                    0                      0
-##       2              0                    0                      0
-##       3              0                    0                      0
-##       4              0                    0                      0
-##       5              0                    0                      0
-##       6              0                    0                      0
-##        Espécie
-## Parcela Eugenia aurata Eugenia punicifolia Handroanthus albus
-##       1              0                   0                  0
-##       2              0                   0                  0
-##       3              0                   0                  0
-##       4              0                   0                  0
-##       5              0                   0                  0
-##       6              0                   0                  0
-##        Espécie
-## Parcela Himenaea courbaril Indeterminada 1 Indeterminada 2
-##       1                  0               0               0
-##       2                  0               0               0
-##       3                  0               0               1
-##       4                  0               0               0
-##       5                  0               3               0
-##       6                  0               0               0
-##        Espécie
-## Parcela Kielmeyera coriacea Lafoensia pacari Leptolobium elegans
-##       1                   0                0                   0
-##       2                   0                0                   0
-##       3                   0                0                   1
-##       4                   0                0                   0
-##       5                   0                0                   0
-##       6                   0                0                   0
-##        Espécie
-## Parcela Machaerium acutifoium Magonia pubescens Matayba elaegnoides
-##       1                     0                 0                   1
-##       2                     0                 0                   0
-##       3                     0                 0                   0
-##       4                     0                 0                   0
-##       5                     0                 0                   0
-##       6                     0                 0                   1
-##        Espécie
-## Parcela Miconia sp1 Myrcia sp1 Ocotea minarum Ouratea hexasperma
-##       1           4          0              3                  0
-##       2           1          0              2                  0
-##       3           4          1              0                  0
-##       4           4          0              0                  0
-##       5           1          0              1                  0
-##       6           7          0              1                  0
-##        Espécie
-## Parcela Ouratea spectabilis Pouteria ramiflora Pouteria torta
-##       1                   0                  0              2
-##       2                   0                  0              4
-##       3                   0                  0              1
-##       4                   0                  0              1
-##       5                   0                  0              4
-##       6                   0                  0              2
-##        Espécie
-## Parcela Psidium laruotteanum Qualea grandiflora Qualea parviflora
-##       1                    0                  0                 0
-##       2                    0                  1                 0
-##       3                    0                  1                 0
-##       4                    1                  0                 0
-##       5                    0                  0                 0
-##       6                    0                  0                 0
-##        Espécie
-## Parcela Rhamnidium elaeocarpum Roupala montana Schefflera macrocarpa
-##       1                      0               0                     0
-##       2                      0               0                     0
-##       3                      0               0                     0
-##       4                      0               0                     0
-##       5                      0               0                     0
-##       6                      0               0                     0
-##        Espécie
-## Parcela Syagrus flexuosa Tabebuia aurea Tachigali aurea
-##       1                0              0               0
-##       2                0              0               0
-##       3                0              0               0
-##       4                0              0               0
-##       5                0              1               0
-##       6                0              0               1
-##        Espécie
-## Parcela Tapirira guianensis Terminalia argentea Vatairea macrocarpa
-##       1                   0                   0                   0
-##       2                   0                   0                   0
-##       3                   0                   1                   0
-##       4                   0                   0                   0
-##       5                   0                   0                   0
-##       6                   0                   0                   0
-##        Espécie
-## Parcela Vochysia cinnamomea Xylopia aromatica
-##       1                   0                 0
-##       2                   0                 0
-##       3                   0                 0
-##       4                   0                 1
-##       5                   0                 1
-##       6                   0                 0</code></pre>
+# Pacotes para geração da tabela em HTML
+library(knitr)
+library(kableExtra) 
+library(dplyr)
+# Visualizar a matriz de frequência (cada linha é uma unidade amostral)
+kable(matriz_freq[1:6,])%&gt;%
+  kable_styling(fixed_thead = T)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Alibertia edulis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Anadenanthera falcata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Andira cuiabensis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Annona coriacea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Annona crassiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Bauhinia rufa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Bauhinia ungulata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Buchenavia tomentosa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima basiloba
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima coccolobifolia
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima pachyphylla
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Byrsonima verbascifolia
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Calliandra sp1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Campomanesia adamantium
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Caryocar brasiliense
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Casearia sylvestris
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Connarus suberosus
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Copaifera langsdorfii
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Couepia grandiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Curatella americana
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Dimorphandra mollis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Diospyros hispida
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Dipteryx alata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Eriotheca gracilipes
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Erythroxylum suberosum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Eugenia aurata
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Eugenia punicifolia
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Handroanthus albus
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Himenaea courbaril
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Indeterminada 1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Indeterminada 2
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Kielmeyera coriacea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Lafoensia pacari
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Leptolobium elegans
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Machaerium acutifoium
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Magonia pubescens
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Matayba elaegnoides
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Miconia sp1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Myrcia sp1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Ocotea minarum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Ouratea hexasperma
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Ouratea spectabilis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pouteria ramiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pouteria torta
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Psidium laruotteanum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Qualea grandiflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Qualea parviflora
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Rhamnidium elaeocarpum
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Roupala montana
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Schefflera macrocarpa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Syagrus flexuosa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Tabebuia aurea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Tachigali aurea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Tapirira guianensis
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Terminalia argentea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Vatairea macrocarpa
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Vochysia cinnamomea
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Xylopia aromatica
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code># Número de indivíduos por parcela
 n_ind_parc &lt;- rowSums(matriz_freq)
 # Número total de indivíduos amostrados
@@ -278,227 +1371,537 @@ tabela_indices &lt;- bind_rows(tabela_indices,data.frame(Parcela = &#39;Total&#3
                                                   Shannon = round(shannon_tot,2),
                                                   Pielou = round(pielou_tot,2)))
 knitr::kable(tabela_indices, row.names = FALSE)%&gt;%
-  kableExtra::kable_styling(full_width = F, position = &quot;center&quot;)</code></pre>
-<table>
+  kableExtra::kable_styling(full_width = T, position = &quot;center&quot;,fixed_thead = T)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th align="left">Parcela</th>
-<th align="right">Margalef</th>
-<th align="right">Simpson</th>
-<th align="right">Shannon</th>
-<th align="right">Pielou</th>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Parcela
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Margalef
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Simpson
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Shannon
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pielou
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">1</td>
-<td align="right">0.44</td>
-<td align="right">0.84</td>
-<td align="right">1.93</td>
-<td align="right">0.93</td>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.44
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+1.93
+</td>
+<td style="text-align:right;">
+0.93
+</td>
 </tr>
-<tr class="even">
-<td align="left">2</td>
-<td align="right">0.47</td>
-<td align="right">0.84</td>
-<td align="right">1.93</td>
-<td align="right">0.93</td>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+0.47
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+1.93
+</td>
+<td style="text-align:right;">
+0.93
+</td>
 </tr>
-<tr class="odd">
-<td align="left">3</td>
-<td align="right">0.47</td>
-<td align="right">0.83</td>
-<td align="right">2.01</td>
-<td align="right">0.87</td>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+0.47
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:right;">
+2.01
+</td>
+<td style="text-align:right;">
+0.87
+</td>
 </tr>
-<tr class="even">
-<td align="left">4</td>
-<td align="right">0.47</td>
-<td align="right">0.86</td>
-<td align="right">2.11</td>
-<td align="right">0.92</td>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+0.47
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:right;">
+2.11
+</td>
+<td style="text-align:right;">
+0.92
+</td>
 </tr>
-<tr class="odd">
-<td align="left">5</td>
-<td align="right">0.53</td>
-<td align="right">0.84</td>
-<td align="right">2.03</td>
-<td align="right">0.92</td>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+2.03
+</td>
+<td style="text-align:right;">
+0.92
+</td>
 </tr>
-<tr class="even">
-<td align="left">6</td>
-<td align="right">0.44</td>
-<td align="right">0.79</td>
-<td align="right">1.87</td>
-<td align="right">0.85</td>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+0.44
+</td>
+<td style="text-align:right;">
+0.79
+</td>
+<td style="text-align:right;">
+1.87
+</td>
+<td style="text-align:right;">
+0.85
+</td>
 </tr>
-<tr class="odd">
-<td align="left">7</td>
-<td align="right">0.33</td>
-<td align="right">0.68</td>
-<td align="right">1.36</td>
-<td align="right">0.84</td>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+0.33
+</td>
+<td style="text-align:right;">
+0.68
+</td>
+<td style="text-align:right;">
+1.36
+</td>
+<td style="text-align:right;">
+0.84
+</td>
 </tr>
-<tr class="even">
-<td align="left">8</td>
-<td align="right">0.57</td>
-<td align="right">0.85</td>
-<td align="right">2.04</td>
-<td align="right">0.93</td>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+0.57
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+2.04
+</td>
+<td style="text-align:right;">
+0.93
+</td>
 </tr>
-<tr class="odd">
-<td align="left">9</td>
-<td align="right">0.78</td>
-<td align="right">0.86</td>
-<td align="right">2.04</td>
-<td align="right">0.98</td>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:right;">
+0.78
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:right;">
+2.04
+</td>
+<td style="text-align:right;">
+0.98
+</td>
 </tr>
-<tr class="even">
-<td align="left">10</td>
-<td align="right">0.79</td>
-<td align="right">0.91</td>
-<td align="right">2.44</td>
-<td align="right">0.98</td>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:right;">
+0.79
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:right;">
+2.44
+</td>
+<td style="text-align:right;">
+0.98
+</td>
 </tr>
-<tr class="odd">
-<td align="left">11</td>
-<td align="right">0.48</td>
-<td align="right">0.88</td>
-<td align="right">2.38</td>
-<td align="right">0.90</td>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:right;">
+0.48
+</td>
+<td style="text-align:right;">
+0.88
+</td>
+<td style="text-align:right;">
+2.38
+</td>
+<td style="text-align:right;">
+0.90
+</td>
 </tr>
-<tr class="even">
-<td align="left">12</td>
-<td align="right">0.46</td>
-<td align="right">0.83</td>
-<td align="right">2.19</td>
-<td align="right">0.85</td>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+0.46
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:right;">
+2.19
+</td>
+<td style="text-align:right;">
+0.85
+</td>
 </tr>
-<tr class="odd">
-<td align="left">13</td>
-<td align="right">0.53</td>
-<td align="right">0.88</td>
-<td align="right">2.23</td>
-<td align="right">0.93</td>
+<tr>
+<td style="text-align:left;">
+13
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:right;">
+0.88
+</td>
+<td style="text-align:right;">
+2.23
+</td>
+<td style="text-align:right;">
+0.93
+</td>
 </tr>
-<tr class="even">
-<td align="left">14</td>
-<td align="right">0.40</td>
-<td align="right">0.86</td>
-<td align="right">2.06</td>
-<td align="right">0.94</td>
+<tr>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:right;">
+0.40
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:right;">
+2.06
+</td>
+<td style="text-align:right;">
+0.94
+</td>
 </tr>
-<tr class="odd">
-<td align="left">15</td>
-<td align="right">0.53</td>
-<td align="right">0.88</td>
-<td align="right">2.20</td>
-<td align="right">0.96</td>
+<tr>
+<td style="text-align:left;">
+15
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:right;">
+0.88
+</td>
+<td style="text-align:right;">
+2.20
+</td>
+<td style="text-align:right;">
+0.96
+</td>
 </tr>
-<tr class="even">
-<td align="left">16</td>
-<td align="right">0.63</td>
-<td align="right">0.91</td>
-<td align="right">2.48</td>
-<td align="right">0.97</td>
+<tr>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:right;">
+0.63
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:right;">
+2.48
+</td>
+<td style="text-align:right;">
+0.97
+</td>
 </tr>
-<tr class="odd">
-<td align="left">17</td>
-<td align="right">0.42</td>
-<td align="right">0.76</td>
-<td align="right">1.78</td>
-<td align="right">0.81</td>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:right;">
+0.42
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+1.78
+</td>
+<td style="text-align:right;">
+0.81
+</td>
 </tr>
-<tr class="even">
-<td align="left">18</td>
-<td align="right">0.58</td>
-<td align="right">0.92</td>
-<td align="right">2.66</td>
-<td align="right">0.96</td>
+<tr>
+<td style="text-align:left;">
+18
+</td>
+<td style="text-align:right;">
+0.58
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+2.66
+</td>
+<td style="text-align:right;">
+0.96
+</td>
 </tr>
-<tr class="odd">
-<td align="left">19</td>
-<td align="right">0.47</td>
-<td align="right">0.74</td>
-<td align="right">1.83</td>
-<td align="right">0.80</td>
+<tr>
+<td style="text-align:left;">
+19
+</td>
+<td style="text-align:right;">
+0.47
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1.83
+</td>
+<td style="text-align:right;">
+0.80
+</td>
 </tr>
-<tr class="even">
-<td align="left">20</td>
-<td align="right">0.50</td>
-<td align="right">0.81</td>
-<td align="right">2.27</td>
-<td align="right">0.82</td>
+<tr>
+<td style="text-align:left;">
+20
+</td>
+<td style="text-align:right;">
+0.50
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:right;">
+2.27
+</td>
+<td style="text-align:right;">
+0.82
+</td>
 </tr>
-<tr class="odd">
-<td align="left">21</td>
-<td align="right">0.45</td>
-<td align="right">0.87</td>
-<td align="right">2.21</td>
-<td align="right">0.92</td>
+<tr>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:right;">
+0.45
+</td>
+<td style="text-align:right;">
+0.87
+</td>
+<td style="text-align:right;">
+2.21
+</td>
+<td style="text-align:right;">
+0.92
+</td>
 </tr>
-<tr class="even">
-<td align="left">22</td>
-<td align="right">0.50</td>
-<td align="right">0.75</td>
-<td align="right">1.49</td>
-<td align="right">0.93</td>
+<tr>
+<td style="text-align:left;">
+22
+</td>
+<td style="text-align:right;">
+0.50
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+1.49
+</td>
+<td style="text-align:right;">
+0.93
+</td>
 </tr>
-<tr class="odd">
-<td align="left">23</td>
-<td align="right">0.56</td>
-<td align="right">0.81</td>
-<td align="right">1.74</td>
-<td align="right">0.97</td>
+<tr>
+<td style="text-align:left;">
+23
+</td>
+<td style="text-align:right;">
+0.56
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:right;">
+1.74
+</td>
+<td style="text-align:right;">
+0.97
+</td>
 </tr>
-<tr class="even">
-<td align="left">24</td>
-<td align="right">0.43</td>
-<td align="right">0.87</td>
-<td align="right">2.16</td>
-<td align="right">0.94</td>
+<tr>
+<td style="text-align:left;">
+24
+</td>
+<td style="text-align:right;">
+0.43
+</td>
+<td style="text-align:right;">
+0.87
+</td>
+<td style="text-align:right;">
+2.16
+</td>
+<td style="text-align:right;">
+0.94
+</td>
 </tr>
-<tr class="odd">
-<td align="left">25</td>
-<td align="right">0.50</td>
-<td align="right">0.80</td>
-<td align="right">1.70</td>
-<td align="right">0.95</td>
+<tr>
+<td style="text-align:left;">
+25
+</td>
+<td style="text-align:right;">
+0.50
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+1.70
+</td>
+<td style="text-align:right;">
+0.95
+</td>
 </tr>
-<tr class="even">
-<td align="left">26</td>
-<td align="right">0.56</td>
-<td align="right">0.84</td>
-<td align="right">2.10</td>
-<td align="right">0.91</td>
+<tr>
+<td style="text-align:left;">
+26
+</td>
+<td style="text-align:right;">
+0.56
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+2.10
+</td>
+<td style="text-align:right;">
+0.91
+</td>
 </tr>
-<tr class="odd">
-<td align="left">27</td>
-<td align="right">0.52</td>
-<td align="right">0.90</td>
-<td align="right">2.40</td>
-<td align="right">0.94</td>
+<tr>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:right;">
+0.52
+</td>
+<td style="text-align:right;">
+0.90
+</td>
+<td style="text-align:right;">
+2.40
+</td>
+<td style="text-align:right;">
+0.94
+</td>
 </tr>
-<tr class="even">
-<td align="left">28</td>
-<td align="right">0.30</td>
-<td align="right">0.79</td>
-<td align="right">1.98</td>
-<td align="right">0.80</td>
+<tr>
+<td style="text-align:left;">
+28
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+0.79
+</td>
+<td style="text-align:right;">
+1.98
+</td>
+<td style="text-align:right;">
+0.80
+</td>
 </tr>
-<tr class="odd">
-<td align="left">29</td>
-<td align="right">0.50</td>
-<td align="right">0.89</td>
-<td align="right">2.35</td>
-<td align="right">0.95</td>
+<tr>
+<td style="text-align:left;">
+29
+</td>
+<td style="text-align:right;">
+0.50
+</td>
+<td style="text-align:right;">
+0.89
+</td>
+<td style="text-align:right;">
+2.35
+</td>
+<td style="text-align:right;">
+0.95
+</td>
 </tr>
-<tr class="even">
-<td align="left">Total</td>
-<td align="right">0.11</td>
-<td align="right">0.95</td>
-<td align="right">3.51</td>
-<td align="right">0.86</td>
+<tr>
+<td style="text-align:left;">
+Total
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0.95
+</td>
+<td style="text-align:right;">
+3.51
+</td>
+<td style="text-align:right;">
+0.86
+</td>
 </tr>
 </tbody>
 </table>

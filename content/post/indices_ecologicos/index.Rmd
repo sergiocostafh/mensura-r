@@ -44,8 +44,13 @@ library(vegan)
 library(dplyr)
 # Gerar matriz de frequência das espécies
 matriz_freq <- xtabs(~Parcela+Espécie, dados)
-# Visualizar as 6 primeiras linhas (parcelas) da matriz de frequência gerada
-head(matriz_freq)
+# Pacotes para geração da tabela em HTML
+library(knitr)
+library(kableExtra) 
+library(dplyr)
+# Visualizar a matriz de frequência (cada linha é uma unidade amostral)
+kable(matriz_freq[1:6,])%>%
+  kable_styling(fixed_thead = T)
 # Número de indivíduos por parcela
 n_ind_parc <- rowSums(matriz_freq)
 # Número total de indivíduos amostrados
@@ -83,7 +88,7 @@ tabela_indices <- bind_rows(tabela_indices,data.frame(Parcela = 'Total',
                                                   Shannon = round(shannon_tot,2),
                                                   Pielou = round(pielou_tot,2)))
 knitr::kable(tabela_indices, row.names = FALSE)%>%
-  kableExtra::kable_styling(full_width = F, position = "center")
+  kableExtra::kable_styling(full_width = T, position = "center",fixed_thead = T)
 ```
   
 A tabela acima apesenta todos os parãmetros ecológicos calculados a nível de parcela e também para toda a comunidade.  

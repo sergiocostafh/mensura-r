@@ -34,8 +34,13 @@ dados
 library(vegan)
 # Gera matriz de frequência das espécies
 matriz_freq <- xtabs(~Parcela+Espécie, dados)
-# Visualizar as 6 primeiras linhas (parcelas) da matriz de frequência gerada
-head(matriz_freq)
+# Pacotes para geração da tabela em HTML
+library(knitr)
+library(kableExtra) 
+library(dplyr)
+# Visualizar 6 primeiras linhas (parcelas) da matriz de frequência
+kable(matriz_freq[1:6,])%>%
+  kable_styling(fixed_thead = T)
 # Curva acumulação de espécies
 par(mfrow=c(1,1),mar=c(4,4,2,2))
 curva_acum <- specaccum(matriz_freq)

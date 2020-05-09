@@ -152,7 +152,7 @@ colnames(tabela_prod) <- c('Idade',
 
 library(dplyr)
 knitr::kable(tabela_prod, row.names = F, caption = 'Tabela de produção em volume total (m³/ha)')%>%
-  kableExtra::kable_styling(full_width = F, position = "center")
+  kableExtra::kable_styling(full_width = TRUE, position = "center",fixed_thead = T)
 ```
 
 <style>

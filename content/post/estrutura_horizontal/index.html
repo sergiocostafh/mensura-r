@@ -20,6 +20,7 @@ image:
 projects: []
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>A fitossociologia é uma área complexa das ciências naturais que tem como objetivo caracterizar a distribuição, o agrupamento e as relações entre espécies em comunidades vegetais naturais, de modo a descrever sua estrutura e composição. A análise fitossociológica permite caracterizar vegetações quanto a sua tipologia, estágio sucessional e estado de conservação, subsidiando o manejo, a recuperação e a conservação de ecossistemas.</p>
@@ -76,16 +77,14 @@ unique(dados$Espécie)</code></pre>
 ## [57] &quot;Himenaea courbaril&quot;       &quot;Calliandra sp1&quot;</code></pre>
 <pre class="r"><code># Visualizar as famílias amostradas
 unique(dados$Família)</code></pre>
-<pre><code>##  [1] &quot;Dilleniaceae&quot;     &quot;Annonaceae&quot;       &quot;Lauraceae&quot;       
-##  [4] &quot;Ebenaceae&quot;        &quot;Fabaceae&quot;         &quot;Sapindaceae&quot;     
-##  [7] &quot;Melastomataceae&quot;  &quot;Sapotaceae&quot;       &quot;Malpighiaceae&quot;   
-## [10] &quot;Rubiaceae&quot;        &quot;Vochysiaceae&quot;     &quot;Myrtaceae&quot;       
-## [13] &quot;Combretaceae&quot;     &quot;Indeterminada&quot;    &quot;Connaraceae&quot;     
-## [16] &quot;Bignoniaceae&quot;     &quot;Araliaceae&quot;       &quot;Anacardiaceae&quot;   
-## [19] &quot;Rhamnaceae&quot;       &quot;Chrysobalanaceae&quot; &quot;Arecaceae&quot;       
-## [22] &quot;Erythroxylaceae&quot;  &quot;Lythraceae&quot;       &quot;Malvaceae&quot;       
-## [25] &quot;Calophyllaceae&quot;   &quot;Proteaceae&quot;       &quot;Ochnaceae&quot;       
-## [28] &quot;Salicaceae&quot;       &quot;Caryocaraceae&quot;</code></pre>
+<pre><code>##  [1] &quot;Dilleniaceae&quot;     &quot;Annonaceae&quot;       &quot;Lauraceae&quot;        &quot;Ebenaceae&quot;       
+##  [5] &quot;Fabaceae&quot;         &quot;Sapindaceae&quot;      &quot;Melastomataceae&quot;  &quot;Sapotaceae&quot;      
+##  [9] &quot;Malpighiaceae&quot;    &quot;Rubiaceae&quot;        &quot;Vochysiaceae&quot;     &quot;Myrtaceae&quot;       
+## [13] &quot;Combretaceae&quot;     &quot;Indeterminada&quot;    &quot;Connaraceae&quot;      &quot;Bignoniaceae&quot;    
+## [17] &quot;Araliaceae&quot;       &quot;Anacardiaceae&quot;    &quot;Rhamnaceae&quot;       &quot;Chrysobalanaceae&quot;
+## [21] &quot;Arecaceae&quot;        &quot;Erythroxylaceae&quot;  &quot;Lythraceae&quot;       &quot;Malvaceae&quot;       
+## [25] &quot;Calophyllaceae&quot;   &quot;Proteaceae&quot;       &quot;Ochnaceae&quot;        &quot;Salicaceae&quot;      
+## [29] &quot;Caryocaraceae&quot;</code></pre>
 <p>Ao todo 541 indivíduos foram amostrados no levantamento, abrangendo 58 espécies distribuídas em 29 famílias. Os principais parâmetros que descrevem a estrutura horizontal são apresentados a seguir.</p>
 <center>
 <table>
@@ -170,7 +169,7 @@ tabela_fito &lt;- tabela_fito[order(tabela_fito$IVI,decreasing = T),]
 # Mostrar tabela
 library(dplyr)
 knitr::kable(tabela_fito, row.names = F)%&gt;%
-  kableExtra::kable_styling(full_width = F, position = &quot;center&quot;)</code></pre>
+  kableExtra::kable_styling(full_width = TRUE, position = &quot;center&quot;,fixed_thead = T)</code></pre>
 <table>
 <thead>
 <tr class="header">
