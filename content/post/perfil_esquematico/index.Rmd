@@ -26,9 +26,9 @@ Buscando uma representação mais fiel à realidade do observador (i.e. aquele q
 Nesta postagem ofereço um código que permite representar o perfil esquemático de uma comunidade florestal utilizando recursos do pacote `ggplot`. O mais interessante é que o procedimento aloca as árvores no perfil de maneira probabilística, em função dos dados coletados em campo.  
 Vou explicar. Começamos importando os dados.
 
+Obs: Para baixar os dados utilizados nesse exemplo, clique [aqui](https://github.com/sergiocostafh/mensura-r/raw/master/content/post/estrutura_horizontal/dados_fitossociologia.xlsx).
+
 ```{r}
-# Para  fazer download dos dados execute a linha a seguir sem o #
-# 
 # Importar base de dados
 dados <- readxl::read_excel("dados_levantamento_fitossociologico.xlsx")
 head(dados)

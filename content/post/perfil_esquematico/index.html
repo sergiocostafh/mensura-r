@@ -21,6 +21,7 @@ projects: []
 
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>Para caracterização da tipologia, do estado de conservação e do estágio sucessional de comunidades florestais, são utilizados diversos parâmetros fitossociológicos como densidade, frequência, dominância, valor de importãncia e índices de diversidade. Tais indicadores permitem descrever detalhadamente a fitofisionomia dos locais de estudo, conforme demonstrado em <a href="https://mensura-r.netlify.com/categories/fitossociologia/">postagens anteriores sobre este tema</a>.<br />
@@ -28,20 +29,19 @@ Ainda que a utilização de todos estes parâmetros permita uma adequada descri�
 Buscando uma representação mais fiel à realidade do observador (i.e. aquele que realiza o levantamento em campo), alguns ecólogos e estudiosos da fitossociologia buscam representar o perfil esquemático das florestas por meio de ilustrações feitas à mão - habilidade restrita àqueles que possuem este talento.<br />
 Nesta postagem ofereço um código que permite representar o perfil esquemático de uma comunidade florestal utilizando recursos do pacote <code>ggplot</code>. O mais interessante é que o procedimento aloca as árvores no perfil de maneira probabilística, em função dos dados coletados em campo.<br />
 Vou explicar. Começamos importando os dados.</p>
-<pre class="r"><code># Para  fazer download dos dados execute a linha a seguir sem o #
-# 
-# Importar base de dados
+<p>Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/raw/master/content/post/estrutura_horizontal/dados_fitossociologia.xlsx">aqui</a>.</p>
+<pre class="r"><code># Importar base de dados
 dados &lt;- readxl::read_excel(&quot;dados_levantamento_fitossociologico.xlsx&quot;)
 head(dados)</code></pre>
 <pre><code>## # A tibble: 6 x 8
-##   Parcela Gen_esp   Gen_esp_abv  Família   CAP   DAP     H `Estrato vertic~
-##     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;           
-## 1       1 Prunus b~ P. brasilie~ Rosace~  46.5 14.8     12 Intermediário   
-## 2       1 Nectandr~ N. lanceola~ Laurac~ 106   33.7     17 Superior        
-## 3       1 Dalbergi~ D. frutesce~ Fabace~  24    7.64    17 Superior        
-## 4       1 Myrcia s~ M. splendens Myrtac~  18.5  5.89     7 Sub-bosque      
-## 5       1 Myrcia s~ M. splendens Myrtac~  21    6.68     9 Intermediário   
-## 6       1 Maytenus~ M. evonymoi~ Celast~  46   14.6     10 Intermediário</code></pre>
+##   Parcela Gen_esp      Gen_esp_abv   Família    CAP   DAP     H `Estrato vertic~
+##     &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;           
+## 1       1 Prunus bras~ P. brasilien~ Rosaceae  46.5 14.8     12 Intermediário   
+## 2       1 Nectandra l~ N. lanceolata Laurace~ 106   33.7     17 Superior        
+## 3       1 Dalbergia f~ D. frutescens Fabaceae  24    7.64    17 Superior        
+## 4       1 Myrcia sple~ M. splendens  Myrtace~  18.5  5.89     7 Sub-bosque      
+## 5       1 Myrcia sple~ M. splendens  Myrtace~  21    6.68     9 Intermediário   
+## 6       1 Maytenus ev~ M. evonymoid~ Celastr~  46   14.6     10 Intermediário</code></pre>
 <p>Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.</p>
 <p>O procedimento basicamente se dá nos seguintes passos:<br />
 1. Obter altura e DAP médios para cada espécie em cada estrato;<br />
