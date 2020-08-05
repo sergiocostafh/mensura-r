@@ -65,7 +65,7 @@ Nesse post calcularemos praticaremos o cálculo dos seguintes índices:</p>
 </table>
 <p>Em que: <span class="math inline">\(S\)</span> = número de espécies amostradas; <span class="math inline">\(N\)</span> = quantidade de indivíduos amostrados; <span class="math inline">\(n_i\)</span> = quantidade de indivíduos amostradados da espécie <span class="math inline">\(i\)</span>;<span class="math inline">\(ln\)</span> = logaritmo natural.<br />
 Vamos às análises. Iniciaremos importando a mesma base de dados utilizada no <a href="https://mensura-r.netlify.com/post/fitossociologia-analise-da-estrutura-horizontal-de-comunidades-vegetais/">post em que analisamos a estrutura horizontal</a> e e também no <a href="https://mensura-r.netlify.com/post/fitossociologia-curvas-de-rarefacao-e-acumulacao-de-especies/">post em que construímos curvas de acumulação de espécies e de rarefação</a>. A seguir calcularemos todos os índices ecológicos acima apresentados, com auxílio do pacote <code>vegan</code>.<br />
-Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/blob/master/content/post/dados_fitossociologia.xlsx?raw=true">aqui</a>.</p>
+Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/raw/master/content/post/estrutura_horizontal/dados_fitossociologia.xlsx">aqui</a>.</p>
 <pre class="r"><code># Importar dados
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados

@@ -29,7 +29,7 @@ Uma ferramenta bastante utilizada para esta finalidade é a curva de acumulaçã
 Um problema encontrado na construção da curva do coletor é a arbitrariedade na ordem de entrada das unidades amostrais, já que cada possível ordenação pode gerar uma curva diferente, invalidando qualquer interpretação com base em sua forma.<br />
 Para contornar esse problema devemos utilizar uma curva suavizada, que consiste em uma curva média obtida a partir de um grande número de curvas geradas por procedimentos de aleatorização das unidades amostrais.<br />
 A função <code>specaccum</code>, implementada no pacote <code>vegan</code> do R, é capaz de gerar uma curva de acumulação de espécies suavizada do modo descrito acima, conforme o procedimento a seguir.<br />
-Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/blob/master/content/post/rarefacao/dados_fitossociologia.xlsx?raw=true">aqui</a>.</p>
+Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://github.com/sergiocostafh/mensura-r/raw/master/content/post/estrutura_horizontal/dados_fitossociologia.xlsx">aqui</a>.</p>
 <pre class="r"><code># Importar dados
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados
