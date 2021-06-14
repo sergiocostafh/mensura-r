@@ -47,66 +47,81 @@ Traduzindo para o R, o procedimento é o seguinte.
 ```{r, warning=FALSE}
 # Função para geração do perfil esquemático probabilístico
 perfil_esquematico <- function(narv){
-# Obter altura média para cada espécie em cada estrato vertical
-dados_perfil <- aggregate(dados$H, list(dados$`Estrato vertical`,dados$Gen_esp_abv), mean)
-# Renomear colunas
-colnames(dados_perfil) <- c('estrato','especie','h.med')
-# Obter DAP médio para cada espécie em cada estrato vertical
-dados_perfil$dap <- aggregate(dados$DAP, list(dados$`Estrato vertical`,dados$Gen_esp_abv), mean)[,3]
-# Obter abundância para cada espécie em cada estrato vertical
-dados_perfil$ab <- aggregate(dados$Gen_esp_abv, list(dados$`Estrato vertical`,dados$Gen_esp_abv), length)[,3]
-# Separar dados por estrato
-emergente <- subset(dados_perfil,dados_perfil$estrato=="Emergente")
-subbosque <- subset(dados_perfil,dados_perfil$estrato=="Sub-bosque")
-superior <- subset(dados_perfil,dados_perfil$estrato=="Superior")
-intermediario <- subset(dados_perfil,dados_perfil$estrato=="Intermediário")
-# Contar árvores por estrato
-narv_estrato <- round(table(dados$`Estrato vertical`)/sum(table(dados$`Estrato vertical`))*narv,0)
-# Corrigir diferença, se existente, entre o argumento `narv` e o número de árvres sorteadas
-if(sum(narv_estrato)!=narv){
-  narv_estrato[which(narv_estrato==max(narv_estrato))] <- narv_estrato[which(narv_estrato==max(narv_estrato))]+1 
-}
-# Probabilidade de ocorrência das espécies em cada estrato
-emergente$prob <- emergente$ab/sum(emergente$ab)
-subbosque$prob <- subbosque$ab/sum(subbosque$ab)
-superior$prob <- superior$ab/sum(superior$ab)
-intermediario$prob <- intermediario$ab/sum(intermediario$ab)
-# Sortear árvores por estrato
-sample_eme <- sample(1:nrow(emergente), narv_estrato[1], replace = TRUE, emergente$prob)
-sample_int <- sample(1:nrow(intermediario), narv_estrato[2], replace = TRUE, intermediario$prob)
-sample_sub <- sample(1:nrow(subbosque), narv_estrato[3], replace = TRUE, subbosque$prob)
-sample_sup <- sample(1:nrow(superior), narv_estrato[4], replace = TRUE, superior$prob)
-sample_eme <- emergente[sample_eme,]
-sample_int <- intermediario[sample_int,]
-sample_sub <- subbosque[sample_sub,]
-sample_sup <- superior[sample_sup,]
-# Unir estratos da floresta simulada
-sample <- dplyr::bind_rows(sample_eme,sample_int,sample_sub,sample_sup)
-sample$dap01 <- (sample$dap-min(sample$dap))/(max(sample$dap)-min(sample$dap))*(.6-.1)+.1
-# Atribuir identificadores
-sample$id <- sample(1:narv,narv)
-id_sp <- unique(sample$especie)
-sample$id_sp <- match(sample$especie,id_sp)
-# Carregar pacotes necessários
-library(ggplot2)
-library(ggforce)
-library(ggrepel)
-# Plotar floresta
-perfil <- ggplot(sample)+
-  geom_bar(aes(x=id,y=h.med, width=dap01),stat = 'identity', color = 'black', fill = 'burlywood4')+
-  geom_ellipse(aes(x0=id, y0=h.med,
-                   a=1+3*dap01*h.med/(1/narv*500), #função genérica de diâmetro de copa
-                   b=1,angle=0), fill = 'darkgreen')+
-  geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = 'y', fontface = 'bold',  size = 2, alpha=.8, segment.alpha = 0)+
-  scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
-  scale_y_continuous(expand=c(0,0), limits = c(0,max(sample$h.med)+5))+
-  xlab('')+
-  ylab('Altura (m)')+
-  theme_bw()+
-  theme(panel.grid = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-return(perfil)
+  # Carregar pacote de manipulação de dados
+  library(dplyr)
+  
+  # Obter altura média para cada espécie em cada estrato vertical
+  dados_perfil <- dados %>% group_by(`Estrato vertical`,Gen_esp_abv) %>% summarise(mean(H)) %>% 
+  # Renamoear colunas
+    rename('estrato'=1, 'especie'=2,'h.med'=3) %>% 
+    ungroup() %>% 
+  # Obter DAP médio para cada espécie em cada estrato vertical
+  mutate(dap= group_by(dados, `Estrato vertical`, Gen_esp_abv) %>% summarise(dap=mean(DAP)) %>% pull(dap)) %>% 
+  # Obter abundância para cada espécie em cada estrato vertical
+    mutate(ab= group_by(dados, `Estrato vertical`, Gen_esp_abv) %>% summarise(ab=n()) %>% pull(ab))
+  # Separar dados por estrato
+  emergente <- dados_perfil %>% filter(estrato == 'Emergente')
+  subbosque <- dados_perfil %>% filter(estrato == 'Sub-bosque')
+  superior <- dados_perfil %>% filter(estrato == 'Superior')
+  intermediario <- dados_perfil %>% filter(estrato == 'Intermediário')
+  
+  # Contar árvores por estrato
+  narv_estrato <- round(table(dados$`Estrato vertical`)/sum(table(dados$`Estrato vertical`))*narv,0)
+  # Corrigir diferença, se existente, entre o argumento `narv` e o número de árvres sorteadas
+  if(sum(narv_estrato)!=narv){
+    narv_estrato[which(narv_estrato==max(narv_estrato))] <- narv_estrato[which(narv_estrato==max(narv_estrato))]+1 
+  }
+  # Probabilidade de ocorrência das espécies em cada estrato
+  emergente$prob <- emergente$ab/sum(emergente$ab)
+  subbosque$prob <- subbosque$ab/sum(subbosque$ab)
+  superior$prob <- superior$ab/sum(superior$ab)
+  intermediario$prob <- intermediario$ab/sum(intermediario$ab)
+  # Sortear árvores por estrato
+  sample_eme <- tryCatch({sample(1:nrow(emergente), narv_estrato[1], replace = TRUE, emergente$prob)},
+    error = function (e) {0}
+  )
+  sample_int <- tryCatch({
+    sample(1:nrow(intermediario), narv_estrato[2], replace = TRUE, intermediario$prob)},
+    error = function (e) {0}
+  )
+  sample_sub <- tryCatch({
+    sample_sub <- sample(1:nrow(subbosque), narv_estrato[3], replace = TRUE, subbosque$prob)},
+    error = function (e) {0}
+  )
+  sample_sup <- tryCatch({
+    sample(1:nrow(superior), narv_estrato[4], replace = TRUE, superior$prob)},
+    error = function (e) {0}
+  )
+  sample_eme <- emergente[sample_eme,]
+  sample_int <- intermediario[sample_int,]
+  sample_sub <- subbosque[sample_sub,]
+  sample_sup <- superior[sample_sup,]
+  # Unir estratos da floresta simulada
+  sample <- bind_rows(sample_eme,sample_int,sample_sub,sample_sup) %>% 
+    mutate(dap01=(dap-min(dap))/(max(dap)-min(dap))*(.6-.1)+.1,
+           id = sample(1:narv,narv))
+  id_sp <- unique(sample$especie)
+  sample$id_sp <- match(sample$especie,id_sp)
+  # Carregar pacotes necessários
+  library(ggplot2)
+  library(ggforce)
+  library(ggrepel)
+  # Plotar floresta
+  perfil <- ggplot(sample)+
+    geom_bar(aes(x=id,y=h.med, width=dap01),stat = 'identity', color = 'black', fill = 'burlywood4')+
+    geom_ellipse(aes(x0=id, y0=h.med,
+                     a=1+3*dap01*h.med/(1/narv*500), #função genérica de diâmetro de copa
+                     b=1,angle=0), fill = 'darkgreen')+
+    geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = 'y', fontface = 'bold',  size = 2, alpha=.8, segment.alpha = 0)+
+    scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
+    scale_y_continuous(expand=c(0,0), limits = c(0,max(sample$h.med)+5))+
+    xlab('')+
+    ylab('Altura (m)')+
+    theme_bw()+
+    theme(panel.grid = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  return(perfil)
 }
 ```
 A função acima possui como único parâmetro o número de árvores a serem apresentadas. Vamos definir uma quantidade, e executar a função.
