@@ -75,7 +75,7 @@ respostas %&gt;%
   st_as_sf() %&gt;%
   ggplot() +
   geom_sf(aes(fill = n), color = &#39;white&#39;, size=.5, show.legend = F) +
-  geom_sf_text(aes(label = n), color=&#39;black&#39;)+
+  geom_sf_text(aes(label = n), color=&#39;gray20&#39;)+
   labs(title = &#39;Quantidade de respostas por região de atuação&#39;,
        subtitle = &#39;Os respondentes se concentraram nas regiões sul, sudeste e nordeste.\nTivemos poucos respondentes da região norte do país.&#39;,
        caption = paste0(&#39;Participantes que atuam no exterior: &#39;,
@@ -108,7 +108,7 @@ respostas %&gt;%
   arrange(-n) %&gt;% 
   ggplot(aes(area = n, fill = n, label = Ocup_label))+
   geom_treemap(show.legend = F, color = &#39;white&#39;)+
-  geom_treemap_text(colour = &quot;black&quot;,
+  geom_treemap_text(colour = &quot;gray20&quot;,
                     place = &quot;centre&quot;,
                     size = 11)+
   scale_fill_gradient(high = &#39;slategrey&#39;, low = &#39;slategray3&#39;)+
