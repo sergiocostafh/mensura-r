@@ -19,11 +19,13 @@ image:
 projects: []
 ---
 
-Havia quase dois anos que eu não postava por aqui. Foi muito interessante observar que, apesar do tempo sem postar, o fluxo de novos visitantes no blog e de contatos para sugestões ou esclarescimento de dúvidas foi contínuo, demonstrando que o interesse pela aplicação da linguagem R na área florestal é crescente. Por conta disso, resolvi criar um grupo no WhatsApp para reunir Engenheiros Florestais utilizadores do R, para compartilhamento de experiências, materiais, cursos, aplicações, pacotes, dúvidas, etc. O grupo lotou em poucos dias.  
+Havia quase dois anos que eu não postava por aqui. Foi muito interessante observar que, apesar do tempo sem postar, o fluxo de novos visitantes no blog foi contínuo, demonstrando que o interesse pela aplicação da linguagem R na área florestal é crescente. Por conta disso, resolvi criar um grupo no WhatsApp para reunir Engenheiros Florestais utilizadores do R, para compartilhamento de experiências, materiais, cursos, aplicações, pacotes, dúvidas, etc. Para minha surpresa, o grupo lotou em poucos dias.  
 
-Foi então que tive a ideia de elaborar um breve questionário para gerar uma interação e averiguar como e por quem a linguagem R tem sido utilizada na área florestal. Na tentativa de incentivar o preenchimento, me comprometi a compartilhar os resultados e o código utilizado em toda a análise. A análise a seguir pode servir de auxílio aos colegas que estão buscando se aperfeiçõar na prática de programar em R, uma vez que busco utilizar diversos procedimentos de tratamento e manipulação de dados, bem como aplicar alguns conceitos básicos de data storytelling utilizando o pacote `ggplot2`. A fonte de dados é uma planilha do Google Sheets, cópia da versão original vinculada ao formulário, contendo todas as respostas para as 6 perguntas obrigatórias (primeira seção). Vamos à análise.  
+Foi então que tive a ideia de elaborar um breve questionário para gerar uma interação e averiguar como e por quem a linguagem R tem sido utilizada na área florestal. Na tentativa de incentivar o preenchimento, me comprometi a compartilhar os resultados e o código utilizado em toda a análise.  
 
-
+A análise a seguir pode servir de auxílio aos colegas que estão buscando se aperfeiçõar na prática de programar em R, uma vez que busco utilizar diversos procedimentos de tratamento e manipulação de dados, bem como aplicar alguns conceitos básicos de data storytelling utilizando o pacote `ggplot2`. A fonte de dados é uma planilha do Google Sheets, cópia da versão original vinculada ao formulário, contendo todas as respostas para as 6 perguntas obrigatórias (primeira seção). Vamos à análise.  
+  
+### Análise das respostas  
 Participaram do levantamento engenheiros florestais das cinco regiões do Brasil e também do exterior. Ao todo houveram 98 respostas ao questionário, sendo a maioria advindas de colegas que atuam nas regiões Sul, Nordeste e Sudeste.  
 
 ```{r, warning=FALSE, message=FALSE, fih.show='hide'}
@@ -77,7 +79,7 @@ respostas %>%
   st_as_sf() %>%
   ggplot() +
   geom_sf(aes(fill = n), color = 'white', size=.5, show.legend = F) +
-  geom_sf_text(aes(label = n), color='white')+
+  geom_sf_text(aes(label = n), color='black')+
   labs(title = 'Quantidade de respostas por região de atuação',
        subtitle = 'Os respondentes se concentraram nas regiões sul, sudeste e nordeste.\nTivemos poucos respondentes da região norte do país.',
        caption = paste0('Participantes que atuam no exterior: ',
@@ -89,9 +91,9 @@ respostas %>%
   theme(plot.title.position = 'plot')
 ```
 
-Cerca de 87% dos participantes do levantamento atuam no setor privado ou no meio acadêmico como graduandos ou pós-graduandos. Ao todo, tivemos a participação de dois professores do Ensino Superior, dois servidores públicos, cinco autônomos e quatro colegas que estão em busca de uma oportunidade de trabalho.  
+Cerca de 87% dos participantes do levantamento atuam no setor privado ou no meio acadêmico como graduandos ou pós-graduandos. Ao todo, tivemos a participação de dois professores do Ensino Superior, dois servidores públicos (exceto professores), cinco autônomos e quatro colegas que estão em busca de uma oportunidade de trabalho.  
 
-```{r, fig.width = 6, fig.height=5}
+```{r, fig.width = 6, fig.height=4}
 ##########################
 # Respostas por ocupação #
 ##########################
@@ -113,9 +115,9 @@ respostas %>%
   arrange(-n) %>% 
   ggplot(aes(area = n, fill = n, label = Ocup_label))+
   geom_treemap(show.legend = F, color = 'white')+
-  geom_treemap_text(colour = "white",
+  geom_treemap_text(colour = "black",
                     place = "centre",
-                    size = 12)+
+                    size = 11)+
   scale_fill_gradient(high = 'slategrey', low = 'slategray3')+
   labs(title = 'Ocupação dos participantes',
        subtitle = 'A maioria dos respondentes são profissionais que atuam em instituições privadas.\nAcadêmicos de graduação e da pós também tiverem expressiva participação.')+
@@ -127,9 +129,9 @@ respostas %>%
         axis.text.y = element_text(size = 10))
 ```
 
-Quanto à frequência de utilização da linguagem R no trabalho/pesquisa/estudo, 37 participantes declararam utilizar o R frequentemente ou mesmo como principal ferramenta de tabalho. A classe de usuário mais expressiva foi a de usuários ocasionais, com 29 representantes. Seis colegas afirmaram nunca ter utilizado o R. Entendo que neste caso podem ser considerados usuários em potencial, uma vez que demonstraram interesse sobre o assunto.
+Quanto à frequência de utilização da linguagem R no trabalho/pesquisa/estudo, 37 participantes declararam utilizar o R frequentemente ou mesmo como principal ferramenta de tabalho. A classe de usuário mais expressiva foi a de usuários ocasionais, com 29 representantes. Seis colegas afirmaram nunca ter utilizado o R. Entendo que neste caso podem ser considerados usuários em potencial, uma vez que demonstraram interesse sobre o assunto.  
 
-```{r, fig.width = 7, fig.height=4}
+```{r, fig.width = 7, fig.height=3}
 ################################
 # Análise da frequência de uso #
 ################################
@@ -152,7 +154,7 @@ respostas %>%
   arrange(FreqUso) %>% 
   ggplot()+
   geom_bar(aes(x=FreqUso,y=n_rel, fill = fill), stat = 'identity')+
-  geom_text(aes(x=FreqUso, y=n_rel, label = paste0(round(n_rel,1),'%')), hjust = 1,nudge_y = -.5, color = 'black')+
+  geom_text(aes(x=FreqUso, y=n_rel, label = paste0(round(n_rel,1),'%')), hjust = 1,nudge_y = -.5, color = 'black', size = 3)+
   scale_x_discrete(limits = levels('FreqUso'))+
   scale_y_continuous(expand = c(0,0))+
   scale_fill_identity()+
@@ -169,14 +171,14 @@ respostas %>%
   
 Ao todo 42 colegas declararam possuir domínio do R a nível básico. Considerei como básico o conhecimento necessário para rodar scripts prontos, carregar e salvar bases de dados, plotar e calcular estatísticas básicas. Dezenove participantes alegaram não possuir domínio nenhum sobre o R, sendo estre grupo formado por colegas que nunca utilizaram a linguagem ou já tiveram contato, mas não aplicam atualmente. Quatro dos 98 participantes indicaram ter um domínio mais avançado da linguagem, com conhecimentos em desenvolvimento de pacotes, aplicações e APIs, elaboração de relatórios automatizados e capacidade de extrair e utilizar de maneira automática dados "presos" ou mesmo "escondidos" na web por meio de webscrapping.  
   
-```{r, fig.width = 7, fig.height=4}
+```{r, fig.width = 7, fig.height=3}
 #############################################
 # Respostas quanto ao nível de conhecimento #
 #############################################
 respostas %>% 
   group_by(NivelCon) %>% 
   summarise(n = n()) %>% 
-  mutate(labels = gsub('(.{1,40})(\\s|$)', '\\1\n', NivelCon)) %>% 
+  mutate(labels = gsub('(.{1,50})(\\s|$)', '\\1\n', NivelCon)) %>% 
   mutate(n_rel = n/sum(n)*100,
          labels = factor(labels,
                            levels = unique(labels)[c(3,5,2,4,1)],
@@ -204,9 +206,9 @@ respostas %>%
 ```
   
 Mais da metade dos participantes afirma utilizar (ou ter a intenção de utilizar) o R em rotinas de inventário florestal e modelagem do crescimento e produção.  
-Minha percepção é que o domínio de uma linguagem de programação e a capacidade de automatização de procedimentos de análise e processamento de dados tem sido não só um diferencial, mas por vezes, um requisito básico para atuação nas áreas de planejamento e de mensuração de empresas de base florestal. Estas empresas atualmente geram e consomem grandes quantidades de dados e informações, as vezes em curto espaço de tempo, para basear decisões nos âmbitos operacional, tático e estratégico.  
-  
-```{r, fig.width = 8}
+Minha percepção é que o domínio de uma linguagem de programação e a capacidade de automatização de procedimentos de análise e processamento de dados tem sido não só um diferencial, mas por vezes, um requisito básico para atuação nas áreas de planejamento e de mensuração de empresas de base florestal. Estas empresas atualmente geram e consomem grandes quantidades de dados e informações, as vezes em curto espaço de tempo, para basear decisões nos âmbitos operacional, tático e estratégico. 
+
+```{r, fig.width = 8, fig.height = 4}
 ##########################
 # Sub areas de aplicação #
 ##########################
@@ -234,7 +236,8 @@ respostas %>%
                           TRUE~paleta6[1])) %>% 
   ggplot(aes(area = n, fill = n, label = labels))+
   geom_bar(aes(x=labels,y=n_rel, fill = fill), stat = 'identity')+
-  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),'%')), hjust = 1,nudge_y = -.5, color = 'black')+
+  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),'%')), hjust = 1,nudge_y = -.5, color = 'black',
+            size = 3)+
   scale_x_discrete(limits = rev(levels('labels')))+
   scale_y_continuous(expand = c(0,0))+
   scale_fill_identity()+
@@ -253,9 +256,9 @@ respostas %>%
   
 A cada dez participantes do levantamento, quatro afirmaram ter dificuldades em aprender a programar. Isso é compreensível já que na formação do engenheiro florestal não há um enfoque para o desenvolvimento de habilidades de programação, visto que nossa área de atuação é bastante ampla e para muitos a rotina de campo é mais frequente que a de escritório.  
 Há uma tendência cada vez maior da utilização do R em algumas disciplinas que trabalham com dados, ou mesmo a inclusão de disciplinas específicas para desenvolvimento dessas habilidades nos cursos de graduação e pós-graduação.  
-Independente de disciplinas específicas na grade currícular, o aprendizado de uma linguagem de programação é similar ao aprendizado de um idioma, e se dá pelo estudo, prática, e constância de utilização.  
+Independente da existência de disciplinas específicas na grade currícular, o aprendizado de uma linguagem de programação é similar ao aprendizado de um idioma, e se dá pelo estudo, prática, e constância de utilização. O autodidatismo é outra característica importante para quem busca se desenvolver nesta área.  
   
-```{r, fig.width = 8, fig.height=5}
+```{r, fig.width = 8, fig.height=4}
 ###########################
 # Principais dificuldades #
 ###########################
@@ -288,7 +291,7 @@ tibble(Dificuldade = c('Não tenho tempo/empenho',
                           TRUE~paleta6[1])) %>% 
   ggplot(aes(area = n, fill = n, label = labels))+
   geom_bar(aes(x=labels,y=n_rel, fill = fill), stat = 'identity')+
-  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),'%')), hjust = 1,nudge_y = -.5, color = 'black')+
+  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),'%')), hjust = 1,nudge_y = -.5, color = 'black', size = 3)+
   annotate('text',x=1, y=7,hjust=0,label = 'Outras dificuldades apontadas se referem à aplicação da linguagem no ambiente corporativo\nquando a ferramenta dominante é outra, deficiência em conhecimentos estatísticos e\nlíngua inglesa, falta de prática e alterações frequentes de versões de pacotes.',
            size=3)+
   scale_x_discrete(limits = rev(levels('labels')))+
@@ -305,6 +308,6 @@ tibble(Dificuldade = c('Não tenho tempo/empenho',
         axis.text.y = element_text(size = 9))
 ```
 
-A comunidade R é bastante ampla e existe muito material disponível na internet para apoiar o aprendizado. Aqui no blog procuro compartilhar um pouco do que desenvolvo e que se aplica à área florestal, mas a maior parte do que aprendi veio de exemplos compartilhados na internet, com aplicações que na maioria das vezes não eram florestais. Foi o estudo, a prática e a constância de utilização que me permitiram direcionar o que aprendi (e continuo aprendendo) de maneira dispersa, ao desenvolvimento de soluções para os problemas que preciso atacar no meu trabalho diário.  
+A comunidade R é bastante ampla e existe muito material disponível na internet para apoiar o aprendizado. Aqui no blog procuro compartilhar um pouco do que desenvolvo e que se aplica à área florestal. A maior parte do que aprendi a fazer no R veio de exemplos compartilhados na internet que na maioria das vezes não eram florestais. Foi o estudo, a prática e a constância de utilização que me permitiram direcionar o que aprendi (e continuo aprendendo) de maneira dispersa, ao desenvolvimento de soluções para os problemas que preciso atacar no meu trabalho diário - florestal.  
   
-Bom, cumpro aqui meu combinado de disponibilizar os resultados e as análises do formulário. Deixo meu obrigado à todos os colegas que responderam o questionário. Até a próxima!  
+Bom, cumpro aqui meu combinado de disponibilizar os resultados e códigos de análise do formulário. Deixo meu obrigado à todos os colegas que responderam o questionário. Até a próxima!  
