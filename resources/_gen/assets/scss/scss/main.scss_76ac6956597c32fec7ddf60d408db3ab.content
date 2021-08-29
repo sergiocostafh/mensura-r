@@ -7501,7 +7501,7 @@ div.alert a {
 
 .dropdown-menu,
 nav#navbar-main li.nav-item {
-  font-size: 10.78px; }
+  font-size: 16px; }
 
 .navbar-light .navbar-nav > .nav-item > .nav-link,
 .navbar-light .navbar-nav > .nav-item > .nav-link:focus,
