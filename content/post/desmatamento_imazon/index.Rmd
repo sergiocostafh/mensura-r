@@ -65,7 +65,7 @@ library(ggplot2)
 library(cowplot)
 # Plotar série histórica de desmatamento mensal
 ggplot()+
-  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = 'Desmatamento'),size=.7)+
+  geom_line(aes(x=dados_desmatamento$`MES ANO`, y=dados_desmatamento$AREA, color = 'Desmatamento'),size=1)+
   geom_bar(aes(x=dados_precipitacao$date, y=dados_precipitacao$prec*2,
             fill = 'Precipitação'),stat = 'identity', alpha = .3, color = NA)+
     scale_x_date(expand = c(0,0), limits = c(as.Date('2009/01/01'),as.Date('2019/12/31')) ,breaks = 'year',
@@ -73,7 +73,7 @@ ggplot()+
     scale_y_continuous(expand = c(0,0), limits = c(0,1500),
                      breaks = seq(0,1500,250),
                      sec.axis = sec_axis(~./2, name = 'Precipitação acumulada (mm/mês)'))+
-  scale_color_manual(name = NULL ,values = c('black'))+
+  scale_color_manual(name = NULL ,values = c('gray30'))+
   scale_fill_manual(name = NULL ,values = c('steelblue'))+
   xlab(NULL)+
   ylab('Desmatamento detectado (km²)')+
@@ -81,7 +81,9 @@ ggplot()+
        subtitle = 'Acumulado mensal',
        caption = 'Fonte de dados: SAD - Imazon (2019) e BDMEP - Inmet (2019)')+
   theme_cowplot()+
-  theme(legend.position = 'bottom')+
+  theme(legend.position = 'bottom',
+        plot.title.position = 'plot',
+        plot.caption.position = 'plot')+
   annotate(geom='text', size = 3.5,
            x=dados_desmatamento$`MES ANO`[c(1,13,21,39,49,59,72,82,95,106,119)],
            y=dados_desmatamento$AREA[c(1,13,21,39,49,59,72,82,95,106,119)]+50,
@@ -119,7 +121,9 @@ ggplot()+
        subtitle = 'Acumulado anual e de janeiro a julho',
        caption = 'Fonte de dados: SAD - Imazon (2019) e PRODES - Inpe (2019)')+
   theme_cowplot()+
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom',
+        plot.title.position = 'plot',
+        plot.caption.position = 'plot')
 ````
 
 Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual. Em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. Essa análise permite inferir que em 2019 teremos uma taxa similar a 2018 ou mesmo maior, caso a tendência de julho do ano corrente - em que observou-se a máxima histórica do período sob análise - se mantenha para os próximos meses.

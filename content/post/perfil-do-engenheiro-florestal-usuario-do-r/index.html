@@ -1,0 +1,287 @@
+---
+title: Perfil do Engenheiro Florestal usuário do R - Análise do questionário
+author: Sérgio Costa
+date: '2021-08-28'
+slug: perfil-do-engenheiro-florestal-usuario-do-r
+categories:
+  - Generalidades
+tags:
+  - Generalidades
+subtitle: ''
+summary: 'Análise do questionário "Perfil do Engenheiro Florestal usuário do R".'
+authors: []
+lastmod: '2021-08-28T16:03:52-03:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Havia um ano que eu não postava por aqui. Foi muito interessante observar que, apesar do tempo sem postar, o fluxo de novos visitantes no blog e de contatos para sugestões ou esclarescimento de dúvidas foi contínuo, demonstrando que o interesse pela aplicação da linguagem R na área florestal é crescente. Por conta disso, resolvi criar um grupo no WhatsApp para reunir Engenheiros Florestais utilizadores do R, para compartilhamento de experiências, materiais, cursos, aplicações, pacotes, dúvidas, etc. O grupo lotou em poucos dias.</p>
+<p>Foi então que tive a ideia de elaborar um breve questionário para gerar uma interação e averiguar como e por quem a linguagem R tem sido utilizada na área florestal. Na tentativa de incentivar o preenchimento, me comprometi a compartilhar os resultados e o código utilizado em toda a análise. A análise a seguir pode servir de auxílio aos colegas que estão buscando se aperfeiçõar na prática de programar em R, uma vez que busco utilizar diversos procedimentos de tratamento e manipulação de dados, bem como aplicar alguns conceitos básicos de data storytelling utilizando o pacote <code>ggplot2</code>. A fonte de dados é uma planilha do Google Sheets, cópia da versão original vinculada ao formulário, contendo todas as respostas para as 6 perguntas obrigatórias (primeira seção). Vamos à análise.</p>
+<p>Participaram do levantamento engenheiros florestais das cinco regiões do Brasil e também do exterior. Ao todo houveram 98 respostas ao questionário, sendo a maioria advindas de colegas que atuam nas regiões Sul, Nordeste e Sudeste.</p>
+<pre class="r"><code>#######################
+# Aquisição dos dados #
+#######################
+
+# Instalar/carregar pacotes necessarios
+if (!require(&quot;googlesheets4&quot;)) install.packages(&quot;googlesheets4&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+if (!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+if (!require(&quot;devtools&quot;)) install.packages(&quot;devtools&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+if (!require(&quot;brazilmaps&quot;)) install_github(&quot;rpradosiqueira/brazilmaps&quot;)
+if (!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+if (!require(&quot;cowplot&quot;)) install.packages(&quot;cowplot&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+if (!require(&quot;forcats&quot;)) install.packages(&quot;forcats&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+if (!require(&quot;treemapify&quot;)) install.packages(&quot;treemapify&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+
+# Paleta de cores para os graficos
+paleta6 &lt;- c(&quot;#9FB6CD&quot;,&quot;#AF9FCD&quot;,&quot;#CD9FC3&quot;,&quot;#CDA29F&quot;,&quot;#CDCA9F&quot;,&quot;#A9CD9F&quot;,&quot;#9FCDBD&quot;)
+
+# Importar planilha de respostas e renomear colunas (obs: sera preciso fazr login em sua conta google)
+respostas &lt;-
+  read_sheet(&quot;1en5995QQbPsIRElA8SDivjquLR0Od2bhghHmil7VIWM&quot;) %&gt;%
+  rename(
+    Regiao = 2,
+    Ocupacao = 3,
+    FreqUso = 4,
+    NivelCon = 5,
+    SubArea = 6,
+      Dificuldades = 7
+  )</code></pre>
+<pre class="r"><code>########################
+# Respostas por região #
+########################
+regioes &lt;- brazilmaps::get_brmap(geo = &#39;Region&#39;)
+
+respostas %&gt;%
+  group_by(Regiao) %&gt;%
+  summarise(n = n()) %&gt;%
+  mutate(
+    desc_rg = case_when(
+      Regiao == &#39;Fora do Brasil&#39; ~ &#39;EXTERIOR&#39;,
+      TRUE ~ toupper(str_split(Regiao, &#39;- &#39;, simplify = T)[, 2])
+    )
+  ) %&gt;%
+  arrange(-n) %&gt;%
+  right_join(regioes) %&gt;%
+  st_as_sf() %&gt;%
+  ggplot() +
+  geom_sf(aes(fill = n), color = &#39;white&#39;, size=.5, show.legend = F) +
+  geom_sf_text(aes(label = n), color=&#39;white&#39;)+
+  labs(title = &#39;Quantidade de respostas por região de atuação&#39;,
+       subtitle = &#39;Os respondentes se concentraram nas regiões sul, sudeste e nordeste.\nTivemos poucos respondentes da região norte do país.&#39;,
+       caption = paste0(&#39;Participantes que atuam no exterior: &#39;,
+                        respostas %&gt;% 
+                          filter(Regiao == &#39;Fora do Brasil&#39;) %&gt;% 
+                          nrow()))+
+  scale_fill_gradient(high = &#39;slategrey&#39;, low = &#39;slategray3&#39;)+
+  theme_map()+
+  theme(plot.title.position = &#39;plot&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="768" /></p>
+<p>Cerca de 87% dos participantes do levantamento atuam no setor privado ou no meio acadêmico como graduandos ou pós-graduandos. Ao todo, tivemos a participação de dois professores do Ensino Superior, dois servidores públicos, cinco autônomos e quatro colegas que estão em busca de uma oportunidade de trabalho.</p>
+<pre class="r"><code>##########################
+# Respostas por ocupação #
+##########################
+respostas %&gt;%
+  group_by(Ocupacao) %&gt;%
+  summarise(n = n()) %&gt;% 
+  mutate(n_rel = round(n/sum(n)*100),
+         Ocup_label = case_when(
+           Ocupacao == &#39;Acadêmico de graduação&#39; ~ paste0(&#39;Graduando&#39;),
+           Ocupacao == &#39;Acadêmico de pós-graduação&#39; ~ paste0(&#39;Pós-Graduando&#39;),
+           Ocupacao == &#39;Profissional autônomo&#39; ~ paste0(&#39;Autônomo&#39;),
+           Ocupacao == &#39;Profissional de instituição privada (exceto professor)&#39; ~ paste0(&#39;Setor Privado&#39;),
+           Ocupacao == &#39;Profissional de instituição pública  (exceto professor)&#39; ~ paste0(&#39;Servidor público&#39;),
+           Ocupacao == &#39;Em busca de oportunidades&#39; ~ paste0(&#39;Buscando oportunidade&#39;),
+           TRUE ~ paste0(&#39;Professor do Ensino Superior&#39;)
+         )) %&gt;% 
+  mutate(Ocup_label = gsub(&#39;(.{1,20})(\\s|$)&#39;, &#39;\\1\n&#39;, Ocup_label)) %&gt;% 
+  mutate(Ocup_label = paste0(Ocup_label,round(n_rel,1),&#39;%&#39;)) %&gt;% 
+  arrange(-n) %&gt;% 
+  ggplot(aes(area = n, fill = n, label = Ocup_label))+
+  geom_treemap(show.legend = F, color = &#39;white&#39;)+
+  geom_treemap_text(colour = &quot;white&quot;,
+                    place = &quot;centre&quot;,
+                    size = 12)+
+  scale_fill_gradient(high = &#39;slategrey&#39;, low = &#39;slategray3&#39;)+
+  labs(title = &#39;Ocupação dos participantes&#39;,
+       subtitle = &#39;A maioria dos respondentes são profissionais que atuam em instituições privadas.\nAcadêmicos de graduação e da pós também tiverem expressiva participação.&#39;)+
+  theme_minimal_vgrid()+
+  theme(axis.title = element_blank(),
+        plot.title.position = &#39;plot&#39;,
+        axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        axis.text.y = element_text(size = 10))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+<p>Quanto à frequência de utilização da linguagem R no trabalho/pesquisa/estudo, 37 participantes declararam utilizar o R frequentemente ou mesmo como principal ferramenta de tabalho. A classe de usuário mais expressiva foi a de usuários ocasionais, com 29 representantes. Seis colegas afirmaram nunca ter utilizado o R. Entendo que neste caso podem ser considerados usuários em potencial, uma vez que demonstraram interesse sobre o assunto.</p>
+<pre class="r"><code>################################
+# Análise da frequência de uso #
+################################
+respostas %&gt;% 
+  group_by(FreqUso) %&gt;% 
+  summarise(n = n()) %&gt;% 
+  mutate(FreqUso = factor(FreqUso)) %&gt;% 
+  mutate(n_rel = n/sum(n)*100,
+         FreqUso = factor(FreqUso, 
+                          levels = unique(FreqUso)[c(2,1,5,4,3)],
+                          labels = c(&#39;Nunca usou&#39;,
+                                     &#39;Já teve contato, mas não aplica&#39;,
+                                     &#39;Usa ocasionalmente&#39;,
+                                     &#39;Usa frequentemente&#39;,
+                                     &#39;Usa como principal ferramenta&#39;),
+                          ordered = T)) %&gt;% 
+  arrange(-n) %&gt;% 
+  mutate(fill = case_when(row_number()==1~&#39;darkorange&#39;,
+                          TRUE~paleta6[1])) %&gt;% 
+  arrange(FreqUso) %&gt;% 
+  ggplot()+
+  geom_bar(aes(x=FreqUso,y=n_rel, fill = fill), stat = &#39;identity&#39;)+
+  geom_text(aes(x=FreqUso, y=n_rel, label = paste0(round(n_rel,1),&#39;%&#39;)), hjust = 1,nudge_y = -.5, color = &#39;black&#39;)+
+  scale_x_discrete(limits = levels(&#39;FreqUso&#39;))+
+  scale_y_continuous(expand = c(0,0))+
+  scale_fill_identity()+
+  coord_flip()+
+  labs(title = &#39;Frequência de utilização do R&#39;,
+       subtitle = &#39;A maioria dos respondentes afirmou utilizar o R ocasionalmente.\nUm a cada dez participantes utiliza a linguagem como principal ferramenta.&#39;)+
+  theme_minimal_vgrid()+
+  theme(axis.title = element_blank(),
+        plot.title.position = &#39;plot&#39;,
+        axis.text.x = element_blank(),
+        panel.grid.major = element_blank())</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
+<p>Ao todo 42 colegas declararam possuir domínio do R a nível básico. Considerei como básico o conhecimento necessário para rodar scripts prontos, carregar e salvar bases de dados, plotar e calcular estatísticas básicas. Dezenove participantes alegaram não possuir domínio nenhum sobre o R, sendo estre grupo formado por colegas que nunca utilizaram a linguagem ou já tiveram contato, mas não aplicam atualmente. Quatro dos 98 participantes indicaram ter um domínio mais avançado da linguagem, com conhecimentos em desenvolvimento de pacotes, aplicações e APIs, elaboração de relatórios automatizados e capacidade de extrair e utilizar de maneira automática dados “presos” ou mesmo “escondidos” na web por meio de webscrapping.</p>
+<pre class="r"><code>#############################################
+# Respostas quanto ao nível de conhecimento #
+#############################################
+respostas %&gt;% 
+  group_by(NivelCon) %&gt;% 
+  summarise(n = n()) %&gt;% 
+  mutate(labels = gsub(&#39;(.{1,30})(\\s|$)&#39;, &#39;\\1\n&#39;, NivelCon)) %&gt;% 
+  mutate(n_rel = n/sum(n)*100,
+         labels = factor(labels,
+                           levels = unique(labels)[c(3,5,2,4,1)],
+                           ordered = T)) %&gt;% 
+  arrange(-n) %&gt;% 
+  mutate(fill = case_when(row_number()==1~&#39;darkorange&#39;,
+                          TRUE~paleta6[1])) %&gt;% 
+  arrange(labels) %&gt;%
+  ggplot()+
+  geom_bar(aes(x=labels,y=n_rel, fill = fill), stat = &#39;identity&#39;)+
+  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),&#39;%&#39;)), hjust = 1,nudge_y = -.5, color = &#39;black&#39;)+
+  scale_x_discrete(limits = rev(levels(&#39;labels&#39;)))+
+  scale_y_continuous(expand = c(0,0))+
+  scale_fill_identity()+
+  coord_flip()+
+  labs(title = &#39;Nível de conhecimento na linguagem R&#39;,
+       subtitle = &#39;A maioria dos participantes declara ter conhecimentos básicos em R.&#39;)+
+  annotate(&#39;text&#39;,x=4.5, y=8,hjust=0,label = &#39;Um em cada dez respondentes declarou possuir conhecimentos suficientes\npara desenvolver pacotes, aplicações e/ou relatórios reproduzíveis.&#39;)+
+  theme_minimal_vgrid()+
+  theme(axis.title = element_blank(),
+        plot.title.position = &#39;plot&#39;,
+        axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        axis.text.y = element_text(size = 10))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+<p>Mais da metade dos participantes afirma utilizar (ou ter a intenção de utilizar) o R em rotinas de inventário florestal e modelagem do crescimento e produção.<br />
+Minha percepção é que o domínio de uma linguagem de programação e a capacidade de automatização de procedimentos de análise e processamento de dados tem sido não só um diferencial, mas por vezes, um requisito básico para atuação nas áreas de planejamento e de mensuração de empresas de base florestal. Estas empresas atualmente geram e consomem grandes quantidades de dados e informações, as vezes em curto espaço de tempo, para basear decisões nos âmbitos operacional, tático e estratégico.</p>
+<pre class="r"><code>##########################
+# Sub areas de aplicação #
+##########################
+respostas %&gt;%
+  mutate(SubArea = str_replace(SubArea,&#39;colheita, &#39;,&#39;colheita/&#39;)) %&gt;% 
+  separate_rows(SubArea, sep = &#39;, &#39;) %&gt;% 
+  mutate(SubArea = case_when(SubArea %in% c(&#39;Análises florísticas/fitossociológicas&#39;,
+                                            &#39;SIG e geoprocessamento&#39;,
+                                            &#39;Inventário florestal e modelagem do crescimento e da produção&#39;,
+                                            &#39;Planejamento tático/estratégico&#39;,
+                                            &#39;Análise experimental&#39;,
+                                            &#39;Climatologia e monitoramento de incêndios&#39;,
+                                            &#39;Operações florestais (colheita, estradas)&#39;,
+                                            &#39;Silvicultura/Viveiros&#39;)~SubArea,
+                             TRUE ~ &#39;Outras&#39;
+                             
+  )) %&gt;% 
+  group_by(SubArea) %&gt;% 
+  summarise(n = n()) %&gt;% 
+  mutate(n_rel = n/nrow(respostas)*100,
+         labels = gsub(&#39;(.{1,25})(\\s|$)&#39;, &#39;\\1\n&#39;, SubArea)) %&gt;% 
+  mutate(labels = reorder(labels, n)) %&gt;%
+  arrange(-n) %&gt;%
+  mutate(fill = case_when(row_number()==1~&#39;darkorange&#39;,
+                          TRUE~paleta6[1])) %&gt;% 
+  ggplot(aes(area = n, fill = n, label = labels))+
+  geom_bar(aes(x=labels,y=n_rel, fill = fill), stat = &#39;identity&#39;)+
+  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),&#39;%&#39;)), hjust = 1,nudge_y = -.5, color = &#39;black&#39;)+
+  scale_x_discrete(limits = rev(levels(&#39;labels&#39;)))+
+  scale_y_continuous(expand = c(0,0))+
+  scale_fill_identity()+
+  annotate(&#39;text&#39;,x=4, y=18,hjust=0,size=3,
+           label = &#39;Outras áreas citadas: Anatomia da madeira, Dendrocronologia, Economia,\nEcofisiologia, Controle de produção e Melhoramento e Biotecnologia Florestal&#39;)+
+  coord_flip()+
+  labs(title = &#39;Aplicação da linguagem R nas sub-áreas da Engenharia Florestal&#39;,
+       subtitle = &#39;As principal área de aplicação é a de inventário / mensuração florestal.\nGeoprocessamento e análise experimental também estão entre as principais.&#39;)+
+  theme_minimal_vgrid()+
+  theme(axis.title = element_blank(),
+        plot.title.position = &#39;plot&#39;,
+        axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        axis.text.y = element_text(size = 10))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
+<p>A cada dez participantes do levantamento, quatro afirmaram ter dificuldades em aprender a programar. Isso é compreensível já que na formação do engenheiro florestal não há um enfoque para o desenvolvimento de habilidades de programação, visto que nossa área de atuação é bastante ampla e para muitos a rotina de campo é mais frequente que a de escritório.<br />
+Há uma tendência cada vez maior da utilização do R em algumas disciplinas que trabalham com dados, ou mesmo a inclusão de disciplinas específicas para desenvolvimento dessas habilidades nos cursos de graduação e pós-graduação.<br />
+Independente de disciplinas específicas na grade currícular, o aprendizado de uma linguagem de programação é similar ao aprendizado de um idioma, e se dá pelo estudo, prática, e constância de utilização.</p>
+<pre class="r"><code>###########################
+# Principais dificuldades #
+###########################
+outras_dificuldades &lt;- str_replace_all(respostas$Dificuldades,
+            &#39;Não tenho tempo/empenho|Tenho dificuldade com programação|Não encontro material didático disponível sobre linguagem R aplicada a área florestal|Não encontro cursos de R voltados à área florestal|Não sinto dificuldade|&#39;,
+            &#39;&#39;) %&gt;% as_tibble() %&gt;% 
+  mutate(value = case_when(nchar(value)&gt;6~value,
+                           TRUE ~ NA_character_)) %&gt;% 
+  drop_na() %&gt;% nrow()
+
+
+tempoempenho &lt;- grep(&#39;Não tenho tempo/empenho&#39;,respostas$Dificuldades) %&gt;% length()
+programacao &lt;- grep(&#39;Tenho dificuldade com programação&#39;,respostas$Dificuldades) %&gt;% length()
+matdidatico &lt;- grep(&#39;Não encontro material didático disponível sobre linguagem R aplicada a área florestal&#39;,respostas$Dificuldades) %&gt;% length()
+cursos &lt;- grep(&#39;Não encontro cursos de R voltados à área florestal&#39;,respostas$Dificuldades) %&gt;% length()
+nao &lt;- grep(&#39;Não sinto dificuldade&#39;,respostas$Dificuldades) %&gt;% length()
+
+tibble(Dificuldade = c(&#39;Não tenho tempo/empenho&#39;,
+                       &#39;Tenho dificuldade com programação&#39;,
+                       &#39;Não encontro material didático disponível sobre linguagem R aplicada a área florestal&#39;,
+                       &#39;Não encontro cursos de R voltados à área florestal&#39;,
+                       &#39;Não sinto dificuldade&#39;,
+                       &#39;Outras&#39;),
+       n = c(tempoempenho, programacao, matdidatico, cursos, nao, outras_dificuldades)) %&gt;% 
+  mutate(n_rel = n/nrow(respostas)*100,
+         labels = gsub(&#39;(.{1,30})(\\s|$)&#39;, &#39;\\1\n&#39;, Dificuldade)) %&gt;% 
+  mutate(labels = reorder(labels, n)) %&gt;%
+  arrange(-n) %&gt;%
+  mutate(fill = case_when(row_number()==1~&#39;darkorange&#39;,
+                          TRUE~paleta6[1])) %&gt;% 
+  ggplot(aes(area = n, fill = n, label = labels))+
+  geom_bar(aes(x=labels,y=n_rel, fill = fill), stat = &#39;identity&#39;)+
+  geom_text(aes(x=labels, y=n_rel, label = paste0(round(n_rel,1),&#39;%&#39;)), hjust = 1,nudge_y = -.5, color = &#39;black&#39;)+
+  annotate(&#39;text&#39;,x=1, y=7,hjust=0,label = &#39;Outras dificuldades apontadas se referem à aplicação da linguagem no ambiente corporativo\n quando a ferramenta dominante é outra, deficiência em conhecimentos estatísticos e\n língua inglesa, falta de prática e alterações frequentes de versões de pacotes.&#39;,
+           size=3)+
+  scale_x_discrete(limits = rev(levels(&#39;labels&#39;)))+
+  scale_y_continuous(expand = c(0,0))+
+  scale_fill_identity()+
+  coord_flip()+
+  labs(title = &#39;Principais dificuldades no aprendizado da linguagem R&#39;,
+       subtitle = &#39;A principal dificuldade apontada pelos participantes se refere à pratica de programação.\nFalta de tempo e/ou empenho também é uma das principais dificuldades apontadas.&#39;)+
+  theme_minimal_vgrid()+
+  theme(axis.title = element_blank(),
+        plot.title.position = &#39;plot&#39;,
+        axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        axis.text.y = element_text(size = 10))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<p>A comunidade R é bastante ampla e existe muito material disponível na internet para apoiar o aprendizado. Aqui no blog procuro compartilhar um pouco do que desenvolvo e que se aplica à área florestal, mas a maior parte do que aprendi veio de exemplos compartilhados na internet, com aplicações que na maioria das vezes não eram florestais. Foi o estudo, a prática e a constância de utilização que me permitiram direcionar o que aprendi (e continuo aprendendo) de maneira dispersa, ao desenvolvimento de soluções para os problemas que preciso atacar no meu trabalho diário.</p>
+<p>Bom, cumpro aqui meu combinado de disponibilizar os resultados e as análises do formulário. Deixo meu obrigado à todos os colegas que responderam o questionário. Até a próxima!</p>

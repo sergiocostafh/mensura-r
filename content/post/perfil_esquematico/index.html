@@ -34,14 +34,14 @@ Vou explicar. Começamos importando os dados.</p>
 dados &lt;- readxl::read_excel(&quot;dados_levantamento_fitossociologico.xlsx&quot;)
 head(dados)</code></pre>
 <pre><code>## # A tibble: 6 x 8
-##   Parcela Gen_esp      Gen_esp_abv   Família    CAP   DAP     H `Estrato vertic~
-##     &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;           
-## 1       1 Prunus bras~ P. brasilien~ Rosaceae  46.5 14.8     12 Intermediário   
-## 2       1 Nectandra l~ N. lanceolata Laurace~ 106   33.7     17 Superior        
-## 3       1 Dalbergia f~ D. frutescens Fabaceae  24    7.64    17 Superior        
-## 4       1 Myrcia sple~ M. splendens  Myrtace~  18.5  5.89     7 Sub-bosque      
-## 5       1 Myrcia sple~ M. splendens  Myrtace~  21    6.68     9 Intermediário   
-## 6       1 Maytenus ev~ M. evonymoid~ Celastr~  46   14.6     10 Intermediário</code></pre>
+##   Parcela Gen_esp              Gen_esp_abv Família   CAP   DAP     H `Estrato vertic~
+##     &lt;dbl&gt; &lt;chr&gt;                &lt;chr&gt;       &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;           
+## 1       1 Prunus brasiliensis  P. brasili~ Rosace~  46.5 14.8     12 Intermediário   
+## 2       1 Nectandra lanceolata N. lanceol~ Laurac~ 106   33.7     17 Superior        
+## 3       1 Dalbergia frutescens D. frutesc~ Fabace~  24    7.64    17 Superior        
+## 4       1 Myrcia splendens     M. splende~ Myrtac~  18.5  5.89     7 Sub-bosque      
+## 5       1 Myrcia splendens     M. splende~ Myrtac~  21    6.68     9 Intermediário   
+## 6       1 Maytenus evonymoides M. evonymo~ Celast~  46   14.6     10 Intermediário</code></pre>
 <p>Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.</p>
 <p>O procedimento basicamente se dá nos seguintes passos:<br />
 1. Obter altura e DAP médios para cada espécie em cada estrato;<br />
@@ -50,115 +50,97 @@ head(dados)</code></pre>
 4. Gerar indivíduos a serem ilustrados sorteando a espécie e o estrato, com base em probabilidades geradas a partir dos dados coletados;<br />
 5. Plotar os indivíduos sorteados considerando os valores de altura e diâmetro médios de cada espécie em cada estrato.</p>
 <p>Traduzindo para o R, o procedimento é o seguinte.</p>
-<pre class="r"><code># Função para geração do perfil esquemático probabilístico
-perfil_esquematico &lt;- function(narv){
-  # Carregar pacote de manipulação de dados
-  library(dplyr)
-  
-  # Obter altura média para cada espécie em cada estrato vertical
-  dados_perfil &lt;- dados %&gt;% group_by(`Estrato vertical`,Gen_esp_abv) %&gt;% summarise(mean(H)) %&gt;% 
-  # Renamoear colunas
-    rename(&#39;estrato&#39;=1, &#39;especie&#39;=2,&#39;h.med&#39;=3) %&gt;% 
-    ungroup() %&gt;% 
-  # Obter DAP médio para cada espécie em cada estrato vertical
-  mutate(dap= group_by(dados, `Estrato vertical`, Gen_esp_abv) %&gt;% summarise(dap=mean(DAP)) %&gt;% pull(dap)) %&gt;% 
-  # Obter abundância para cada espécie em cada estrato vertical
-    mutate(ab= group_by(dados, `Estrato vertical`, Gen_esp_abv) %&gt;% summarise(ab=n()) %&gt;% pull(ab))
-  # Separar dados por estrato
-  emergente &lt;- dados_perfil %&gt;% filter(estrato == &#39;Emergente&#39;)
-  subbosque &lt;- dados_perfil %&gt;% filter(estrato == &#39;Sub-bosque&#39;)
-  superior &lt;- dados_perfil %&gt;% filter(estrato == &#39;Superior&#39;)
-  intermediario &lt;- dados_perfil %&gt;% filter(estrato == &#39;Intermediário&#39;)
-  
-  # Contar árvores por estrato
-  narv_estrato &lt;- round(table(dados$`Estrato vertical`)/sum(table(dados$`Estrato vertical`))*narv,0)
-  # Corrigir diferença, se existente, entre o argumento `narv` e o número de árvres sorteadas
-  if(sum(narv_estrato)!=narv){
-    narv_estrato[which(narv_estrato==max(narv_estrato))] &lt;- narv_estrato[which(narv_estrato==max(narv_estrato))]+1 
-  }
-  # Probabilidade de ocorrência das espécies em cada estrato
-  emergente$prob &lt;- emergente$ab/sum(emergente$ab)
-  subbosque$prob &lt;- subbosque$ab/sum(subbosque$ab)
-  superior$prob &lt;- superior$ab/sum(superior$ab)
-  intermediario$prob &lt;- intermediario$ab/sum(intermediario$ab)
-  # Sortear árvores por estrato
-  sample_eme &lt;- tryCatch({sample(1:nrow(emergente), narv_estrato[1], replace = TRUE, emergente$prob)},
-    error = function (e) {0}
-  )
-  sample_int &lt;- tryCatch({
-    sample(1:nrow(intermediario), narv_estrato[2], replace = TRUE, intermediario$prob)},
-    error = function (e) {0}
-  )
-  sample_sub &lt;- tryCatch({
-    sample_sub &lt;- sample(1:nrow(subbosque), narv_estrato[3], replace = TRUE, subbosque$prob)},
-    error = function (e) {0}
-  )
-  sample_sup &lt;- tryCatch({
-    sample(1:nrow(superior), narv_estrato[4], replace = TRUE, superior$prob)},
-    error = function (e) {0}
-  )
-  sample_eme &lt;- emergente[sample_eme,]
-  sample_int &lt;- intermediario[sample_int,]
-  sample_sub &lt;- subbosque[sample_sub,]
-  sample_sup &lt;- superior[sample_sup,]
-  # Unir estratos da floresta simulada
-  sample &lt;- bind_rows(sample_eme,sample_int,sample_sub,sample_sup) %&gt;% 
-    mutate(dap01=(dap-min(dap))/(max(dap)-min(dap))*(.6-.1)+.1,
-           id = sample(1:narv,narv))
-  id_sp &lt;- unique(sample$especie)
-  sample$id_sp &lt;- match(sample$especie,id_sp)
-  # Carregar pacotes necessários
-  library(ggplot2)
-  library(ggforce)
-  library(ggrepel)
-  # Plotar floresta
-  perfil &lt;- ggplot(sample)+
-    geom_bar(aes(x=id,y=h.med, width=dap01),stat = &#39;identity&#39;, color = &#39;black&#39;, fill = &#39;burlywood4&#39;)+
-    geom_ellipse(aes(x0=id, y0=h.med,
-                     a=1+3*dap01*h.med/(1/narv*500), #função genérica de diâmetro de copa
-                     b=1,angle=0), fill = &#39;darkgreen&#39;)+
-    geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = &#39;y&#39;, fontface = &#39;bold&#39;,  size = 2, alpha=.8, segment.alpha = 0)+
-    scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
-    scale_y_continuous(expand=c(0,0), limits = c(0,max(sample$h.med)+5))+
-    xlab(&#39;&#39;)+
-    ylab(&#39;Altura (m)&#39;)+
-    theme_bw()+
-    theme(panel.grid = element_blank(),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank())
-  return(perfil)
+<pre class="r"><code>perfil_esquematico &lt;- function(narv){
+# Carregar pacote de manipulação de dados
+library(dplyr)
+
+# Obter altura média para cada espécie em cada estrato vertical
+dados_perfil &lt;- dados %&gt;% group_by(`Estrato vertical`,Gen_esp_abv) %&gt;% summarise(mean(H)) %&gt;%
+# Renamoear colunas
+rename(&#39;estrato&#39;=1, &#39;especie&#39;=2,&#39;h.med&#39;=3) %&gt;%
+ungroup() %&gt;%
+# Obter DAP médio para cada espécie em cada estrato vertical
+mutate(dap= group_by(dados, `Estrato vertical`, Gen_esp_abv) %&gt;% summarise(dap=mean(DAP)) %&gt;% pull(dap)) %&gt;%
+# Obter abundância para cada espécie em cada estrato vertical
+mutate(ab= group_by(dados, `Estrato vertical`, Gen_esp_abv) %&gt;% summarise(ab=n()) %&gt;% pull(ab))
+# Separar dados por estrato
+emergente &lt;- dados_perfil %&gt;% filter(estrato == &#39;Emergente&#39;)
+subbosque &lt;- dados_perfil %&gt;% filter(estrato == &#39;Sub-bosque&#39;)
+superior &lt;- dados_perfil %&gt;% filter(estrato == &#39;Superior&#39;)
+intermediario &lt;- dados_perfil %&gt;% filter(estrato == &#39;Intermediário&#39;)
+
+# Contar árvores por estrato
+narv_estrato &lt;- round(table(dados$`Estrato vertical`)/sum(table(dados$`Estrato vertical`))*narv,0)
+# Corrigir diferença, se existente, entre o argumento `narv` e o número de árvres sorteadas
+if(sum(narv_estrato)!=narv){
+narv_estrato[which(narv_estrato==max(narv_estrato))] &lt;- narv_estrato[which(narv_estrato==max(narv_estrato))]+1
+}
+# Probabilidade de ocorrência das espécies em cada estrato
+emergente$prob &lt;- emergente$ab/sum(emergente$ab)
+subbosque$prob &lt;- subbosque$ab/sum(subbosque$ab)
+superior$prob &lt;- superior$ab/sum(superior$ab)
+intermediario$prob &lt;- intermediario$ab/sum(intermediario$ab)
+# Sortear árvores por estrato
+sample_eme &lt;- tryCatch({sample(1:nrow(emergente), narv_estrato[1], replace = TRUE, emergente$prob)},
+error = function (e) {0}
+)
+sample_int &lt;- tryCatch({
+sample(1:nrow(intermediario), narv_estrato[2], replace = TRUE, intermediario$prob)},
+error = function (e) {0}
+)
+sample_sub &lt;- tryCatch({
+sample_sub &lt;- sample(1:nrow(subbosque), narv_estrato[3], replace = TRUE, subbosque$prob)},
+error = function (e) {0}
+)
+sample_sup &lt;- tryCatch({
+sample(1:nrow(superior), narv_estrato[4], replace = TRUE, superior$prob)},
+error = function (e) {0}
+)
+sample_eme &lt;- emergente[sample_eme,]
+sample_int &lt;- intermediario[sample_int,]
+sample_sub &lt;- subbosque[sample_sub,]
+sample_sup &lt;- superior[sample_sup,]
+# Unir estratos da floresta simulada
+sample &lt;- bind_rows(sample_eme,sample_int,sample_sub,sample_sup) %&gt;%
+mutate(dap01=(dap-min(dap))/(max(dap)-min(dap))*(.6-.1)+.1,
+id = sample(1:narv,narv))
+id_sp &lt;- unique(sample$especie)
+sample$id_sp &lt;- match(sample$especie,id_sp)
+# Carregar pacotes necessários
+library(ggplot2)
+library(ggforce)
+library(ggrepel)
+# Plotar floresta
+perfil &lt;- ggplot(sample)+
+geom_bar(aes(x=id,y=h.med, width=dap01),stat = &#39;identity&#39;, color = &#39;black&#39;, fill = &#39;burlywood4&#39;)+
+geom_ellipse(aes(x0=id, y0=h.med,
+a=1+3*dap01*h.med/(1/narv*500), #função genérica de diâmetro de copa
+b=1,angle=0), fill = &#39;darkgreen&#39;)+
+geom_label_repel(aes(x=id,y=h.med+.5,label=especie), direction = &#39;y&#39;, fontface = &#39;bold&#39;, size = 2, alpha=.8, segment.alpha = 0)+
+scale_x_continuous(breaks = 1:narv, expand = c(.01,0))+
+scale_y_continuous(expand=c(0,0), limits = c(0,max(sample$h.med)+5))+
+xlab(&#39;&#39;)+
+ylab(&#39;Altura (m)&#39;)+
+theme_bw()+
+theme(panel.grid = element_blank(),
+axis.text.x = element_blank(),
+axis.ticks.x = element_blank())
+return(perfil)
 }</code></pre>
 <p>A função acima possui como único parâmetro o número de árvores a serem apresentadas. Vamos definir uma quantidade, e executar a função.</p>
 <pre class="r"><code># Número de árvores a serem representadas plotar
 quantidade_de_arvores &lt;- 30
 # Executar função
 perfil_esquematico(quantidade_de_arvores)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.
-## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.
-## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="768" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/pe1-1.png" width="768" />
 Como a ilustração é criada em função de probabilidades de ocorrência das espécies em cada estrato, se executarmos a função novamente utilizando o mesmo parâmetro, teremos uma nova representação.</p>
 <pre class="r"><code># Executar função
 perfil_esquematico(quantidade_de_arvores)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.
-## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.
-## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="768" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/pe2-1.png" width="768" />
 Podemos também variar a quantidade de indivíduos.</p>
 <pre class="r"><code># Executar função
 perfil_esquematico(20)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.
-## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.
-## `summarise()` has grouped output by &#39;Estrato vertical&#39;. You can override using the `.groups` argument.</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="768" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/pe3-1.png" width="768" />
 Como o procedimento de sorteio arredonda o número de árvores a serem sorteadas em cada estrato vertical (afinal não temos como sortear 1,5 árvores) a função pode retornar um erro caso quantidade total de árvores sorteadas seja inferior ao número declarado na função.
 A função pode ser customizada de inúmeras maneiras. Utilizei um cálculo genérico para gerar o diâmetro das copas pois não possuo esses registros na base de dados utilizada nesse exemplo, no entanto, altura e diâmetro de copa, se coletados, podem ser utilizados para dimensionar as elipses que representam as copas das árvores. A função <code>geom_ellipse</code> que plota as elipses está implementada no pacote <code>ggforce</code>.<br />
 Os nomes científicos são apresentados no gráfico via função <code>geom_label_repel</code> do pacote <code>ggrepel</code>. A diferença entre esta função e a <code>geom_label</code> do <code>ggplot</code> é que a primeira não permite a sobreposição dos labels, facilitando a visualização. Outra opção é plotar um número de identificação ao invés do nome, diminuindo a quantidade de textos no gráfico. Neste caso, seria necessário apresentar, na sequência do gráfico, uma tabela que vincula os números às espécies.</p>
