@@ -25,6 +25,9 @@ projects: []
 
 <div id="introdução-ao-pacote-timber" class="section level3">
 <h3>Introdução ao pacote <code>timbeR</code></h3>
+<center>
+<img src="https://raw.githubusercontent.com/sergiocostafh/timbeR/main/timbeR_icon.png" width="259" height="300"/>
+</center>
 <p>O manejo florestal voltado à obtenção de múltiplos produtos da madeira é praticado por empresas florestais que fornecem toras de variados sortimentos com o objetivo de atender a diferentes tipos de mercado, como serrarias, celulose, painéis de madeira, energia, etc.</p>
 <p>Para estas empresas, no âmbito do inventário florestal, há a necessidade de se estimar a produção de cada sortimento de madeira, visando gerar as informações necessárias para o planejamento da produção e do orçamento.</p>
 <p>A estimativa do volume de toras de diferentes dimensões ao longo do fuste das árvores é realizado pela integração de funções de afilamento ajustadas a partir de dados de cubagem das árvores. Para aplicar esse procedimento de maneira escalável, são necessários conhecimentos estatísticos, matemáticos e de programação, e por esta razão, é comum que o processamento desses dados seja realizado por softwares comerciais específicos.</p>
@@ -237,6 +240,7 @@ No ajuste do modelo de Kozak (2004) foi possível obter um RMSE abaixo de 2% e a
 <div id="aplicando-as-equações-ajustadas" class="section level2">
 <h2>Aplicando as equações ajustadas</h2>
 <p>Agora iremos explorar as funções presentes no pacote <code>timbeR</code> que permitem aplicar os modelos ajustados na prática. A tabela a seguir apresenta a funções auxiliares de cada modelo, agrupadas por uso.</p>
+<center>
 <table>
 <colgroup>
 <col width="48%" />
@@ -285,6 +289,7 @@ No ajuste do modelo de Kozak (2004) foi possível obter um RMSE abaixo de 2% e a
 </tr>
 </tbody>
 </table>
+</center>
 <p>Agora iremos aplicar as funções descritas na tabela usando os modelos ajustados na seção anterior. Para facilitar a compreensão, vamos começar aplicando as funções a uma única árvore. Iniciamos pela definição das medidas de altura total e DAP.</p>
 <pre class="r"><code>dbh &lt;- 25
 h &lt;- 20</code></pre>
@@ -344,6 +349,7 @@ poly5_vol(dbh, h, coef_poli, hi, h0)</code></pre>
 A tabela de sortimentos deve conter cinco colunas, na seguinte ordem:
 Finally, we will see how the three models estimate the volume and quantity of logs from different wood products. We start by defining the assortments. O diâmetro da tora na ponta fina, em centímetros; o comprimento mínimo da tora (líquido), em metros; o comprimento máximo da tora (líquido), em metros; e a perda resultante do traçamento de cada tora, em centímetros. Um ponto de atenção é que os produtos da madeira devem estar ordenados do mais valioso para o menos valioso, de modo que o algoritmo de extração de toras dê preferência aos produtos de maior vlaor comercial.</p>
 <p>Em nosso exemplo, utilizaremos a seguinte tabela de produtos:</p>
+<center>
 <table>
 <thead>
 <tr class="header">
@@ -371,6 +377,7 @@ Finally, we will see how the three models estimate the volume and quantity of lo
 </tr>
 </tbody>
 </table>
+</center>
 <pre class="r"><code>assortments &lt;- data.frame(
   NAME = c(&#39;&gt; 15&#39;,&#39;4-15&#39;),
   SED = c(15,4),
