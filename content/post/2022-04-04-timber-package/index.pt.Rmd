@@ -372,4 +372,13 @@ tree_data %>%
   unnest(assortment_vol)
 ```
 
-Aqui chegamos ao fim da postagem. O pacote estará em constante desenvolvimento para que novas funções e funcionalidades possam ser contempladas nas próximas versões. Toda ajuda é bem vinda para melhoria e identificação de bugs.  Até a próxima!
+Aqui chegamos ao fim da postagem. O pacote estará em constante desenvolvimento para que novas funções e funcionalidades possam ser contempladas nas próximas versões. Toda ajuda é bem vinda para melhoria e identificação de bugs.  Até a próxima!  
+
+### Referências  
+
+Bi, H. (2000). Trigonometric variable-form taper equations for Australian eucalypts. Forest Science, 46(3), 397-409.  
+
+
+Kozak, A. (2004). My last words on taper equations. The Forestry Chronicle, 80(4), 507-515.  
+
+Schöepfer, W. (1966). Automatisierung dês Massen, Sorten und Wertberechung stender Waldbestande Schriftenreihe Bad. [S.I.]: Wurtt-Forstl.
