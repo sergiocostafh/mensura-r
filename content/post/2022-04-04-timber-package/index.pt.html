@@ -31,7 +31,7 @@ projects: []
 <p>O manejo florestal voltado à obtenção de múltiplos produtos é praticado por empresas florestais que fornecem variados sortimentos de madeira com o objetivo de atender a diferentes mercados, como o de serrarias, celulose, painéis de madeira, energia, etc.</p>
 <p>Para estas empresas, no âmbito do inventário florestal, há a necessidade de se estimar a produção de cada sortimento de madeira, visando gerar as informações necessárias para o planejamento da produção e do orçamento.</p>
 <p>A estimativa do volume de toras de diferentes dimensões ao longo do fuste das árvores é realizado pela integração de funções de afilamento ajustadas a partir de dados de cubagem das árvores. Para aplicar esse procedimento de maneira escalável, são necessários conhecimentos estatísticos, matemáticos e, muitas vezes, de programação, e por esta razão, é comum que o processamento desses dados seja realizado por softwares comerciais específicos.</p>
-<p>Eu particularmente não conheci, até a data deste post, um pacote do R que pudesse facilitar o processamento de inventários florestais com funções de afilamento e múltiplos produtos, e por esta razão comecei a desenvolver o pacote <code>timbeR</code>.</p>
+<p>Eu particularmente não conheci, até a data deste post, um pacote do R que pudesse facilitar o processamento de inventários florestais com funções de afilamento e múltiplos produtos, e por esta razão comecei a desenvolver o <code>timbeR</code>.</p>
 <p>O objetivo do pacote é fornecer funções que facilitem o ajuste e a aplicação de funções de afilamento em inventários florestais, permitindo o uso de modelos de forma variável - Bi (2000) e Kozak (2004) - como alternativas às funções tradicionais de forma fixa (polinômio do 5º grau, polinômio de potencias fracionárias e inteiras, etc.).</p>
 <p>Podemos instalar o pacote a partir da última versão disponível no CRAN (função <code>install_packages</code> do R base) ou pela versão mais atual em desenvolvimento (função <code>install_github</code> do pacote <code>devtools</code>).</p>
 <pre class="r"><code>options(download.file.method = &#39;libcurl&#39;)
@@ -185,7 +185,7 @@ ggplot(tree_scaling,aes(x=hih))+
        caption = paste0(&#39;RMSE = &#39;, bi_rmse,&#39;%&#39;))+
   theme(plot.title.position = &#39;plot&#39;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.pt_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>O modelo de Bi (2000) obteve melhor desempenho que o polinomial, se tomarmos por base o RMSE. No entanto, o elevada variância das estimativas de diâmetros próximos ao topo da árvore ainda persiste. Vamos ver o que ocorre quando ajustamos o modelo de Kozak (2004) cuja fórmula está implementada na função <code>taper_kozak</code>. Trataremos o parâmetro <code>p</code> como mais um a ser estimado pela função <code>nlsLM</code>.</p>
+<p>O modelo de Bi (2000) obteve melhor desempenho que a função polinomial, se tomarmos por base o RMSE. No entanto, o elevada variância das estimativas de diâmetros próximos ao topo da árvore ainda persiste. Vamos ver o que ocorre quando ajustamos o modelo de Kozak (2004) cuja fórmula está implementada na função <code>taper_kozak</code>. Trataremos o parâmetro <code>p</code> como mais um a ser estimado pela função <code>nlsLM</code>.</p>
 <pre class="r"><code>kozak &lt;- nlsLM(di ~ taper_kozak(dbh, h, hih, b0, b1, b2, b3, b4, b5, b6, b7, b8, p),
                start=list(b0=1.00,b1=.97,b2=.03,b3=.49,b4=-
                             0.87,b5=0.50,b6=3.88,b7=0.03,b8=-0.19, p = .1),
@@ -251,7 +251,7 @@ No ajuste do modelo de Kozak (2004) foi possível obter um RMSE abaixo de 2% e a
 <thead>
 <tr class="header">
 <th>Uso</th>
-<th align="center">5° degree polynomial</th>
+<th align="center">Polinômio do 5° grau</th>
 <th align="center">Bi (2002)</th>
 <th align="center">Kozak (2004)</th>
 </tr>
@@ -328,7 +328,7 @@ poly5_hi(dbh, h, di, coef_poli)</code></pre>
 <pre class="r"><code>kozak_hi(dbh, h, di, coef_kozak, p_kozak)</code></pre>
 <pre><code>## [1] 14.2817</code></pre>
 <p>Neste caso, a aplicação dos diferentes modelos resultou em predições bastante similares.<br />
-As funções para estimativa de volumes total e parcial são similares às apresentadas até aqui, com alguns argumentos adicionais. Os procedimentos a seguir calculam o o volume do fuste completo.</p>
+As funções para estimativa de volumes total e parcial são similares às apresentadas até aqui, com alguns argumentos adicionais. Os procedimentos a seguir calculam o volume do fuste completo.</p>
 <pre class="r"><code>poly5_vol(dbh, h, coef_poli)</code></pre>
 <pre><code>## [1] 0.414718</code></pre>
 <pre class="r"><code>bi_vol(dbh, h, coef_bi)</code></pre>
@@ -346,8 +346,7 @@ poly5_vol(dbh, h, coef_poli, hi, h0)</code></pre>
 <pre class="r"><code>kozak_vol(dbh, h, coef_kozak, p_kozak, hi, h0)</code></pre>
 <pre><code>## [1] 0.3863585</code></pre>
 <p>Finalmente, vamos ver como os modelos estimam o volume e a quantidade de toras para diferentes produtos da madeira. Para isso, precisamos definir os sortimentos.<br />
-A tabela de sortimentos deve conter cinco colunas, na seguinte ordem:
-Finally, we will see how the three models estimate the volume and quantity of logs from different wood products. We start by defining the assortments. O diâmetro da tora na ponta fina, em centímetros; o comprimento mínimo da tora (líquido), em metros; o comprimento máximo da tora (líquido), em metros; e a perda resultante do traçamento de cada tora, em centímetros. Um ponto de atenção é que os produtos da madeira devem estar ordenados do mais valioso para o menos valioso, de modo que o algoritmo de extração de toras dê preferência aos produtos de maior vlaor comercial.</p>
+A tabela de sortimentos deve conter cinco colunas, que podem ter qualquer nome, mas devem estar na seguinte ordem: diâmetro da tora na ponta fina, em centímetros; comprimento mínimo da tora (líquido), em metros; comprimento máximo da tora (líquido), em metros; e a perda resultante do traçamento de cada tora, em centímetros. Um ponto de atenção é que as linhas da tabela representam os produtos da madeira, e estes devem estar ordenados do mais valioso para o menos valioso, de modo que o algoritmo de extração de toras priorize aos produtos de maior valor comercial.</p>
 <p>Em nosso exemplo, utilizaremos a seguinte tabela de produtos:</p>
 <center>
 <table>
@@ -422,7 +421,7 @@ Finally, we will see how the three models estimate the volume and quantity of lo
 ##   `&gt; 15` `4-15`
 ##    &lt;dbl&gt;  &lt;dbl&gt;
 ## 1      3      2</code></pre>
-<p>Há diversos argumentos adicionais nas funções que estimam volume/quantidades de toras que alteram a maneira como os cálculos são realizados. É possível, por exemplo, realizar <em>downgrades</em> nas toras de árvores defeituosas a partir de alturas definidas para cada árvore e também calcular o volume de fustes quebrados de maneira mais adequada. Recomendo a leitura da documentação dessas funções para melhor compreender suas funcionalidades.</p>
+<p>Há diversos argumentos adicionais nas funções que estimam volume/quantidades de toras que alteram a maneira como os cálculos são realizados. É possível, por exemplo, realizar <em>downgrades</em> nas toras de árvores defeituosas a partir da altura em que o dano ocorre, calcular o volume de fustes quebrados de maneira adequada e usar diferentes alturas de toco para árvores bifurcadas desde a base. Recomendo a leitura da documentação dessas funções para melhor compreender suas funcionalidades.</p>
 <p>Para finalizarmos a demonstração de funções, vamos ver como o pacote <code>timbeR</code> permite visualizar como o traçamento das toras ao longo do fuste de uma árvore ocorre nas funções de estimativa de volume/quantidade de toras. Os argumentos para estas funções, são praticamente os mesmos das funções anteriormente apresentadas.</p>
 <pre class="r"><code>poly5_logs_plot(dbh, h, coef_poli, assortments, stump_height = 0.2, lang = &#39;pt-BR&#39;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.pt_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
@@ -432,7 +431,7 @@ Finally, we will see how the three models estimate the volume and quantity of lo
 <p><img src="{{< blogdown/postref >}}index.pt_files/figure-html/unnamed-chunk-16-3.png" width="672" /></p>
 <div id="usando-as-funções-do-pacote-timber-em-escala-de-inventário-florestal" class="section level3">
 <h3>Usando as funções do pacote <code>timbeR</code> em escala de inventário florestal</h3>
-<p>As funções para estimativa de volume/quantidade de toras são executadas uma árvore por vez. A aplicação dessas funções a múltiplas árvore pode ser realizada de diferentes maneiras. Seguem alguns exemplos dessa aplicação utilizando a função base do R <code>mapply</code> e utilizando a função <code>pmap</code> do pacote <code>purrr</code>.</p>
+<p>As funções para estimativa de volume/quantidade de toras são executadas uma árvore por vez. A aplicação dessas funções a múltiplas árvores pode ser realizada de diferentes maneiras. Seguem alguns exemplos dessa aplicação utilizando a função base do R <code>mapply</code> e utilizando a função <code>pmap</code> do pacote <code>purrr</code>.</p>
 <pre class="r"><code># Usando mapply
 
 tree_data &lt;- data.frame(dbh = c(18.3, 23.7, 27.2, 24.5, 20, 19.7),
