@@ -50,7 +50,7 @@ devtools::install_github(&#39;sergiocostafh/timbeR&#39;)</code></pre>
 <p>O pacote permite a utilização de três funções de afilamento:</p>
 <ul>
 <li><p>Polinômio do 5º grau (Schöepfer, 1966)<br />
-<span class="math display">\[\frac{d_i}{dbh}=\beta_0\frac{h_i}{h}+\left(\beta_1\frac{h_i}{h}\right)^2+\left(\beta_2\frac{h_i}{h}\right)^3+\left(\beta_3\frac{h_i}{h}\right)^4+\left(\beta_4\frac{h_i}{h}\right)^5\]</span></p></li>
+<span class="math display">\[\frac{d_i}{dbh}=\beta_0\frac{h_i}{h}+\beta_1\left(\frac{h_i}{h}\right)^2+\beta_2\left(\frac{h_i}{h}\right)^3+\beta_3\left(\frac{h_i}{h}\right)^4+\beta_4\left(\frac{h_i}{h}\right)^5\]</span></p></li>
 <li><p>Função de forma variável de Kozak (2004)<br />
 <span class="math display">\[d_i = \beta_0dap^{\beta_1}\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{\beta_2+\beta_3\left(\frac{1}{e^{dap/ht}}\right)+\beta_4dap^{\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]}+\beta_5\left[\frac{1-\left(\frac{h_i}{ht}\right)^{1/4}}{1-p^{1/4}}\right]^{dap/ht}}\]</span></p></li>
 <li><p>Função trigonométrica de forma variável de Bi (2000)<br />
@@ -128,7 +128,7 @@ poli_rmse &lt;- tree_scaling %&gt;%
   pull(RMSE) %&gt;% 
   round(2)
 
-ggplot(tree_scaling,aes(x=hih))+
+ggplot(tree_scaling, aes(x=hih))+
   geom_point(aes(y = (di_poli-di)/di_poli*100))+
   geom_hline(aes(yintercept = 0))+
   scale_y_continuous(limits=c(-100,100), breaks = seq(-100,100,20))+
