@@ -23,7 +23,7 @@ projects: []
 ### Introdução ao pacote `timbeR`  
 
 <center>
-<img src="https://raw.githubusercontent.com/sergiocostafh/timbeR/main/timbeR_icon.png" width="259" height="300"/>
+<img src="https://raw.githubusercontent.com/sergiocostafh/mensura-r/master/static/img/timbeR_icon.png" width="259" height="300"/>
 </center>  
 
 O manejo florestal voltado à obtenção de múltiplos produtos é praticado por empresas florestais que fornecem variados sortimentos de madeira com o objetivo de atender a diferentes mercados, como o de serrarias, celulose, painéis de madeira, energia, etc.  
@@ -96,8 +96,8 @@ tree_scaling <- tree_scaling %>%
 
 ggplot(tree_scaling, aes(x = hih, y = did, group = tree_id))+
   geom_point()+
-  labs(x = 'hi / h',
-       y = 'di / dbh')
+  labs(x = 'hi/h',
+       y = 'di/dbh')
 ```
 
 ### Ajuste de funções de afilamento  
