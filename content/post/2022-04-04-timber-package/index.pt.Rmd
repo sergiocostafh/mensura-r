@@ -164,7 +164,7 @@ O modelo de Bi (2000) obteve melhor desempenho que a função polinomial, se tom
 ```{r, warning = FALSE, message= FALSE}
 kozak <- nlsLM(di ~ taper_kozak(dbh, h, hih, b0, b1, b2, b3, b4, b5, b6, b7, b8, p),
                start=list(b0=1.00,b1=.97,b2=.03,b3=.49,b4=-
-                            0.87,b5=0.50,b6=3.88,b7=0.03,b8=-0.19, p = .1),
+                            0.87,b5=0.50,b6=3.88,b7=0.03,b8=-0.19, p=.1),
                data = tree_scaling,
                control = nls.lm.control(maxiter = 1000, maxfev = 2000)
 )
