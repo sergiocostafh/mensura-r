@@ -1,17 +1,16 @@
 ---
 title: Abordagem Probabilística na Simulação de Desbastes
 author: Sérgio Costa
-date: '2023-05-24'
+date: '2023-06-09'
 slug: simulacao_probabilistica_de_desbastes
 categories:
   - Biometria
 tags:
-  - Crescimento e produção
   - Biometria
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2023-05-24T21:52:23-03:00'
+lastmod: '2023-06-09T18:52:23-03:00'
 featured: no
 draft: no
 image:
@@ -38,14 +37,14 @@ projects: []
 </div>
 <div id="obtendo-a-distribuição-diamétrica-do-povoamento" class="section level3">
 <h3>Obtendo a distribuição diamétrica do povoamento</h3>
-<p>Para simularmos um desbaste, primeiro pecisamos conhecer a estrutura diamétrica do povoamento. Para tal, em nosso exemplo vamos usar a distribuição probabilística de Weibull para construir a distribuição de diâmetros à altura do peito, com base em dados conhecidos (ou estimados) de DAP médio, DAP mínimo, diâmetro quadrático (DG) e o número de árvores no momento do desbaste. Utilizaremos estes parâmetros do povoamento para obtermos os parâmetros <code>a</code>, <code>b</code> e <code>c</code> da distribuição de Weibull com três parâmetros. Começaremos definindo as funções que precisaremos para este exemplo.</p>
+<p>Para simularmos um desbaste, primeiro pecisamos conhecer a estrutura diamétrica do povoamento. Para tal, em nosso exemplo vamos usar a distribuição probabilística de Weibull para construir a distribuição de diâmetros à altura do peito, com base em dados conhecidos (ou estimados) de DAP médio, DAP mínimo, diâmetro quadrático (DG) e o número de árvores no momento do desbaste. Utilizaremos estes parâmetros do povoamento para obtermos os parâmetros <code>a</code>, <code>b</code> e <code>c</code> da distribuição de Weibull com três parâmetros, pelo método dos momentos não centrais. <a href="https://mensura-r.netlify.app/post/funcao_de_weibull_com_3_parametros_bitruncada_para_representacao_da_estrutura_diametrica_de_povoamentos_florestais/">Há uma outra postagem aqui no blog que detalha os procedimentos envolvidos na aplicação deste método</a>. Começaremos definindo as funções que precisaremos para este exemplo.</p>
 <pre class="r"><code># função para recuperação do parâmetro c
 c_function &lt;- function (dap,dg,mindap,c,n){
   ((dap^2+(dap-mindap)^2*((gamma(1+2/c)/(gamma(1+1/c)^2)-1)/(1-(1/n)^(1+1/c))^2))-dg^2)^2
 }
 
 # função para recuperação do parâmetro a
-a_function &lt;- function(dap,dg,mindap,c,n){(dap-(dg-mindap))/(1-(1/n*(1+1/c)))}
+a_function &lt;- function(dap,dg,mindap,c,n){(dap-(dg-mindap))/(1-(1/n^(1+1/c)))}
 
 # função para recuperação do parâmetro b
 b_function &lt;- function(dap,mindap,c,n){((dap-mindap)/gamma(1+1/c))*(1-1/(n^1+1/c))}
@@ -94,7 +93,7 @@ par_b &lt;- b_function(dap, dapmin, par_c, N)
 # parâmetros de Weibull para a distribuição diamétrica do povoamento
 c(a = par_a, b = par_b, c = par_c)</code></pre>
 <pre><code>##        a        b        c 
-## 6.143343 8.588648 4.080976</code></pre>
+## 6.138010 8.588648 4.080976</code></pre>
 <p>Com os parâmetros <code>a</code>, <code>b</code>, <code>c</code> em mãos, podemos construir a distribuição diamétrica do povoamento.</p>
 <pre class="r"><code>library(dplyr)
 library(tidyr)

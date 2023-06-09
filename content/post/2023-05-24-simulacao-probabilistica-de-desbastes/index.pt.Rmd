@@ -1,17 +1,16 @@
 ---
 title: Abordagem Probabilística na Simulação de Desbastes
 author: Sérgio Costa
-date: '2023-05-24'
+date: '2023-06-09'
 slug: simulacao_probabilistica_de_desbastes
 categories:
   - Biometria
 tags:
-  - Crescimento e produção
   - Biometria
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2023-05-24T21:52:23-03:00'
+lastmod: '2023-06-09T18:52:23-03:00'
 featured: no
 draft: no
 image:
@@ -41,7 +40,7 @@ Para os desbastes sistemáticos, em que linhas inteiras de plantio são removida
 
 ### Obtendo a distribuição diamétrica do povoamento  
 
-Para simularmos um desbaste, primeiro pecisamos conhecer a estrutura diamétrica do povoamento. Para tal, em nosso exemplo vamos usar a distribuição probabilística de Weibull para construir a distribuição de diâmetros à altura do peito, com base em dados conhecidos (ou estimados) de DAP médio, DAP mínimo, diâmetro quadrático (DG) e o número de árvores no momento do desbaste. Utilizaremos estes parâmetros do povoamento para obtermos os parâmetros `a`, `b` e `c` da distribuição de Weibull com três parâmetros. Começaremos definindo as funções que precisaremos para este exemplo.
+Para simularmos um desbaste, primeiro pecisamos conhecer a estrutura diamétrica do povoamento. Para tal, em nosso exemplo vamos usar a distribuição probabilística de Weibull para construir a distribuição de diâmetros à altura do peito, com base em dados conhecidos (ou estimados) de DAP médio, DAP mínimo, diâmetro quadrático (DG) e o número de árvores no momento do desbaste. Utilizaremos estes parâmetros do povoamento para obtermos os parâmetros `a`, `b` e `c` da distribuição de Weibull com três parâmetros, pelo método dos momentos não centrais. [Há uma outra postagem aqui no blog que detalha os procedimentos envolvidos na aplicação deste método](https://mensura-r.netlify.app/post/funcao_de_weibull_com_3_parametros_bitruncada_para_representacao_da_estrutura_diametrica_de_povoamentos_florestais/). Começaremos definindo as funções que precisaremos para este exemplo.
 
 ```{r, message=FALSE, warning=FALSE}
 # função para recuperação do parâmetro c
@@ -50,7 +49,7 @@ c_function <- function (dap,dg,mindap,c,n){
 }
 
 # função para recuperação do parâmetro a
-a_function <- function(dap,dg,mindap,c,n){(dap-(dg-mindap))/(1-(1/n*(1+1/c)))}
+a_function <- function(dap,dg,mindap,c,n){(dap-(dg-mindap))/(1-(1/n^(1+1/c)))}
 
 # função para recuperação do parâmetro b
 b_function <- function(dap,mindap,c,n){((dap-mindap)/gamma(1+1/c))*(1-1/(n^1+1/c))}
