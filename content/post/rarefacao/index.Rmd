@@ -16,7 +16,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, mas há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comunidade vegetal.  

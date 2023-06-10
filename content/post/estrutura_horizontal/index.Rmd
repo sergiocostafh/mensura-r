@@ -16,22 +16,22 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 A fitossociologia é uma área complexa das ciências naturais que tem como objetivo caracterizar a distribuição, o agrupamento e as relações entre espécies em comunidades vegetais naturais, de modo a descrever sua estrutura e composição. A análise fitossociológica permite caracterizar vegetações quanto a sua tipologia, estágio sucessional e estado de conservação, subsidiando o manejo, a recuperação e a conservação de ecossistemas.
   
 Este é o primeiro de uma série de posts em que apresentarei procedimentos para estudos fitossociológicos empregando dados reais (acesse os outros posts em que apresento procedimentos para [cálculo de índices ecológicos](https://mensura-r.netlify.com/post/fitossociologia-calculo-de-indices-ecologicos/) e [construção de curvas de acumulação de espécies e de rarefação](https://mensura-r.netlify.com/post/fitossociologia-curvas-de-rarefacao-e-acumulacao-de-especies/)). Nesse exemplo, faremos a análise da estrutura horizontal de uma comunidade de cerrado. Começaremos importando e visualizando dados oriundos de um levantamento realizado a partir de 29 unidades amostrais de 100 m².  
 Obs: Para baixar os dados utilizados nesse exemplo, clique [aqui](https://github.com/sergiocostafh/mensura-r/raw/master/content/post/estrutura_horizontal/dados_fitossociologia.xlsx).  
-```{r}
+```{r, warning = FALSE, message= FALSE}
 # Importar base de dados
 dados <- readxl::read_excel("dados_fitossociologia.xlsx")
 # Visualizar dados importados
 dados
 # Visualizar as espécies amostradas
-unique(dados$Espécie)
+unique(dados$Especie)
 # Visualizar as famílias amostradas
-unique(dados$Família)
+unique(dados$Familia)
 ```
 
 Ao todo 541 indivíduos foram amostrados no levantamento, abrangendo 58 espécies distribuídas em 29 famílias. Os principais parâmetros que descrevem a estrutura horizontal são apresentados a seguir.
@@ -61,23 +61,23 @@ A <- area_ua*n_ua
 # Calcular área transversal dos indivíduos amostrados
 dados$g <- pi*dados$DAP^2/40000 
 # Contar número de indivíduos por espécie
-N <- table(dados$Espécie)
+N <- table(dados$Especie)
 # Densidades absoluta e relativa
 DA <- N*10000/A
 DR <- DA/sum(DA)*100
 # Frequências absoluta e relativa
-FA <- sapply(unique(dados$Espécie),
+FA <- sapply(unique(dados$Especie),
          function(x){
-           length(unique(subset(dados,dados$Espécie==x)$Parcela))/n_ua
+           length(unique(subset(dados,dados$Especie==x)$Parcela))/n_ua
            })*100
 FA <- FA[order(names(FA))]
 FR <- FA/sum(FA)*100
 # Dominâncias absoluta e relativa
-DOA <- aggregate(dados$g, list(dados$Espécie), sum)$x*10000/A
+DOA <- aggregate(dados$g, list(dados$Especie), sum)$x*10000/A
 DOR <- DOA/sum(DOA)*100
 
 # Montar tabela
-tabela_fito <- data.frame(Espécie=names(N),
+tabela_fito <- data.frame(Especie=names(N),
                           N=as.vector(N),
                           DA=round(as.vector(DA),1),
                           DR=round(as.vector(DR),1),
@@ -96,6 +96,50 @@ knitr::kable(tabela_fito, row.names = F)%>%
   kableExtra::kable_styling(full_width = TRUE, position = "center",fixed_thead = T)
 
 ```
+
+Para finalizar, com uma abordagem mas sofisticada, vamos representar graficamente os resultados obtidos para as principais espécies.  
+
+```{r, warning = FALSE, message= FALSE}
+library(dplyr)
+library(tidyr)
+library(forcats)
+library(ggplot2)
+
+# Quantidade de especies a serem mostradas no grafico
+n_sp_plot <- 10
+
+tabela_fito_long <- tabela_fito %>%
+  mutate(Especie = fct_reorder(Especie, IVI)) %>% 
+  select(Especie, DR, FR, DoR) %>% 
+  filter(Especie != 'NI') %>% 
+  filter(row_number() <= n_sp_plot) %>%
+  pivot_longer(2:4, names_to = 'par', values_to = 'val')
+
+# Plotar grafico
+tabela_fito_long %>% 
+  group_by(Especie) %>% 
+  mutate(par = fct_reorder(par, c('DR', 'FR', 'DoR')),
+         IVI = if_else(par=='DoR', sum(val), NA_real_)) %>% 
+  arrange(desc(par)) %>% 
+  mutate(lab_y = cumsum(val)) %>% 
+  ggplot(aes(x = Especie, fill = par))+
+  geom_bar(aes(y = val), stat = 'identity')+
+  geom_text(aes(y = lab_y, label = paste0(round(val), '%')), hjust = 1, nudge_y = -.2)+
+  geom_text(aes(y = IVI, label = paste0(round(IVI), '%')), fontface = 'bold', hjust = 0, nudge_y = .2)+
+  coord_flip()+
+  scale_y_continuous(expand=c(0,0), limits = function(x){c(0,max(x)*1.1)})+
+  scale_fill_brewer(name = 'Parâmetro', palette = 'Set2')+
+  labs(title = 'Valor de Importância de espécies na área de estudo',
+       subtitle = paste0(n_sp_plot, ' espécies mais importantes'))+
+  theme_minimal()+
+  theme(axis.title = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(face = 'italic'),
+        plot.title.position = 'plot')
+```
+
 
 <style>
 body {

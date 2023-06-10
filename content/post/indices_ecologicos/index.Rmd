@@ -17,7 +17,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 As análises fitossociológicas contemplam a utilização de índices ecológicos que exprimem a riqueza e a diversidade de comunidades vegetais, permitindo a comparação e o monitoramento dos recursos vegetais, além de fornecer subsídios ao seu manejo.  
@@ -43,7 +43,7 @@ dados
 library(vegan)
 library(dplyr)
 # Gerar matriz de frequência das espécies
-matriz_freq <- xtabs(~Parcela+Espécie, dados)
+matriz_freq <- xtabs(~Parcela+Especie, dados)
 # Pacotes para geração da tabela em HTML
 library(knitr)
 library(kableExtra) 

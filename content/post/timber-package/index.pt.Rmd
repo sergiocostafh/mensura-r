@@ -16,7 +16,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
@@ -382,3 +382,22 @@ Bi, H. (2000). Trigonometric variable-form taper equations for Australian eucaly
 Kozak, A. (2004). My last words on taper equations. The Forestry Chronicle, 80(4), 507-515.  
 
 Schöepfer, W. (1966). Automatisierung dês Massen, Sorten und Wertberechung stender Waldbestande Schriftenreihe Bad. [S.I.]: Wurtt-Forstl.  
+
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

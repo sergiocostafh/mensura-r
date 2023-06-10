@@ -18,7 +18,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
@@ -249,5 +249,21 @@ ggplot(dist_diam_pred)+
 
 O gráfico apresentado demonstra a flexibilidade da função de Weibull para representar a estrutura diamétrica de povoamentos florestais equiâneos em qualquer momento no tempo. Uma abordagem mais aprimorada envolve a aplicação de um modelo de sobrevivência para estimativa do número de árvores esperada em cada idade, a partir de uma densidade inicial.  
 
-Ficamos por aqui. Até a próxima!
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
 
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

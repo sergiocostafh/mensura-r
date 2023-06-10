@@ -16,11 +16,12 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
 
 <p>Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. A geração dessa informação a partir de uma base de dados pré existente exige o uso de ferramentas de modelagem estatística, que permitam simular o crescimento e a produção de povoamentos para diferentes classes de produtividade.<br />
@@ -39,7 +40,7 @@ ggplot()+
   scale_x_continuous(expand = c(0,0), limits = c(0,30), breaks = seq(0,30,5))+
   scale_y_continuous(expand = c(0,0), limits = c(0,800))+
   theme_bw()</code></pre>
-<p><img src="/post/modelagem_global/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 No gráfico acima podemos observar os volumes obtidos para povoamentos de <em>Pinus taeda</em> em diferentes idades. O primeiro passo na modelagem será a classificação de sítios. Utilizaremos para geração da curva guia o modelo de Chapman-Richards, cuja expressão matemática se dá da seguinte forma:<br />
 
 <center>
@@ -95,7 +96,7 @@ dados$classe_sitio &lt;- cut(dados$sitio,
   theme_bw()+
   theme(legend.position = &#39;bottom&#39;)
 plot_vol</code></pre>
-<p><img src="/post/modelagem_global/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 O gráfico demonstra o comportamento esperado entre sítio e produção em volume, em que povoamentos de classes superiores tendem ser mais produtivos. Vamos ajustar um modelo de produção em volume total considerando as variáveis sítio e idade.</p>
 <pre class="r"><code># Ajustar modelo global de volume
 chapman.richards_vol &lt;- nlsLM(VOLTOT ~ (a+a1*sitio)*(1-exp(-b*IDADE))^c,
@@ -122,7 +123,7 @@ plot_vol+
   scale_linetype_manual(values=c(&#39;dashed&#39;,&#39;dashed&#39;,&#39;solid&#39;,&#39;dashed&#39;,&#39;dashed&#39;))+
   ggtitle(paste0(&#39;Modelo global de volume - Syx% = &#39;,
                              round(syx_abs_richards_v,2)))</code></pre>
-<p><img src="/post/modelagem_global/index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 O modelo acima ajustado possui um modificador (coeficiente <span class="math inline">\(b_{01}\)</span>) na assíntota (coeficiente <span class="math inline">\(b_0\)</span>) que pondera o efeito do sítio na produção em volume, permitindo a geração de curvas anamórficas. Estas curvas se tratam de predições da produção em função do sítio e da idade, mas ainda é possível projetar os volumes para qualquer momento a partir de um par de observações de idade e volume conhecidos. Para esta finalidade aplicamos o método da diferença algébrica, cujo procedimento é descrito no post <a href="https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/">Classificação de sítio florestais</a>.<br />
 Por fim, vamos visualizar a tabela de produção por classe de sítio</p>
 <pre class="r"><code># Obter de produtividade dos sítios na idade de 15 anos (idade de referência)
@@ -148,266 +149,652 @@ colnames(tabela_prod) &lt;- c(&#39;Idade&#39;,
 library(dplyr)
 knitr::kable(tabela_prod, row.names = F, caption = &#39;Tabela de produção em volume total (m³/ha)&#39;)%&gt;%
   kableExtra::kable_styling(full_width = TRUE, position = &quot;center&quot;,fixed_thead = T)</code></pre>
-<table>
-<caption><span id="tab:unnamed-chunk-5">Table 1: </span>Tabela de produção em volume total (m³/ha)</caption>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-5">Table 1: </span>Tabela de produção em volume total (m³/ha)
+</caption>
 <thead>
-<tr class="header">
-<th align="right">Idade</th>
-<th align="right">Sítio 18.8</th>
-<th align="right">Sítio 20.8</th>
-<th align="right">Sítio 22.8</th>
-<th align="right">Sítio 24.8</th>
-<th align="right">Sítio 26.8</th>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Idade
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Sítio 18.8
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Sítio 20.8
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Sítio 22.8
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Sítio 24.8
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Sítio 26.8
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="right">0</td>
-<td align="right">0.0</td>
-<td align="right">0.0</td>
-<td align="right">0.0</td>
-<td align="right">0.0</td>
-<td align="right">0.0</td>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
 </tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">0.4</td>
-<td align="right">0.5</td>
-<td align="right">0.6</td>
-<td align="right">0.7</td>
-<td align="right">0.7</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+0.6
+</td>
+<td style="text-align:right;">
+0.7
+</td>
+<td style="text-align:right;">
+0.7
+</td>
 </tr>
-<tr class="odd">
-<td align="right">2</td>
-<td align="right">4.9</td>
-<td align="right">5.8</td>
-<td align="right">6.6</td>
-<td align="right">7.5</td>
-<td align="right">8.4</td>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.9
+</td>
+<td style="text-align:right;">
+5.8
+</td>
+<td style="text-align:right;">
+6.6
+</td>
+<td style="text-align:right;">
+7.5
+</td>
+<td style="text-align:right;">
+8.4
+</td>
 </tr>
-<tr class="even">
-<td align="right">3</td>
-<td align="right">17.4</td>
-<td align="right">20.5</td>
-<td align="right">23.6</td>
-<td align="right">26.7</td>
-<td align="right">29.8</td>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+17.4
+</td>
+<td style="text-align:right;">
+20.5
+</td>
+<td style="text-align:right;">
+23.6
+</td>
+<td style="text-align:right;">
+26.7
+</td>
+<td style="text-align:right;">
+29.8
+</td>
 </tr>
-<tr class="odd">
-<td align="right">4</td>
-<td align="right">38.7</td>
-<td align="right">45.5</td>
-<td align="right">52.4</td>
-<td align="right">59.3</td>
-<td align="right">66.2</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+38.7
+</td>
+<td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
+52.4
+</td>
+<td style="text-align:right;">
+59.3
+</td>
+<td style="text-align:right;">
+66.2
+</td>
 </tr>
-<tr class="even">
-<td align="right">5</td>
-<td align="right">66.9</td>
-<td align="right">78.9</td>
-<td align="right">90.8</td>
-<td align="right">102.7</td>
-<td align="right">114.6</td>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+66.9
+</td>
+<td style="text-align:right;">
+78.9
+</td>
+<td style="text-align:right;">
+90.8
+</td>
+<td style="text-align:right;">
+102.7
+</td>
+<td style="text-align:right;">
+114.6
+</td>
 </tr>
-<tr class="odd">
-<td align="right">6</td>
-<td align="right">99.5</td>
-<td align="right">117.2</td>
-<td align="right">134.9</td>
-<td align="right">152.6</td>
-<td align="right">170.3</td>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+99.5
+</td>
+<td style="text-align:right;">
+117.2
+</td>
+<td style="text-align:right;">
+134.9
+</td>
+<td style="text-align:right;">
+152.6
+</td>
+<td style="text-align:right;">
+170.3
+</td>
 </tr>
-<tr class="even">
-<td align="right">7</td>
-<td align="right">133.6</td>
-<td align="right">157.4</td>
-<td align="right">181.1</td>
-<td align="right">204.9</td>
-<td align="right">228.7</td>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+133.6
+</td>
+<td style="text-align:right;">
+157.4
+</td>
+<td style="text-align:right;">
+181.1
+</td>
+<td style="text-align:right;">
+204.9
+</td>
+<td style="text-align:right;">
+228.7
+</td>
 </tr>
-<tr class="odd">
-<td align="right">8</td>
-<td align="right">167.1</td>
-<td align="right">196.9</td>
-<td align="right">226.6</td>
-<td align="right">256.3</td>
-<td align="right">286.1</td>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+167.1
+</td>
+<td style="text-align:right;">
+196.9
+</td>
+<td style="text-align:right;">
+226.6
+</td>
+<td style="text-align:right;">
+256.3
+</td>
+<td style="text-align:right;">
+286.1
+</td>
 </tr>
-<tr class="even">
-<td align="right">9</td>
-<td align="right">198.7</td>
-<td align="right">234.0</td>
-<td align="right">269.3</td>
-<td align="right">304.7</td>
-<td align="right">340.0</td>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+198.7
+</td>
+<td style="text-align:right;">
+234.0
+</td>
+<td style="text-align:right;">
+269.3
+</td>
+<td style="text-align:right;">
+304.7
+</td>
+<td style="text-align:right;">
+340.0
+</td>
 </tr>
-<tr class="odd">
-<td align="right">10</td>
-<td align="right">227.3</td>
-<td align="right">267.7</td>
-<td align="right">308.2</td>
-<td align="right">348.6</td>
-<td align="right">389.0</td>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+227.3
+</td>
+<td style="text-align:right;">
+267.7
+</td>
+<td style="text-align:right;">
+308.2
+</td>
+<td style="text-align:right;">
+348.6
+</td>
+<td style="text-align:right;">
+389.0
+</td>
 </tr>
-<tr class="even">
-<td align="right">11</td>
-<td align="right">252.7</td>
-<td align="right">297.6</td>
-<td align="right">342.6</td>
-<td align="right">387.5</td>
-<td align="right">432.5</td>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+252.7
+</td>
+<td style="text-align:right;">
+297.6
+</td>
+<td style="text-align:right;">
+342.6
+</td>
+<td style="text-align:right;">
+387.5
+</td>
+<td style="text-align:right;">
+432.5
+</td>
 </tr>
-<tr class="odd">
-<td align="right">12</td>
-<td align="right">274.8</td>
-<td align="right">323.6</td>
-<td align="right">372.5</td>
-<td align="right">421.4</td>
-<td align="right">470.2</td>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+274.8
+</td>
+<td style="text-align:right;">
+323.6
+</td>
+<td style="text-align:right;">
+372.5
+</td>
+<td style="text-align:right;">
+421.4
+</td>
+<td style="text-align:right;">
+470.2
+</td>
 </tr>
-<tr class="even">
-<td align="right">13</td>
-<td align="right">293.7</td>
-<td align="right">345.9</td>
-<td align="right">398.1</td>
-<td align="right">450.4</td>
-<td align="right">502.6</td>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+293.7
+</td>
+<td style="text-align:right;">
+345.9
+</td>
+<td style="text-align:right;">
+398.1
+</td>
+<td style="text-align:right;">
+450.4
+</td>
+<td style="text-align:right;">
+502.6
+</td>
 </tr>
-<tr class="odd">
-<td align="right">14</td>
-<td align="right">309.7</td>
-<td align="right">364.7</td>
-<td align="right">419.8</td>
-<td align="right">474.9</td>
-<td align="right">530.0</td>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+309.7
+</td>
+<td style="text-align:right;">
+364.7
+</td>
+<td style="text-align:right;">
+419.8
+</td>
+<td style="text-align:right;">
+474.9
+</td>
+<td style="text-align:right;">
+530.0
+</td>
 </tr>
-<tr class="even">
-<td align="right">15</td>
-<td align="right">323.1</td>
-<td align="right">380.6</td>
-<td align="right">438.0</td>
-<td align="right">495.5</td>
-<td align="right">553.0</td>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+323.1
+</td>
+<td style="text-align:right;">
+380.6
+</td>
+<td style="text-align:right;">
+438.0
+</td>
+<td style="text-align:right;">
+495.5
+</td>
+<td style="text-align:right;">
+553.0
+</td>
 </tr>
-<tr class="odd">
-<td align="right">16</td>
-<td align="right">334.3</td>
-<td align="right">393.7</td>
-<td align="right">453.2</td>
-<td align="right">512.7</td>
-<td align="right">572.1</td>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+334.3
+</td>
+<td style="text-align:right;">
+393.7
+</td>
+<td style="text-align:right;">
+453.2
+</td>
+<td style="text-align:right;">
+512.7
+</td>
+<td style="text-align:right;">
+572.1
+</td>
 </tr>
-<tr class="even">
-<td align="right">17</td>
-<td align="right">343.6</td>
-<td align="right">404.7</td>
-<td align="right">465.8</td>
-<td align="right">526.9</td>
-<td align="right">588.0</td>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+343.6
+</td>
+<td style="text-align:right;">
+404.7
+</td>
+<td style="text-align:right;">
+465.8
+</td>
+<td style="text-align:right;">
+526.9
+</td>
+<td style="text-align:right;">
+588.0
+</td>
 </tr>
-<tr class="odd">
-<td align="right">18</td>
-<td align="right">351.2</td>
-<td align="right">413.7</td>
-<td align="right">476.1</td>
-<td align="right">538.6</td>
-<td align="right">601.1</td>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+351.2
+</td>
+<td style="text-align:right;">
+413.7
+</td>
+<td style="text-align:right;">
+476.1
+</td>
+<td style="text-align:right;">
+538.6
+</td>
+<td style="text-align:right;">
+601.1
+</td>
 </tr>
-<tr class="even">
-<td align="right">19</td>
-<td align="right">357.5</td>
-<td align="right">421.1</td>
-<td align="right">484.7</td>
-<td align="right">548.3</td>
-<td align="right">611.8</td>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+357.5
+</td>
+<td style="text-align:right;">
+421.1
+</td>
+<td style="text-align:right;">
+484.7
+</td>
+<td style="text-align:right;">
+548.3
+</td>
+<td style="text-align:right;">
+611.8
+</td>
 </tr>
-<tr class="odd">
-<td align="right">20</td>
-<td align="right">362.6</td>
-<td align="right">427.1</td>
-<td align="right">491.6</td>
-<td align="right">556.1</td>
-<td align="right">620.7</td>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+362.6
+</td>
+<td style="text-align:right;">
+427.1
+</td>
+<td style="text-align:right;">
+491.6
+</td>
+<td style="text-align:right;">
+556.1
+</td>
+<td style="text-align:right;">
+620.7
+</td>
 </tr>
-<tr class="even">
-<td align="right">21</td>
-<td align="right">366.8</td>
-<td align="right">432.1</td>
-<td align="right">497.3</td>
-<td align="right">562.6</td>
-<td align="right">627.8</td>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+366.8
+</td>
+<td style="text-align:right;">
+432.1
+</td>
+<td style="text-align:right;">
+497.3
+</td>
+<td style="text-align:right;">
+562.6
+</td>
+<td style="text-align:right;">
+627.8
+</td>
 </tr>
-<tr class="odd">
-<td align="right">22</td>
-<td align="right">370.3</td>
-<td align="right">436.1</td>
-<td align="right">502.0</td>
-<td align="right">567.9</td>
-<td align="right">633.7</td>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+370.3
+</td>
+<td style="text-align:right;">
+436.1
+</td>
+<td style="text-align:right;">
+502.0
+</td>
+<td style="text-align:right;">
+567.9
+</td>
+<td style="text-align:right;">
+633.7
+</td>
 </tr>
-<tr class="even">
-<td align="right">23</td>
-<td align="right">373.1</td>
-<td align="right">439.4</td>
-<td align="right">505.8</td>
-<td align="right">572.1</td>
-<td align="right">638.5</td>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+373.1
+</td>
+<td style="text-align:right;">
+439.4
+</td>
+<td style="text-align:right;">
+505.8
+</td>
+<td style="text-align:right;">
+572.1
+</td>
+<td style="text-align:right;">
+638.5
+</td>
 </tr>
-<tr class="odd">
-<td align="right">24</td>
-<td align="right">375.3</td>
-<td align="right">442.1</td>
-<td align="right">508.9</td>
-<td align="right">575.6</td>
-<td align="right">642.4</td>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+375.3
+</td>
+<td style="text-align:right;">
+442.1
+</td>
+<td style="text-align:right;">
+508.9
+</td>
+<td style="text-align:right;">
+575.6
+</td>
+<td style="text-align:right;">
+642.4
+</td>
 </tr>
-<tr class="even">
-<td align="right">25</td>
-<td align="right">377.2</td>
-<td align="right">444.3</td>
-<td align="right">511.4</td>
-<td align="right">578.5</td>
-<td align="right">645.6</td>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+377.2
+</td>
+<td style="text-align:right;">
+444.3
+</td>
+<td style="text-align:right;">
+511.4
+</td>
+<td style="text-align:right;">
+578.5
+</td>
+<td style="text-align:right;">
+645.6
+</td>
 </tr>
-<tr class="odd">
-<td align="right">26</td>
-<td align="right">378.7</td>
-<td align="right">446.0</td>
-<td align="right">513.4</td>
-<td align="right">580.8</td>
-<td align="right">648.1</td>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+378.7
+</td>
+<td style="text-align:right;">
+446.0
+</td>
+<td style="text-align:right;">
+513.4
+</td>
+<td style="text-align:right;">
+580.8
+</td>
+<td style="text-align:right;">
+648.1
+</td>
 </tr>
-<tr class="even">
-<td align="right">27</td>
-<td align="right">379.9</td>
-<td align="right">447.5</td>
-<td align="right">515.1</td>
-<td align="right">582.6</td>
-<td align="right">650.2</td>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+379.9
+</td>
+<td style="text-align:right;">
+447.5
+</td>
+<td style="text-align:right;">
+515.1
+</td>
+<td style="text-align:right;">
+582.6
+</td>
+<td style="text-align:right;">
+650.2
+</td>
 </tr>
-<tr class="odd">
-<td align="right">28</td>
-<td align="right">380.9</td>
-<td align="right">448.6</td>
-<td align="right">516.4</td>
-<td align="right">584.2</td>
-<td align="right">651.9</td>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+380.9
+</td>
+<td style="text-align:right;">
+448.6
+</td>
+<td style="text-align:right;">
+516.4
+</td>
+<td style="text-align:right;">
+584.2
+</td>
+<td style="text-align:right;">
+651.9
+</td>
 </tr>
-<tr class="even">
-<td align="right">29</td>
-<td align="right">381.7</td>
-<td align="right">449.6</td>
-<td align="right">517.5</td>
-<td align="right">585.4</td>
-<td align="right">653.3</td>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+381.7
+</td>
+<td style="text-align:right;">
+449.6
+</td>
+<td style="text-align:right;">
+517.5
+</td>
+<td style="text-align:right;">
+585.4
+</td>
+<td style="text-align:right;">
+653.3
+</td>
 </tr>
-<tr class="odd">
-<td align="right">30</td>
-<td align="right">382.3</td>
-<td align="right">450.4</td>
-<td align="right">518.4</td>
-<td align="right">586.4</td>
-<td align="right">654.4</td>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+382.3
+</td>
+<td style="text-align:right;">
+450.4
+</td>
+<td style="text-align:right;">
+518.4
+</td>
+<td style="text-align:right;">
+586.4
+</td>
+<td style="text-align:right;">
+654.4
+</td>
 </tr>
 </tbody>
 </table>

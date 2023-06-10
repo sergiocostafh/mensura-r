@@ -16,7 +16,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 Para definição do regime de manejo a ser adotado em um empreendimento florestal o conhecimento do fluxo de produção potencial é fundamental. A geração dessa informação a partir de uma base de dados pré existente exige o uso de ferramentas de modelagem estatística, que permitam simular o crescimento e a produção de povoamentos para diferentes classes de produtividade.  
@@ -45,7 +45,7 @@ $Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}$
   
 </center>
 O procedimento de classificação é explicado de maneira detalhada no post [Classificação de sítio florestais](https://mensura-r.netlify.com/post/classificacao-de-sitios-florestais/). Abaixo iremos apenas reproduzir o que foi desenvolvido e explicado lá.  
-```{r}
+```{r, warning = FALSE, message= FALSE}
 # Carrega pacote necessário para ajuste dos modelos
 library(minpack.lm)
 # Ajustar modelos de Chapman-Richards para o crescimento em hdom
@@ -87,7 +87,7 @@ dados$classe_sitio <- cut(dados$sitio,
 ```
 Após a classificação de sítio, podemos visualizar como esta variável se relaciona com distribuição de pares de observações de idade x volume total.
 
-````{r}
+````{r, warning = FALSE, message= FALSE}
 plot_vol <- ggplot()+
   geom_point(aes(x=IDADE, y=VOLTOT, color=factor(classe_sitio)), data = dados, alpha = 0.8)+
   xlab('Idade (anos)')+
@@ -100,7 +100,7 @@ plot_vol <- ggplot()+
 plot_vol
 ````
 O gráfico demonstra o comportamento esperado entre sítio e produção em volume, em que povoamentos de classes superiores tendem ser mais produtivos. Vamos ajustar um modelo de produção em volume total considerando as variáveis sítio e idade.
-```{r}
+```{r, warning = FALSE, message= FALSE}
 # Ajustar modelo global de volume
 chapman.richards_vol <- nlsLM(VOLTOT ~ (a+a1*sitio)*(1-exp(-b*IDADE))^c,
                   data = dados,

@@ -17,7 +17,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 Na mensuração florestal a utilização de modelos de regressão para representação de comportamentos biológicos é uma tarefa comum. Para dada variável a ser modelada o teste  de diferentes modelos é necessário para aplicação daquele que melhor representa o comportamento sob análise. O método tradicionalmente aplicado para classificação de sítios florestais exige o emprego de modelos de crescimento em altura dominante, e o ajuste e análise destes será objeto desta postagem.

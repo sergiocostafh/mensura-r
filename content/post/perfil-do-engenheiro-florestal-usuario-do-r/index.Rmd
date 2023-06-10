@@ -15,7 +15,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
@@ -27,6 +27,10 @@ A análise a seguir pode servir de auxílio aos colegas que estão buscando se a
   
 ### Análise das respostas  
 Participaram do levantamento engenheiros florestais das cinco regiões do Brasil e também do exterior. Ao todo houveram 98 respostas ao questionário, sendo a maioria advindas de colegas que atuam nas regiões Sul, Nordeste e Sudeste.  
+```{r, include=FALSE}
+if (!require("googlesheets4")) install.packages("googlesheets4", repos = "http://cran.us.r-project.org")
+gs4_deauth()
+```
 
 ```{r, warning=FALSE, message=FALSE, fih.show='hide'}
 #######################
@@ -34,19 +38,19 @@ Participaram do levantamento engenheiros florestais das cinco regiões do Brasil
 #######################
 
 # Instalar/carregar pacotes necessarios
-if (!require("googlesheets4")) install.packages("googlesheets4", repos = "http://cran.us.r-project.org")
-if (!require("tidyverse")) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
-if (!require("devtools")) install.packages("devtools", repos = "http://cran.us.r-project.org")
-if (!require("brazilmaps")) install_github("rpradosiqueira/brazilmaps")
-if (!require("sf")) install.packages("sf", repos = "http://cran.us.r-project.org")
-if (!require("cowplot")) install.packages("cowplot", repos = "http://cran.us.r-project.org")
-if (!require("forcats")) install.packages("forcats", repos = "http://cran.us.r-project.org")
-if (!require("treemapify")) install.packages("treemapify", repos = "http://cran.us.r-project.org")
+library("googlesheets4")
+library("tidyverse")
+library("devtools")
+library("brazilmaps")
+library("sf")
+library("cowplot")
+library("forcats")
+library("treemapify")
 
 # Paleta de cores para os graficos
 paleta6 <- c("#9FB6CD","#AF9FCD","#CD9FC3","#CDA29F","#CDCA9F","#A9CD9F","#9FCDBD")
 
-# Importar planilha de respostas e renomear colunas (obs: sera preciso fazr login em sua conta google)
+# Importar planilha de respostas e renomear colunas (obs: sera preciso fazer login em sua conta google)
 respostas <-
   read_sheet("1en5995QQbPsIRElA8SDivjquLR0Od2bhghHmil7VIWM") %>%
   rename(
@@ -55,7 +59,7 @@ respostas <-
     FreqUso = 4,
     NivelCon = 5,
     SubArea = 6,
-      Dificuldades = 7
+    Dificuldades = 7
   )
 ```
 
@@ -311,3 +315,22 @@ tibble(Dificuldade = c('Não tenho tempo/empenho',
 A comunidade R é bastante ampla e existe muito material disponível na internet para apoiar o aprendizado. Aqui no blog procuro compartilhar um pouco do que desenvolvo e que se aplica à área florestal. A maior parte do que aprendi a fazer no R veio de exemplos compartilhados na internet que na maioria das vezes não eram florestais. Foi o estudo, a prática e a constância de utilização que me permitiram direcionar o que aprendi (e continuo aprendendo) de maneira dispersa, ao desenvolvimento de soluções para os problemas que preciso atacar no meu trabalho diário - florestal.  
   
 Bom, cumpro aqui meu combinado de disponibilizar os resultados e códigos de análise do formulário. Deixo meu obrigado à todos os colegas que responderam o questionário. Até a próxima!  
+
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>

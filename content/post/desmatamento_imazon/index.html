@@ -15,14 +15,13 @@ featured: true
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 output:
   html_document:
    code_folding: hide
 ---
 
-<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
 <div id="introdução" class="section level2">
@@ -58,11 +57,11 @@ O procedimento de consolidação dos dados foi simples: a partir dos registros d
 <p>Ao visualizar a série histórica dos dados mensais de desmatamento do SAD, alguns padrões já nos saltam aos olhos. O primeiro que podemos elencar é que o mês de julho de 2019 registrou o maior acúmulo de área desmatada em um único mês para toda a série histórica, e isso já explica boa parte da discussão levantada nas últimas semanas. Outro ponto importante é que há uma clara tendência na formação de picos ascendentes na taxa de desmatamento desde 2012.<br />
 Os picos ocorrem geralmente entre os meses de junho e julho, que coincide com o período do ano de menor pluviosidade na região. No entanto, não há alterações visíveis no padrão de chuvas ao longo dos 10 anos de análise, indicando inexistência de períodos mais secos, e que portanto, não parece haver entre o clima e o aumento na quantidade de focos de incêndio detectados pelo INPE.</p>
 <pre class="r"><code># Importar a base de dados do SAD
-dados_desmatamento &lt;- read.table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_sad.txt&#39;)
-dados_precipitacao &lt;- read.table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/serie_precipitacao_amazonia_inmet.txt&#39;)
+dados_desmatamento &lt;- readr::read_table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_sad.txt&#39;, col_names = c(&#39;ANO&#39;,&#39;MES&#39;,&#39;AREA&#39;), skip = 1)
+dados_precipitacao &lt;- readr::read_table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/serie_precipitacao_amazonia_inmet.txt&#39;, col_names = c(&#39;date&#39;,&#39;prec&#39;), skip = 1)
 dados_precipitacao$date &lt;- as.Date(dados_precipitacao$date)
 # Criar coluna Mês - Ano
-dados_desmatamento$`MES ANO`=as.Date(paste(dados_desmatamento$ANO,&#39;-&#39;,dados_desmatamento$MES,&#39;-01&#39;, sep=&#39;&#39;))
+dados_desmatamento$`MES ANO`=as.Date(paste0(dados_desmatamento$ANO,&#39;-&#39;,dados_desmatamento$MES,&#39;-01&#39;, sep=&#39;&#39;))
 # Comparação julho 2019/julho 2018
 # round(1-dados_desmatamento$AREA[119]/dados_desmatamento$AREA[107], 3)*-1
 # Comparação junho 2019/julho 2018
@@ -100,20 +99,35 @@ ggplot()+
 O fato é que para podermos interpretar os dados de desmatamento de maneira mais consistente, precisamos avaliar o acúmulo de área desmatada em períodos maiores.<br />
 O gráfico seguinte apresenta a área total desmatada detectada pelo SAD entre os meses de janeiro e julho e a série histórica de desmatamento entre janeiro e dezembro do PRODES e do SAD, desde 2010. Assim como o DETER, os dados do PRODES não devem ser comparados diretamente com os dados do SAD por diferenças metodológicas - o PRODES calcula o desmatamento entre 1º de agosto de um ano 31 de julho do ano seguinte, e considera não somente áreas primárias de vegetação, mas também secundárias [7] - mas é possível observar a mesma tendência de elevação no desmatamento a partir de 2012/2013.</p>
 <pre class="r"><code># Calcular área desmatada acumulada até julho
-acumulado_julho &lt;- subset(dados_desmatamento,dados_desmatamento$MES&lt;=7)
+acumulado_julho &lt;- subset(dados_desmatamento,as.integer(dados_desmatamento$MES)&lt;=7)
 acumulado_julho &lt;- aggregate(acumulado_julho$AREA, by = list(ANO = as.integer(acumulado_julho$ANO)), sum)
 acumulado_ano &lt;- aggregate(dados_desmatamento$AREA, by = list(ANO = as.integer(dados_desmatamento$ANO)), sum)[-c(1,11),]
 # Dados do PRODES
-dados_prodes &lt;- read.delim(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_prodes.txt&#39;)
-dados_prodes &lt;- subset(dados_prodes,dados_prodes$Ano.Estados&gt;=2010)
+dados_prodes &lt;- readr::read_table(&#39;https://raw.githubusercontent.com/sergiocostafh/desmatamento_sad_imazon/master/dados_prodes.txt&#39;)</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   `Ano/Estados` = col_double(),
+##   AC = col_double(),
+##   AM = col_double(),
+##   AP = col_double(),
+##   MA = col_double(),
+##   MT = col_double(),
+##   PA = col_double(),
+##   RO = col_double(),
+##   RR = col_double(),
+##   TO = col_double(),
+##   AMZ_LEGAL = col_double()
+## )</code></pre>
+<pre class="r"><code>dados_prodes &lt;- subset(dados_prodes,dados_prodes$`Ano/Estados`&gt;=2010)
 # Plotar gráfico
 ggplot()+
   geom_line(aes(x=acumulado_ano$ANO,y=acumulado_ano$x, linetype = &#39;Acumulado anual (SAD)&#39;, color = &#39;Acumulado anual (SAD)&#39;))+
   geom_line(aes(x=acumulado_julho$ANO,y=acumulado_julho$x, linetype = &#39;Acumulado até julho (SAD)&#39;, color = &#39;Acumulado até julho (SAD)&#39;))+
-  geom_line(aes(x=dados_prodes$Ano.Estados,y=dados_prodes$AMZ.LEGAL, linetype = &#39;Acumulado anual (PRODES)&#39;, color = &#39;Acumulado anual (PRODES)&#39;))+
+  geom_line(aes(x=dados_prodes$`Ano/Estados`,y=dados_prodes$AMZ_LEGAL, linetype = &#39;Acumulado anual (PRODES)&#39;, color = &#39;Acumulado anual (PRODES)&#39;))+
     geom_point(aes(x=acumulado_ano$ANO,y=acumulado_ano$x, shape = &#39;Acumulado anual (SAD)&#39;, color = &#39;Acumulado anual (SAD)&#39;))+
   geom_point(aes(x=acumulado_julho$ANO,y=acumulado_julho$x, shape = &#39;Acumulado até julho (SAD)&#39;, color = &#39;Acumulado até julho (SAD)&#39;))+
-  geom_point(aes(x=dados_prodes$Ano.Estados,y=dados_prodes$AMZ.LEGAL, shape = &#39;Acumulado anual (PRODES)&#39;, color = &#39;Acumulado anual (PRODES)&#39;))+
+  geom_point(aes(x=dados_prodes$`Ano/Estados`,y=dados_prodes$AMZ_LEGAL, shape = &#39;Acumulado anual (PRODES)&#39;, color = &#39;Acumulado anual (PRODES)&#39;))+
   scale_x_continuous(breaks=seq(2009,2019,1), minor_breaks = NULL)+
   scale_y_continuous(expand=c(0,0),limits = c(0,8000), breaks = seq(0,8000,1000))+
   scale_linetype_manual(name = NULL, values = c(&#39;dashed&#39;,&#39;dotted&#39;,&#39;solid&#39;))+
@@ -128,7 +142,7 @@ ggplot()+
   theme(legend.position = &#39;bottom&#39;,
         plot.title.position = &#39;plot&#39;,
         plot.caption.position = &#39;plot&#39;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>Os dados do SAD apontam que em 2018 foi atingida a máxima da série para o acumulado anual. Em 2019 a área acumulada para o período janeiro-julho se encontra no mesmo patamar de 2018. Essa análise permite inferir que em 2019 teremos uma taxa similar a 2018 ou mesmo maior, caso a tendência de julho do ano corrente - em que observou-se a máxima histórica do período sob análise - se mantenha para os próximos meses.</p>
 </div>
 <div id="conclusões" class="section level2">

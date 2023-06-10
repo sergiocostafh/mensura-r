@@ -16,12 +16,12 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
 
 <p>A riqueza de espécies é o mais simples e usual descritor da diversidade biológica, mas há uma grande dificuldade em determinar o quanto se deve amostrar para estimar com confiabilidade o número de espécies esperado em uma comunidade vegetal.<br />
@@ -34,7 +34,7 @@ Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://gith
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados
 dados</code></pre>
-<pre><code>## # A tibble: 541 x 6
+<pre><code>## # A tibble: 541 × 6
 ##    Parcela Arvore   DAP Altura Família         Espécie              
 ##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;                
 ##  1       1      1 13.5     5   Dilleniaceae    Curatella americana  
@@ -47,7 +47,7 @@ dados</code></pre>
 ##  8       1      8  5.89    3.5 Ebenaceae       Diospyros hispida    
 ##  9       1      9  8.75    4.5 Ebenaceae       Diospyros hispida    
 ## 10       1     10  4.77    2.5 Melastomataceae Miconia sp1          
-## # ... with 531 more rows</code></pre>
+## # … with 531 more rows</code></pre>
 <pre class="r"><code># Carrega pacote necessário para as análises
 library(vegan)
 # Gera matriz de frequência das espécies
@@ -1309,7 +1309,7 @@ plot(curva_acum,
      xlab=&quot;Unidades amostrais&quot;,
      ylab=&quot;Riqueza&quot;,
      main=&quot;Curva de acumulação de espécies&quot;)</code></pre>
-<p><img src="/post/rarefacao/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>A interpretação mais trivial para a curva do coletor é que quando esta se estabiliza, formando um patamar, foi atingida a suficiência amostral para a comunidade em questão.<br />
 A riqueza representada em uma amostragem depende do esforço amostral, mais especificamente do número de indivíduos amostrados, que varia entre parcelas. Por isso, a comparação da riqueza de dois locais cujo o número de indivíduos amostrados é diferente é uma abordagem inadequada. Deste modo, para que possamos comparar a riqueza, é necessária a utilização de um denominador comum, que deve ser um número igual ou menor que o número de indivíduos amostrados nos locais. Este procedimento é conhecido como <strong>rarefação</strong>, que sumariamente consiste em gerar uma relação entre o número esperado de espécies para uma certa quantidade de indivíduos em uma ou mais amostras.<br />
 A função <code>rarecurve</code> do <code>vegan</code> retorna a riqueza esperada para um mesmo número de indivíduos, conforme o procedimento a seguir.</p>
@@ -1319,7 +1319,7 @@ rarecurve(matriz_freq,
           ylab=&quot;Riqueza esperada&quot;,
           main=&quot;Curvas de rarefação&quot;,
           lty = 2)</code></pre>
-<p><img src="/post/rarefacao/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>O gráfico gerado nos indica que nas parcelas de número 9, 10, 18 e 16, cujas curvas de rarefação se encontram acima das demais, podemos esperar maior riqueza de espécies para um mesmo número de indivíduos amostrados, em comparação às demais unidades amostrais.</p>
 <style>
 body {

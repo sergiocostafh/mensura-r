@@ -17,12 +17,12 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
 
 <p>As análises fitossociológicas contemplam a utilização de índices ecológicos que exprimem a riqueza e a diversidade de comunidades vegetais, permitindo a comparação e o monitoramento dos recursos vegetais, além de fornecer subsídios ao seu manejo.<br />
@@ -70,8 +70,8 @@ Obs: Para baixar os dados utilizados nesse exemplo, clique <a href="https://gith
 dados &lt;- readxl::read_excel(&quot;dados_fitossociologia.xlsx&quot;)
 # Visualizar dados
 dados</code></pre>
-<pre><code>## # A tibble: 541 x 6
-##    Parcela Arvore   DAP Altura Família         Espécie              
+<pre><code>## # A tibble: 541 × 6
+##    Parcela Arvore   DAP Altura Familia         Especie              
 ##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;                
 ##  1       1      1 13.5     5   Dilleniaceae    Curatella americana  
 ##  2       1      2  5.57    3.5 Annonaceae      Annona coriacea      
@@ -83,12 +83,12 @@ dados</code></pre>
 ##  8       1      8  5.89    3.5 Ebenaceae       Diospyros hispida    
 ##  9       1      9  8.75    4.5 Ebenaceae       Diospyros hispida    
 ## 10       1     10  4.77    2.5 Melastomataceae Miconia sp1          
-## # ... with 531 more rows</code></pre>
+## # … with 531 more rows</code></pre>
 <pre class="r"><code># Carregar pacotes necessários
 library(vegan)
 library(dplyr)
 # Gerar matriz de frequência das espécies
-matriz_freq &lt;- xtabs(~Parcela+Espécie, dados)
+matriz_freq &lt;- xtabs(~Parcela+Especie, dados)
 # Pacotes para geração da tabela em HTML
 library(knitr)
 library(kableExtra) 
@@ -1920,7 +1920,7 @@ par(mfrow=c(1,1),mar=c(1,4,3,1))
 plot(dendrograma, hang=1,
      main = &#39;Dendrograma de similaridade&#39;,
      ylab=&#39;Similaridade&#39;)</code></pre>
-<img src="/post/indices_ecologicos/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 O dendrograma de similaridade é especialmente interessante para avaliar a a semelhança entre comunidades, embora possa também ser aplicado para comparar unidades amostrais em uma mesma comunidade. No presente exemplo, as unidades amostrais possuem área de 100 m², resultando em informações bastante limitadas a nível de parcela. Para este tipo de avaliação, unidades amostrais de maiores dimensões são mais adequadas pois reduzem a variação entre parcelas, permitindo uma avaliação mais abrangente.
 <style>
 body {

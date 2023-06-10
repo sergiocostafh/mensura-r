@@ -16,14 +16,14 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
 
 
 <p>Na mensuração florestal, funções de afilamento de forma fixa são as mais difundidas devido à facilidade em seu ajuste e aplicação. O procedimento de integração exigido para obtenção dos volumes a diferentes alturas também é facilitado pelo uso desse tipo de função. Tradicionalmente, são mais utilizadas as funções polinomiais, como o modelo de Schöepfer (1966) e de Hradetzky (1976), descritos matematicamente pelas seguintes expressões.</p>
-<div id="modelo-de-schoepfer-1966" class="section level4">
+<div id="modelo-de-schöepfer-1966" class="section level4">
 <h4>Modelo de Schöepfer (1966)</h4>
 <p><span class="math display">\[\frac{d_i}{dap}=\beta_0\frac{h_i}{ht}+\beta_1\frac{h_i}{ht}^2+\beta_2\frac{h_i}{ht}^3+\beta_3\frac{h_i}{ht}^4+\beta_4\frac{h_i}{ht}^5\]</span></p>
 </div>
@@ -55,7 +55,7 @@ em que:<br />
 library(readxl)
 dados &lt;- read_excel(&#39;dados_cubagens.xlsx&#39;)
 dados</code></pre>
-<pre><code>## # A tibble: 54,415 x 7
+<pre><code>## # A tibble: 54,415 × 7
 ##    ARVORE   DAP    DI     HI    HT `HI/HT` `DI/DAP`
 ##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ##  1      1 0.600 1.91  0.0735  1.47  0.05       3.18
@@ -68,7 +68,7 @@ dados</code></pre>
 ##  8      1 0.600 0.955 0.662   1.47  0.45       1.59
 ##  9      1 0.600 0.955 0.7     1.47  0.476      1.59
 ## 10      1 0.600 0.955 0.809   1.47  0.55       1.59
-## # ... with 54,405 more rows</code></pre>
+## # … with 54,405 more rows</code></pre>
 <pre class="r"><code>summary(dados)</code></pre>
 <pre><code>##      ARVORE          DAP              DI               HI         
 ##  Min.   :   1   Min.   : 0.60   Min.   : 0.000   Min.   : 0.0735  
@@ -87,11 +87,11 @@ dados</code></pre>
 <pre class="r"><code># Plotar dispersão da relação hi/ht x di/dap
 plot(`DI/DAP`~`HI/HT`, data = dados,
      xlab = &#39;hi/ht&#39;, ylab = &#39;di/dap&#39;)</code></pre>
-<p><img src="/post/afilamento_fixa_variavel/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <pre class="r"><code># Plotar dispersão da relação dap x ht
 plot(HT~DAP, data = dados,
      xlab = &#39;DAP (cm)&#39;, ylab = &#39;Ht (m)&#39;)</code></pre>
-<p><img src="/post/afilamento_fixa_variavel/index_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
 <p>A base carregada consiste em dados de cubagens de 3.369 árvores, que tiveram diâmetros medidos a alturas relativas (5%, 10%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85% e 95%), e também a alturas fixas (0,1, 0,3, 0,7 e 1,30 m).</p>
 <p>Foram cubadas árvores de 0,6 a 56,7 cm de DAP, com alturas variando entre 1,47 e 33,13 m, indicando uma elevada variabilidade de portes de árvores.</p>
 <p>Para utilização de funções polinomiais ou outras de forma fixa, é necessária a estratificação dos dados visando a redução da variabilidade existente. Neste caso, deverá ser gerada uma função de afilamento para cada estrato.
@@ -135,7 +135,7 @@ lapply(funcoes_schoepfer, summary)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.2528 on 2986 degrees of freedom
-## Multiple R-squared:  0.8186, Adjusted R-squared:  0.8183 
+## Multiple R-squared:  0.8186,	Adjusted R-squared:  0.8183 
 ## F-statistic:  2694 on 5 and 2986 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
@@ -162,7 +162,7 @@ lapply(funcoes_schoepfer, summary)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.1055 on 17066 degrees of freedom
-## Multiple R-squared:  0.9396, Adjusted R-squared:  0.9396 
+## Multiple R-squared:  0.9396,	Adjusted R-squared:  0.9396 
 ## F-statistic: 5.313e+04 on 5 and 17066 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
@@ -189,7 +189,7 @@ lapply(funcoes_schoepfer, summary)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.05219 on 22489 degrees of freedom
-## Multiple R-squared:  0.981,  Adjusted R-squared:  0.9809 
+## Multiple R-squared:  0.981,	Adjusted R-squared:  0.9809 
 ## F-statistic: 2.316e+05 on 5 and 22489 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
@@ -216,7 +216,7 @@ lapply(funcoes_schoepfer, summary)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.05069 on 9738 degrees of freedom
-## Multiple R-squared:  0.9816, Adjusted R-squared:  0.9815 
+## Multiple R-squared:  0.9816,	Adjusted R-squared:  0.9815 
 ## F-statistic: 1.036e+05 on 5 and 9738 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
@@ -243,7 +243,7 @@ lapply(funcoes_schoepfer, summary)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.0463 on 1802 degrees of freedom
-## Multiple R-squared:  0.9846, Adjusted R-squared:  0.9845 
+## Multiple R-squared:  0.9846,	Adjusted R-squared:  0.9845 
 ## F-statistic: 2.303e+04 on 5 and 1802 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
@@ -270,7 +270,7 @@ lapply(funcoes_schoepfer, summary)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.04846 on 298 degrees of freedom
-## Multiple R-squared:  0.9834, Adjusted R-squared:  0.9832 
+## Multiple R-squared:  0.9834,	Adjusted R-squared:  0.9832 
 ## F-statistic:  3539 on 5 and 298 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Para ajustar o modelo de Kozak, vamos utilizar a função <code>nlsLM</code> do pacote <code>minpack.LM</code>. Esta função busca parâmetros de modelos não lineares empregando o algoritmo Levenberg-Marquadt e costuma ser mais eficiente que a função <code>nls</code>, especialmente quando buscamos ajustar modelos mais complexos.</p>
 <pre class="r"><code>library(minpack.lm)
@@ -365,7 +365,7 @@ plot(residuos_bi~dados$DI,
      xlab = &#39;Di estimado&#39;, ylab = &#39;Resíduos&#39;,
      ylim = c(-15,15))+
   lines(x=c(0,70),y=c(0,0))</code></pre>
-<p><img src="/post/afilamento_fixa_variavel/index_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" />
 O modelo trigonométrico de Bi superou os demais tanto pelo menor erro quadrático médio, quanto pela dispersão de resíduos mais homogeneamente distribuída ao longo da linha de ajuste.<br />
 Por fim, vamos visualizar a capacidade da equação gerada a partir do modelo de Bi em descrever diferentes formas de fuste.</p>
 <pre class="r"><code># Simular dados de árvores de diferentes portes
@@ -386,7 +386,7 @@ for (i in unique(arvores_simuladas$DAP)[-1]) {
 }
     legend(&#39;topright&#39;, legend= c(&#39;DAP = 5cm e HT = 5m&#39;, &#39;DAP = 20cm e HT = 20m&#39;, &#39;DAP = 50cm e HT = 35m&#39;),
            lty = 1:3)</code></pre>
-<p><img src="/post/afilamento_fixa_variavel/index_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 <style>
 body {
 text-align: justify}

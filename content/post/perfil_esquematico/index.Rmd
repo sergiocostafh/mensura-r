@@ -16,11 +16,11 @@ featured: no
 image: 
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 
 ---
-Para caracterização da tipologia, do estado de conservação e do estágio sucessional de comunidades florestais, são utilizados diversos parâmetros fitossociológicos como densidade, frequência, dominância, valor de importãncia e índices de diversidade. Tais indicadores permitem descrever detalhadamente a fitofisionomia dos locais de estudo, conforme demonstrado em [postagens anteriores sobre este tema](https://mensura-r.netlify.com/categories/fitossociologia/).  
+Para caracterização da tipologia, do estado de conservação e do estágio sucessional de comunidades florestais, são utilizados diversos parâmetros fitossociológicos como densidade, frequência, dominância, valor de importância e índices de diversidade. Tais indicadores permitem descrever detalhadamente a fitofisionomia dos locais de estudo, conforme demonstrado em [postagens anteriores sobre este tema](https://mensura-r.netlify.com/categories/fitossociologia/).  
 Ainda que a utilização de todos estes parâmetros permita uma adequada descrição, estes não passam de abstrações teóricas que buscam representar as comunidades vegetais por meio de números, tabelas e gráficos. 
 Buscando uma representação mais fiel à realidade do observador (i.e. aquele que realiza o levantamento em campo), alguns ecólogos e estudiosos da fitossociologia buscam representar o perfil esquemático das florestas por meio de ilustrações feitas à mão - habilidade restrita àqueles que possuem este talento.  
 Nesta postagem ofereço um código que permite representar o perfil esquemático de uma comunidade florestal utilizando recursos do pacote `ggplot`. O mais interessante é que o procedimento aloca as árvores no perfil de maneira probabilística, em função dos dados coletados em campo.  

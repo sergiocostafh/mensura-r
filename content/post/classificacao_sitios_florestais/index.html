@@ -17,7 +17,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 
@@ -29,7 +29,7 @@ projects: []
 library(readxl)
 dados &lt;- read_excel(&#39;dados_processados.xlsx&#39;)
 dados</code></pre>
-<pre><code>## # A tibble: 813 x 9
+<pre><code>## # A tibble: 813 × 9
 ##    PARCELA ESPÉCIE     IDADE   DAP ALTURA     N  HDOM     G VOLTOT
 ##      &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
 ##  1       1 PINUS TAEDA  19.8  24.1   23.6  927.  25.5  44.5   509.
@@ -42,13 +42,13 @@ dados</code></pre>
 ##  8       8 PINUS TAEDA  24.2  30.0   26.2  640.  30.3  46.7   579.
 ##  9       9 PINUS TAEDA  24.2  30.4   26.4  633.  31.1  47.2   594.
 ## 10      10 PINUS TAEDA  24.2  28.2   26.4  620.  29.2  40.1   507.
-## # ... with 803 more rows</code></pre>
+## # … with 803 more rows</code></pre>
 <p>Cada linha representa uma unidade amostral processada, totalizando 819 parcelas. Agora vamos visualizar a dispersão da altura dominante em relação à idade.</p>
 <pre class="r"><code># Visualizar a dispersão dos pares de dados Idade x Hdom
 plot(HDOM~IDADE, data = dados,
      xlim = c(0,30), ylim = c(0,35),
      xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)</code></pre>
-<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>O crescimento em altura dominante usualmente é representado por modelos biológicos como o de Chapman-Richards, que possui a seguinte expressão matemática:</p>
 <p><span class="math inline">\(Hdom = \beta_0(1-exp^{\beta_1*Idade})^{\beta_2}\)</span></p>
 <p>Para o ajuste de funções não lineares, utilizamos a função <code>nls</code>. Para tal, devemos especificar os valores iniciais de busca para cada um dos três parâmetros, no argumento <code>start</code>.</p>
@@ -90,12 +90,12 @@ plot(HDOM~IDADE, data = dados,
      xlim = c(0,30), ylim = c(0,35),
      xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)+
 lines(HDOM~IDADE,curva_guia)</code></pre>
-<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Plotar dispersão dos resíduos
 plot(dados$IDADE,residuals(chapman_richards),
      xlab = &#39;Idade (anos)&#39;, ylab = &#39;Resíduo (m)&#39;)+
   lines(c(0,35),c(0,0))</code></pre>
-<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Realizados os procedimentos de ajuste e avaliação do modelo, partimos para a geração de curvas de sítio. Empregaremos o método da diferença algébrica para projetar todas as observações para uma idade de referência. Por estarmos trabalhando com dados de <em>Pinus taeda</em>, adotaremos a idade de 15 anos como referência.<br />
 O método da diferença algébrica exige a aplicação de uma forma diferencial do modelo de crescimento, em que partimos de uma idade e altura dominante conhecida. Utilizaremos a forma que deriva a equação em função do parâmetro <span class="math inline">\(\beta_0\)</span>, permitindo a construção de curvas anamórficas.</p>
 <p><span class="math inline">\(Hdom_2 = Hdom_1\frac{(1-exp^{\beta_1*Idade_2})^{\beta_2}}{(1-exp^{\beta_1*Idade_1})^{\beta_2}}\)</span></p>
@@ -142,7 +142,7 @@ plot(HDOM~IDADE, data = dados,
      xlab = &#39;Idade (anos)&#39;, ylab = &#39;Hdom (m)&#39;)+
   for(j in classes){
   lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}</code></pre>
-<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre><code>## integer(0)</code></pre>
 <p>Para agregar mais informações ao nosso gráfico, vamos gerar curvas para os limites de classe.</p>
 <pre class="r"><code># Definir os limites de classes
@@ -165,7 +165,7 @@ plot(HDOM~IDADE, data = dados,
   lines(Hdom~Idade,subset(curvas_classes, curvas_classes$Sitio==j))}+
   for(k in limites){
   lines(Hdom~Idade,subset(curvas_limites, curvas_limites$Sitio==k), lty=2)}</code></pre>
-<p><img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
 Para finalizar, vamos definir a qual classe de sitio cada parcela pertence. Para facilitar nosso trabalho, vamos utilizar função ´cut´.</p>
 <pre class="r"><code># Classificação de sitio
 dados$classe_sitio &lt;- cut(dados$sitio,
@@ -181,7 +181,7 @@ table(dados$classe_sitio)</code></pre>
              xlab = &#39;Classe de sítio&#39;, ylab = &#39;Número de parcelas&#39;,
              ylim = c(0,max(table(dados$classe_sitio))*1.1)),table(dados$classe_sitio)+20,
        labels=table(dados$classe_sitio))</code></pre>
-<img src="/post/classificacao_sitios_florestais/index_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
 <style>
 body {
 text-align: justify}

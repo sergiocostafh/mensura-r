@@ -15,7 +15,7 @@ featured: no
 image:
   caption: ''
   focal_point: ''
-  preview_only: no
+  preview_only: true
 projects: []
 ---
 Garantir a replicabilidade de análises e experimentos é uma premissa básica a ser adotada por qualquer pesquisador. Podemos elencar três razões que tornam esta uma premissa fundamental na ciência [1]:
