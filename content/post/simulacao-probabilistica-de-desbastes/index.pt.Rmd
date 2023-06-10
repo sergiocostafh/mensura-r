@@ -326,4 +326,4 @@ ggplot()+
 
 Como já mencionado, os procedimentos apresentados nesta postagem são apenas um componente para a construção de um sistema de simulação de crescimento e produção por classes diamétricas capaz de simular desbastes. A partir de tabelas de distribuição diamétrica podemos aplicar funções hipsométricas e, na sequência, funções de afilamento para obtenção de volumes totais e comerciais. Tabelas de distribuição diamétrica podem ser construídas para qualquer idade de um povoamento, desde que tenhamos dados suficientes para modelagem de variáveis como o DAP médio, DAP mínimo, área basal, entre outros, e assim calcularmos a produção esperada para diferentes idades.  
 
-Ficamos por aqui, até a próxima!
+Ficamos por aqui, até a próxima! 
