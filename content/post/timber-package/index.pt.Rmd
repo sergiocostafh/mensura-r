@@ -9,7 +9,7 @@ tags:
   - Afilamento
   - Biometria
 subtitle: ''
-summary: ''
+summary: 'Documento de apresentação do pacote timbeR.'
 authors: []
 lastmod: '2022-04-04T18:44:07-03:00'
 featured: no

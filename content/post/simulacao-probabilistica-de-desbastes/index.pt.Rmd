@@ -8,7 +8,7 @@ categories:
 tags:
   - Biometria
 subtitle: ''
-summary: ''
+summary: 'Apresentação de um procedimento para simulação de desbastes com abordagem probabilística.'
 authors: []
 lastmod: '2023-06-09T18:52:23-03:00'
 featured: no
