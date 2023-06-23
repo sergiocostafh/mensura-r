@@ -139,12 +139,12 @@ Agora que já podemos obter os diâmetros quadrático, médio, mínimo e máximo
 <p>Primeiro, vamos às formulações. A função bitruncada de densidade de probabilidade de Weibull com 3 parâmetros é expressa matematicamente da seguinte maneira:</p>
 <p><span class="math display">\[\frac{\frac{c}{b}\left(\frac{x-a}{b}\right)^{c-1}exp\left[\left(\frac{t-a}{b}\right)^c-\left(\frac{x-a}{b}\right)^c\right]}{1-exp\left[-\left(\frac{T-a}{b}\right)^c\right]}\]</span></p>
 <p>Em que:<br />
--a = parâmetro de locação;<br />
--b = parâmetro de escala;<br />
--c = parâmetro de forma;<br />
--x = variável aleatória (DAP ou classe de DAP);<br />
--T = ponto de truncamento à direita (DAP máximo);<br />
--t = ponto de truncamento à esquerda (DAP mínimo).</p>
+<em>a: parâmetro de locação;<br />
+</em>b: parâmetro de escala;<br />
+<em>c: parâmetro de forma;<br />
+</em>x: variável aleatória (DAP ou classe de DAP);<br />
+<em>T: ponto de truncamento à direita (DAP máximo);<br />
+</em>t: ponto de truncamento à esquerda (DAP mínimo).</p>
 <p>Obteremos os parâmetros <code>a</code>, <code>b</code>, e <code>c</code> da função pelo método dos momentos não centrais, conforme o estudo de <a href="https://www.scielo.br/j/cflo/a/zM9dPMdWZ7LhrQJyz6M6PyJ/?format=pdf&amp;lang=pt">Arce (2004)</a>. Para tal, as seguintes expressões devem ser usadas.</p>
 <p>Parâmetro <code>a</code>:<br />
 <span class="math display">\[a=\frac{\overline{d}-\left(dg-D_{min}\right)}{1-\frac{1}{n^{\left(1+\frac{1}{c}\right)}}}\]</span>
