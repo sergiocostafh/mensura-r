@@ -235,15 +235,14 @@ dist_diam_pred <- dados_pred %>%
 # visualizar estrutura diametrica ao longo do tempo
 ggplot(dist_diam_pred)+
   geom_line(aes(x = cdap, y = dist, group = Idade, color = Idade))+
-  labs(x = 'Idade (anos)',
+  labs(x = 'DAP (cm)',
        y = 'Frequência (n/ha)',
        title = 'Distribuição diamétrica de um povoamento de Pinus sp. dos 4 aos 17 anos de idade')+
-  scale_color_viridis_c()+
+  scale_color_viridis_c(name = 'Idade (anos)')+
   theme_minimal()+
   theme(
     plot.title.position = 'plot',
-    legend.title = element_blank(),
-    legend.position = 'bottom'
+    legend.position = 'right'
   )
 ```
 

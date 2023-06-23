@@ -231,17 +231,33 @@ dist_diam_pred &lt;- dados_pred %&gt;%
 # visualizar estrutura diametrica ao longo do tempo
 ggplot(dist_diam_pred)+
   geom_line(aes(x = cdap, y = dist, group = Idade, color = Idade))+
-  labs(x = &#39;Idade (anos)&#39;,
+  labs(x = &#39;DAP (cm)&#39;,
        y = &#39;Frequência (n/ha)&#39;,
        title = &#39;Distribuição diamétrica de um povoamento de Pinus sp. dos 4 aos 17 anos de idade&#39;)+
-  scale_color_viridis_c()+
+  scale_color_viridis_c(name = &#39;Idade (anos)&#39;)+
   theme_minimal()+
   theme(
     plot.title.position = &#39;plot&#39;,
-    legend.title = element_blank(),
-    legend.position = &#39;bottom&#39;
+    legend.position = &#39;right&#39;
   )</code></pre>
 <p><img src="{{< blogdown/postref >}}index.pt_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>O gráfico apresentado demonstra a flexibilidade da função de Weibull para representar a estrutura diamétrica de povoamentos florestais equiâneos em qualquer momento no tempo. Uma abordagem mais aprimorada envolve a aplicação de um modelo de sobrevivência para estimativa do número de árvores esperada em cada idade, a partir de uma densidade inicial.</p>
-<p>Ficamos por aqui. Até a próxima!</p>
+<style>
+body {
+text-align: justify}
+h1 {
+text-align: center}
+</style>
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
 </div>
