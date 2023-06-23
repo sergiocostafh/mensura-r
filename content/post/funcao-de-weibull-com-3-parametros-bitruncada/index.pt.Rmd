@@ -139,12 +139,13 @@ Primeiro, vamos às formulações. A função bitruncada de densidade de probabi
 $$\frac{\frac{c}{b}\left(\frac{x-a}{b}\right)^{c-1}exp\left[\left(\frac{t-a}{b}\right)^c-\left(\frac{x-a}{b}\right)^c\right]}{1-exp\left[-\left(\frac{T-a}{b}\right)^c\right]}$$
   
 Em que:  
-*a: parâmetro de locação;  
-*b: parâmetro de escala;  
-*c: parâmetro de forma;  
-*x: variável aleatória (DAP ou classe de DAP);  
-*T: ponto de truncamento à direita (DAP máximo);  
-*t: ponto de truncamento à esquerda (DAP mínimo).  
+
+* a: parâmetro de locação;  
+* b: parâmetro de escala;  
+* c: parâmetro de forma;  
+* x: variável aleatória (DAP ou classe de DAP);  
+* T: ponto de truncamento à direita (DAP máximo);  
+* t: ponto de truncamento à esquerda (DAP mínimo).  
 
 Obteremos os parâmetros `a`, `b`, e `c` da função pelo método dos momentos não centrais, conforme o estudo de [Arce (2004)](https://www.scielo.br/j/cflo/a/zM9dPMdWZ7LhrQJyz6M6PyJ/?format=pdf&lang=pt). Para tal, as seguintes expressões devem ser usadas.  
 
