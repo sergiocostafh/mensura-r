@@ -108,7 +108,7 @@ bi = nlsLM(DI ~ DAP*(log(sin((pi/2)*(HI/HT)))/(log(sin((pi/2)*(1.3/HT)))))**
 data=dados,
 start=c(b0=1.8,b1=-0.2,b2=-0.04,b3=-0.9,b4=-0.0006,b5=0.07,b6=-.14))
 summary(bi)
-````
+```
 Agora que temos as funções de forma fixa e variável ajustadas, vamos comparar os métodos. Para tal, precisamos armazenar os resíduos em vetores e calcular o erro quadrático médio em relação ao $d_i$.
 ```{r fig.width=8, results='hide',fig.keep='all',fig.align='center',fig.height=3}
 # Criar conjuntos que armazenarão os resultados das funções de Schoepfer
@@ -146,7 +146,7 @@ plot(residuos_bi~dados$DI,
      xlab = 'Di estimado', ylab = 'Resíduos',
      ylim = c(-15,15))+
   lines(x=c(0,70),y=c(0,0))
-````
+```
 O modelo trigonométrico de Bi superou os demais tanto pelo menor erro quadrático médio, quanto pela dispersão de resíduos mais homogeneamente distribuída ao longo da linha de ajuste.  
 Por fim, vamos visualizar a capacidade da equação gerada a partir do modelo de Bi em descrever diferentes formas de fuste.
 ```{r, fig.width=8, fig.height = 5, results='hide',fig.align='center'}
@@ -168,7 +168,7 @@ for (i in unique(arvores_simuladas$DAP)[-1]) {
 }
     legend('topright', legend= c('DAP = 5cm e HT = 5m', 'DAP = 20cm e HT = 20m', 'DAP = 50cm e HT = 35m'),
            lty = 1:3)
-````
+```
 
 <style>
 body {

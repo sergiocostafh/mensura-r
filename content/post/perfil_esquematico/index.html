@@ -33,15 +33,14 @@ Vou explicar. Começamos importando os dados.</p>
 dados &lt;- readxl::read_excel(&quot;dados_levantamento_fitossociologico.xlsx&quot;)
 head(dados)</code></pre>
 <pre><code>## # A tibble: 6 × 8
-##   Parcela Gen_esp              Gen_esp_abv     Família   CAP   DAP     H Estra…¹
-##     &lt;dbl&gt; &lt;chr&gt;                &lt;chr&gt;           &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  
-## 1       1 Prunus brasiliensis  P. brasiliensis Rosace…  46.5 14.8     12 Interm…
-## 2       1 Nectandra lanceolata N. lanceolata   Laurac… 106   33.7     17 Superi…
-## 3       1 Dalbergia frutescens D. frutescens   Fabace…  24    7.64    17 Superi…
-## 4       1 Myrcia splendens     M. splendens    Myrtac…  18.5  5.89     7 Sub-bo…
-## 5       1 Myrcia splendens     M. splendens    Myrtac…  21    6.68     9 Interm…
-## 6       1 Maytenus evonymoides M. evonymoides  Celast…  46   14.6     10 Interm…
-## # … with abbreviated variable name ¹​`Estrato vertical`</code></pre>
+##   Parcela Gen_esp       Gen_esp_abv Família   CAP   DAP     H `Estrato vertical`
+##     &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;             
+## 1       1 Prunus brasi… P. brasili… Rosace…  46.5 14.8     12 Intermediário     
+## 2       1 Nectandra la… N. lanceol… Laurac… 106   33.7     17 Superior          
+## 3       1 Dalbergia fr… D. frutesc… Fabace…  24    7.64    17 Superior          
+## 4       1 Myrcia splen… M. splende… Myrtac…  18.5  5.89     7 Sub-bosque        
+## 5       1 Myrcia splen… M. splende… Myrtac…  21    6.68     9 Intermediário     
+## 6       1 Maytenus evo… M. evonymo… Celast…  46   14.6     10 Intermediário</code></pre>
 <p>Os dados são oriundos de 30 unidades amostrais medidas em uma fragmento de Floresta Ombrófila Mista (mata de araucária) no Paraná. Para cada indivíduo amostrado nas parcelas, foram medidas a CAP (circunferência à altura do peito) e a altura total, além da determinação do epíteto botânico e do estrato vertical em que se encontrava no momento do levantamento.</p>
 <p>O procedimento basicamente se dá nos seguintes passos:<br />
 1. Obter altura e DAP médios para cada espécie em cada estrato;<br />

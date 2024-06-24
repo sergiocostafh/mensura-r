@@ -35,7 +35,7 @@ dados
 plot(HDOM~IDADE, data = dados,
      xlim = c(0,30), ylim = c(0,35),
      xlab = 'Idade (anos)', ylab = 'Hdom (m)')
-````
+```
   
 Nosso trabalho agora será ajustar diversos modelos e avaliar qual deles melhor representa os dados em questão. Testaremos os seguintes modelos.
 
@@ -66,11 +66,11 @@ clutter_jones = nlsLM(HDOM ~ b0*(1+b1*IDADE^b2)^b3,
 # Armazenar modelos em uma lista
 modelos <- mget(c('chapman_richards', 'lundqvist_korf', 'bailey_3p', 'clutter_jones'),
                 envir = globalenv())
-````
+```
 A vantagem de armazenar modelos em listas é que podemos analisá-los por meio de scripts mais compactos. Por exemplo, com uma única linha de código podemos acessar os coeficientes de todos os modelos empregando a função `lapply`.
 ```{r}
 lapply(modelos, coefficients)
-````
+```
 A seguir vamos gerar os gráficos da curva de ajuste, de dispersão e de distribuição de resíduos em classes de erro. Em vez de criarmos todos os gráficos um a um, apresentaremos a lista de modelos a uma função que gera os três gráficos para cada elemento da lista. 
 ```{r, fig.align = 'center', fig.width = 8, fig.height = 7, message=FALSE, warning=FALSE}
 library(ggplot2)
@@ -123,7 +123,7 @@ graficos = syms(names(modelos)) %>% set_names() %>%
 # Plotar todos os gráficos em uma única imagem
 map(graficos, ~ggarrange(plots=.x, ncol=3, draw=FALSE)) %>% 
   grid.arrange(grobs=., ncol=1)
-````
+```
 Os quatro modelos tiveram desempenho bastante similar para os gráficos de resíduos e para o erro padrão das estimativas. No entanto, há uma diferença considerável nas assíntotas (coeficiente b0) e nas predições de altura dominante para idades inferiores a 3 anos. Os modelos de Lundqvist-Korf e Clutter-Jones sugerem que no futuro as árvores dominantes alcançarão em média os 40 metros de altura, enquanto os modelos de Chapman-Richards e Bailey-3p indicam que a assíntota se dá em torno de 30 metros. Esta é uma questão pouco relevante se considerarmos que neste caso os povoamentos serão submetidos a corte raso entre os 14 e os 16 anos, e que nesta faixa de idade temos uma quantidade suficiente de amostras.  
 Por outro lado, as curvas geradas por esses pares de modelos também apresentam comportamento divergente para idades inferiores a 4 anos, em que não há observações. Neste caso os modelos de Lundqvist-Korf e Clutter-Jones sugerem que povoamentos com 1 ano de idade possuem altura dominante igual a zero, o que é bastante equivocado do ponto de vista biológico. O problema na utilização destes modelos se daria se, por alguma razão, houvesse a necessidade de predizer o sítio em povoamentos cuja idade no momento do inventário é inferior a 3 anos. Em todos os casos não temos observações para representar o crescimento em idades inferiores a 4 anos, mas o bom senso, a experiência e a lógica são suficientes para nos garantir que povoamentos com um ano de idade já possuem algum crescimento em altura.  
 Então, para concluir, já que os modelos apresentaram grande similiaridade entre si para as análises de resíduos, eu escolheria o modelo de Chapman-Richards ou Bailey-3p para representar o crescimento em altura dominante deste povoamento, tomando por base o comportamento biológico esperado.
