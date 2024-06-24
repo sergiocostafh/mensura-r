@@ -23,7 +23,7 @@ A fitossociologia é uma área complexa das ciências naturais que tem como obje
   
 Este é o primeiro de uma série de posts em que apresentarei procedimentos para estudos fitossociológicos empregando dados reais (acesse os outros posts em que apresento procedimentos para [cálculo de índices ecológicos](https://mensura-r.netlify.com/post/fitossociologia-calculo-de-indices-ecologicos/) e [construção de curvas de acumulação de espécies e de rarefação](https://mensura-r.netlify.com/post/fitossociologia-curvas-de-rarefacao-e-acumulacao-de-especies/)). Nesse exemplo, faremos a análise da estrutura horizontal de uma comunidade de cerrado. Começaremos importando e visualizando dados oriundos de um levantamento realizado a partir de 29 unidades amostrais de 100 m².  
 Obs: Para baixar os dados utilizados nesse exemplo, clique [aqui](https://github.com/sergiocostafh/mensura-r/raw/master/content/post/estrutura_horizontal/dados_fitossociologia.xlsx).  
-```{r, warning = FALSE, message= FALSE}
+```{r}
 # Importar base de dados
 dados <- readxl::read_excel("dados_fitossociologia.xlsx")
 # Visualizar dados importados
@@ -99,7 +99,7 @@ knitr::kable(tabela_fito, row.names = F)%>%
 
 Para finalizar, com uma abordagem mas sofisticada, vamos representar graficamente os resultados obtidos para as principais espécies.  
 
-```{r, warning = FALSE, message= FALSE}
+```{r}
 library(dplyr)
 library(tidyr)
 library(forcats)
